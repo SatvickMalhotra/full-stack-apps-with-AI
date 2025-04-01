@@ -19,11 +19,11 @@ This project is designed to manage a comprehensive medication database system. I
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/your-repo-name.git
+   git clone https://github.com/SatvickMalhotra/full-stack-apps-2025-.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd your-repo-name
+   cd full-stack-apps-2025-/MediTrack\ System
    ```
 3. Set up the backend environment (if applicable) and install required packages:
    ```bash
@@ -43,4 +43,4 @@ If you would like to contribute to this project, please fork the repository and 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
-For any inquiries, please reach out to [your-email@example.com](mailto:your-email@example.com).
+For any inquiries, please reach out to [satvickmalhotraofficial@gmail.com](mailto:satvickmalhotraofficial@gmail.com).
