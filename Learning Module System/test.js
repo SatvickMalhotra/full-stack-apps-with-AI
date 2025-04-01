@@ -3,13 +3,13 @@ import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.c
 
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBfW3XyhYaM0smgflvCA-UI7i2vjxYEoaY",
-    authDomain: "lms-mswasth.firebaseapp.com",
-    databaseURL: "https://lms-mswasth-default-rtdb.firebaseio.com",
-    projectId: "lms-mswasth",
-    storageBucket: "lms-mswasth.firebasestorage.app",
-    messagingSenderId: "1060056773959",
-    appId: "1:1060056773959:web:b2c9117db3002d7cb5c862"
+    apiKey: "-",
+    authDomain: "-..com",
+    databaseURL: "https://---..com",
+    projectId: "-",
+    storageBucket: "-..app",
+    messagingSenderId: "",
+    appId: "1::web:"
 };
 
 // Initialize Firebase
