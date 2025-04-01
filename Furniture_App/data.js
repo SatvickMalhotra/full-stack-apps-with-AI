@@ -74,13 +74,13 @@ import {
   get,
 } from "https://www.gstatic.com/firebasejs/10.12.4/firebase-database.js";
 const firebaseConfig = {
-    apiKey: _0x53317f(0x191),
-    authDomain: _0x53317f(0x192),
-    projectId: _0x53317f(0x199),
-    storageBucket: "mswasth-reimbursement.appspot.com",
-    messagingSenderId: "719155230190",
-    appId: _0x53317f(0x184),
-    measurementId: _0x53317f(0x18e),
+    apiKey: (0x191),
+    authDomain: (0x192),
+    projectId: (0x199),
+    storageBucket: "..com",
+    messagingSenderId: "",
+    appId: (0x184),
+    measurementId: (0x18e),
   },
   firebaseApp = initializeApp(firebaseConfig),
   db = getDatabase(firebaseApp);
