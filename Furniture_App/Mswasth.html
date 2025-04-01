@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to the Furniture Store Page</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="main_site_responsive.css" />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        if (sessionStorage.getItem("loggedIn") !== "true") {
+          window.location.href = "index.html"; // Redirect to login page
+        }
+      });
+    </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6343956700162854"
+     crossorigin="anonymous"></script>
+    <style>
+      .button-sidebar {
+        position: fixed;
+        top: 0;
+        right: -200px; /* Off-screen initially */
+        width: 200px; /* Width of sidebar */
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9);
+        z-index: 1000;
+        padding-top: 80px; /* Adjust as needed */
+        transition: right 0.3s ease;
+      }
+
+      .toggleBtn {
+        z-index: -100000;
+        top: 5px;
+        right: 10px;
+        position: fixed;
+        background-color: transparent;
+        color: rgb(0, 0, 0);
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        animation: fadeInUp 1s ease-out;
+        margin-left: 30px;
+        width: 50px;
+        opacity: 1;
+      }
+
+      @media screen and (max-width: 767px) {
+        .toggleBtn {
+          z-index: 10000;
+        }
+        .button-sidebar {
+          right: -200px; /* Hide sidebar off-screen on small screens */
+        }
+
+        .button-sidebar.open {
+          right: 0; /* Display sidebar on the right */
+        }
+
+        .toggleBtn {
+          display: block; /* Ensure toggle button is visible */
+        }
+
+        .button-list {
+          display: none; /* Hide buttons by default */
+          padding-top: 20px; /* Adjust as needed */
+        }
+
+        .button-sidebar.open .button-list {
+          display: block; /* Display buttons when sidebar is open */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <div class="main-header">
+        <img
+          src="https://cdn.glitch.global/973b7907-6eda-445e-86fb-8aaf21979237/download-removebg-preview.png?v=1722058759134"
+          alt="MSWasth Furniture Store Logo"
+          class="logo1"
+        />
+        <span class="header-text">M-SWASTH Solutions Pvt Ltd</span>
+      </div>
+      <div class="container">
+        <div class="header">
+          <h1 id="header-title">WELCOME TO M-Swasth FURNITURE STORE PAGE</h1>
+          <img
+            src="https://cdn.glitch.global/973b7907-6eda-445e-86fb-8aaf21979237/download-removebg-preview.png?v=1722058759134"
+            alt="MSWasth Furniture Store Logo"
+            id="logo"
+            style="background-color: white; border-radius: 50%"
+          />
+        </div>
+        <form id="dataForm">
+          <div class="form-group language-selector">
+            <input
+              type="radio"
+              id="lang-en"
+              name="language"
+              value="en"
+              checked
+            />
+            <label for="lang-en">English</label>
+            <input type="radio" id="lang-hi" name="language" value="hi" />
+            <label for="lang-hi">हिंदी</label>
+            <input type="radio" id="lang-bn" name="language" value="bn" />
+            <label for="lang-bn">বাংলা</label>
+          </div>
+          <div class="form-group file-input-container">
+            <label for="fileInput">
+              <input type="file" id="fileInput" class="file" multiple="" />
+            </label>
+          </div>
+          <div id="fileCount">
+            Files uploaded: <span id="fileCountValue">0</span>
+          </div>
+
+          <div class="upload_content" id="upload_2">
+            <h3>
+              UPLOADING 2 FILES ARE COMPULSORY (ITEM IMAGE AND BILL IMAGE)
+            </h3>
+          </div>
+          <div class="upload_content" id="upload_gps">
+            <h3>UPLOAD ALL IMAGES USING GPS CAMERA</h3>
+          </div>
+
+          <div class="form-group">
+            <input type="text" id="dcName" placeholder="DC Name" required="" />
+          </div>
+          <div class="form-group dropdown-container">
+            <input
+              type="text"
+              id="employeeIdSearch"
+              placeholder="Search Employee ID"
+            />
+            <div class="dropdown-content">
+              <select id="employeeId">
+                <option value="" disabled="" id="placeholderOption" selected>
+                  Select Employee ID
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <input
+              type="text"
+              id="empIDInput"
+              placeholder="Enter EMP ID"
+              style="display: none"
+            />
+          </div>
+          <div class="form-group dropdown">
+            <input
+              type="text"
+              id="partnerNameSearch"
+              placeholder="Search Partner Name"
+            />
+            <div class="dropdo">
+              <select id="partnerName">
+                <option
+                  value=""
+                  disabled=""
+                  id="partnerPlaceholderOption"
+                  selected
+                >
+                  Select Partner Name
+                </option>
+              </select>
+            </div>
+          </div>
+          <div id="itemsContainer"></div>
+        </form>
+
+        <div class="button-sidebar">
+          <!-- Sidebar Buttons -->
+          <div class="button-list">
+            <button type="button" id="clearFormButton" class="clearBtn">
+              Clear Form
+            </button>
+            <button type="button" id="logoutButton" class="logoutBtn">
+              Logout
+            </button>
+          </div>
+        </div>
+        <div class="form-buttons">
+          <button type="button" class="addBtn" id="addItemButton">
+            Add Another Item
+          </button>
+          <button type="button" class="submitBtn" id="submit1">Submit</button>
+        </div>
+        <div id="filePreviewContainer"></div>
+      </div>
+
+      <!-- Sidebar Toggle Button -->
+      <button type="button" id="sidebarToggle" class="toggleBtn">☰</button>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="script.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="translations.js"></script>
+    <script type="module" src="firebase.js"></script>
+
+    <!-- JavaScript for Sidebar Toggle -->
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        const buttonSidebar = document.querySelector(".button-sidebar");
+
+        sidebarToggle.addEventListener("click", () => {
+          buttonSidebar.classList.toggle("open");
+        });
+      });
+    </script>
+    <script>
+      // Check if the page was reloaded
+      if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+        // Redirect to index.html
+        window.location.href = "index.html";
+      }
+    </script>
+    
+    <!-- Add this script to Mswasth.html and any other protected pages -->
+  </body>
+</html>

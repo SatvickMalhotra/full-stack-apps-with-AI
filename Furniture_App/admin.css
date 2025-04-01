@@ -1,0 +1,280 @@
+/* Reset default margin and padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+}
+
+/* Basic styling for main header */
+.main-header {
+  background-color: lightgray;
+  color: black;
+  font-weight: bolder;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.logo1 {
+  width: 40px;
+  height: auto;
+  background-color: white;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.header-text {
+  flex: 1;
+  font-size: 18px;
+}
+
+.logout-button {
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #ff0000;
+}
+
+.admin-container {
+  display: flex;
+  margin-top: 60px; /* Adjust to match header height */
+}
+
+.sidebar {
+  width: 250px;
+  background-color: #2c3e50;
+  color: #ecf0f1;
+  height: calc(100vh - 60px); /* Adjust to match header height */
+  position: fixed;
+  top: 60px; /* Adjust to match header height */
+  padding: 20px;
+  padding-top: 30px;
+  overflow-y: auto;
+  transition: transform 0.3s ease-in-out;
+}
+
+.sidebar ul {
+  list-style-type: none;
+}
+
+.sidebar ul li {
+  margin-bottom: 20px;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #ecf0f1;
+  background-color: #34495e;
+  display: block;
+  padding: 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.sidebar ul li a:hover {
+  background-color: #1abc9c;
+}
+
+.content {
+  margin-left: 270px; /* Adjust to match sidebar width */
+  padding: 20px;
+  flex: 1;
+}
+
+.admin-section {
+  display: none; /* Hide all sections by default */
+}
+
+.admin-section:first-of-type {
+  display: block; /* Show the first section by default */
+}
+
+.section-header {
+  color: black;
+  font-family: "Times New Roman", Times, serif;
+  font-size: 30px;
+  margin-bottom: 30px;
+}
+
+.form-container,
+.search-container {
+  margin-bottom: 20px;
+}
+
+form {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+}
+
+form input[type="text"],
+form input[type="password"] {
+  padding: 10px;
+  flex: 1;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+form button {
+  padding: 10px 20px;
+  color: black;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+form button:hover {
+  background-color: #45a049;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+table th {
+  background-color: #8e8e8e;
+  color: white;
+}
+
+table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+table tr:hover {
+  background-color: #ddd;
+}
+
+.table-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.action-button {
+  padding: 5px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.edit-button {
+  padding: 5px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: lightsalmon;
+  color: white;
+  margin-right: 5%;
+}
+
+.edit-button:hover {
+  background-color: #e67e22;
+}
+
+.delete-button {
+  padding: 5px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: lightcoral;
+  color: white;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
+
+/* Sidebar toggler */
+.sidebar-toggler {
+  display: none;
+  background-color: #2c3e50;
+  color: white;
+  border: none;
+  padding: 10px;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1100;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.sidebar-hidden .sidebar {
+  transform: translateX(-100%);
+}
+
+@media (max-width: 767px) {
+  .main-header {
+    background-color: lightgrey;
+    display: flex;
+    justify-content: space-between;
+  }
+  .logo1{
+    width: 30px;
+    height: auto;
+    margin-left: 120px;
+  }
+  .header-text{
+    font-size: 12px;
+  }
+  .logout-button{
+    width: 70px;
+    height: auto;
+    font-size: 12px;
+  }
+  .sidebar {
+    transform: translateX(-100%);
+    position: fixed;
+    width: 250px; /* Adjusted sidebar width */
+    height: calc(100vh - 60px);
+    top: 60px;
+    z-index: 1050;
+  }
+  .content {
+    margin-left: 0;
+  }
+  .sidebar-toggler {
+    display: block;
+    width: 35px;
+    height: 30px;
+    font-size: 10px;
+  }
+  .sidebar-visible .sidebar {
+    transform: translateX(0%);
+  }
+  .section-header
+  {
+    font-size: 20px;
+  }
+  h4{
+    font-size: small;
+  }
+}

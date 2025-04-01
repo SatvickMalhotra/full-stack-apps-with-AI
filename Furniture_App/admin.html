@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css" />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        if (sessionStorage.getItem("loggedIn") !== "true") {
+          window.location.href = "index.html"; // Redirect to login page
+        }
+      });
+    </script>
+    <style>
+      .admin-section {
+        display: none;
+      }
+      iframe {
+        width: 100%;
+        height: 80vh; /* Adjust the height as needed */
+        border: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-header">
+      <img
+        src="https://cdn.glitch.global/973b7907-6eda-445e-86fb-8aaf21979237/download-removebg-preview.png?v=1722058759134"
+        alt="MSWasth Furniture Store Logo"
+        class="logo1"
+      />
+      <span class="header-text"> M-SWASTH ADMIN DASHBOARD </span>
+      <button class="logout-button" onclick="logout()">Logout</button>
+      <button class="sidebar-toggler">☰</button>
+    </div>
+
+    <div class="admin-container">
+      <div class="sidebar">
+        <ul>
+          <li><a href="#home" onclick="showSection('home')">Home</a></li>
+          <li>
+            <a
+              href="#manage-employees"
+              onclick="showSection('manage-employees')"
+            >
+              Manage Employee IDs
+            </a>
+          </li>
+          <li>
+            <a href="#manage-partners" onclick="showSection('manage-partners')">
+              Manage Partner Names
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="content">
+        <section id="home" class="admin-section">
+          <h2 class="section-header">Home</h2>
+          <iframe
+            src="https://docs.google.com/spreadsheets/d/e/2PACX-1vS11KgFjRy72vjiHnquz1Jg6PN1eTBpWpq6G7ea5sftPf2DOpHa7suljZR6stWU_-2meIhAXn75Mwhs/pubchart?oid=1970186057&amp;format=interactive"
+          ></iframe>
+          <iframe
+            src="https://docs.google.com/spreadsheets/d/e/2PACX-1vS11KgFjRy72vjiHnquz1Jg6PN1eTBpWpq6G7ea5sftPf2DOpHa7suljZR6stWU_-2meIhAXn75Mwhs/pubhtml?gid=980207365&amp;single=true&amp;widget=true&amp;headers=false"
+          ></iframe>
+          <iframe
+            src="https://docs.google.com/spreadsheets/d/e/2PACX-1vS11KgFjRy72vjiHnquz1Jg6PN1eTBpWpq6G7ea5sftPf2DOpHa7suljZR6stWU_-2meIhAXn75Mwhs/pubhtml?gid=1624721457&amp;single=true&amp;widget=true&amp;headers=false"
+          ></iframe>
+        </section>
+
+        <section id="manage-employees" class="admin-section">
+          <h2 class="section-header">Manage Employee IDs</h2>
+          <div class="form-container">
+            <h4>Add Employee ID</h4>
+            <form id="employeeForm">
+              <input
+                type="text"
+                id="employeeIdInput"
+                placeholder="Enter Employee ID"
+                required
+              />
+              <button type="button" onclick="addEmployee()">
+                Add Employee ID
+              </button>
+            </form>
+          </div>
+
+          <div class="search-container">
+            <h4>Search Employee IDs</h4>
+            <form>
+              <input
+                type="text"
+                id="searchEmployeeInput"
+                placeholder="Search Employee IDs"
+                onkeyup="searchEmployeeTable()"
+              />
+            </form>
+          </div>
+
+          <div id="employeeList">
+            <table id="employeeTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="manage-partners" class="admin-section">
+          <h2 class="section-header">Manage Partner Names</h2>
+          <div class="form-container">
+            <h4>Add Partner Name</h4>
+            <form id="partnerForm">
+              <input
+                type="text"
+                id="partnerNameInput"
+                placeholder="Enter Partner Name"
+                required
+              />
+              <button type="button" onclick="addPartner()">
+                Add Partner Name
+              </button>
+            </form>
+          </div>
+
+          <div class="search-container">
+            <h4>Search Partner Names</h4>
+            <form>
+              <input
+                type="text"
+                id="searchPartnerInput"
+                placeholder="Search Partner Names"
+                onkeyup="searchPartnerTable()"
+              />
+            </form>
+          </div>
+
+          <div id="partnerList">
+            <table id="partnerTable">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <script type="module" src="data.js"></script>
+    <script type="module" src="admin.js"></script>
+    <script>
+      document
+        .querySelector(".sidebar-toggler")
+        .addEventListener("click", function () {
+          document.body.classList.toggle("sidebar-visible");
+        });
+
+      document.querySelectorAll(".sidebar ul li a").forEach((link) => {
+        link.addEventListener("click", function () {
+          document.body.classList.remove("sidebar-visible");
+        });
+      });
+
+      // Check if the page was reloaded
+      if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
+        // Redirect to index.html
+        window.location.href = "index.html";
+      }
+    </script>
+    <!-- Add this script to Mswasth.html and any other protected pages -->
+  </body>
+</html>

@@ -1,0 +1,45 @@
+@media (max-width: 767px) {
+  .main-header {
+    opacity: 80%;
+    padding-bottom: -10px;
+    background-color: white;
+  }
+  .header-text {
+    font-size: 18px; /* Optional: adjust font size as needed */
+    font-weight: bold;
+    color: black;
+  }
+  .dark-mode .main-header {
+    background-color: white;
+  }
+  .upload_content h3 {
+    font-size: 10px;
+  }
+
+  .header {
+    height: 25%;
+    margin-top: 40px;
+    border-radius: 10px;
+  }
+  #header-title {
+    font-size: 25px; /* Adjust font size as needed */
+    word-wrap: break-word; /* Ensure long words are wrapped */
+    white-space: normal;
+  }
+  #logo {
+    width: 150px;
+    height: auto;
+  }
+  .file-input-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    max-width: 200px;
+  }
+
+  .file-input-container label {
+    width: 100%;
+    text-align: center;
+  }
+}

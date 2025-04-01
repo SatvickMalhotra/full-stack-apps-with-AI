@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to the Furniture Store Page</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style2.css" />
+    <script type="module" src="run.js"></script>
+
+    <script type="module" src="data.js"></script>
+    <script src="login.js" defer></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Clear session storage to ensure the user logs in again
+        sessionStorage.removeItem("loggedIn");
+      });
+    </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6343956700162854"
+     crossorigin="anonymous"></script>
+
+  </head>
+  <body>
+    
+    <div class="main-header">
+      <img
+        src="https://cdn.glitch.global/973b7907-6eda-445e-86fb-8aaf21979237/download-removebg-preview.png?v=1722058759134"
+        alt="MSWasth Furniture Store Logo"
+        class="logo1"
+      />
+      <span class="header-text">M-SWASTH Solutions Pvt Ltd</span>
+    </div>
+    <div class="login-container">
+      <h2>Login</h2>
+      <p>Username: v</p>
+      <p>Passwd: 1</p>
+
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="button" onclick="login()">Login</button>
+    </div>
+
+    <!-- Add your JavaScript here or link to an external file -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("username").value = "v";
+        document.getElementById("password").value = "1";
+      });
+    </script>
+  </body>
+</html>
+<script>
+  function updateLoginText() {
+    if (window.innerWidth <= 767) {
+      const loginHeader = document.querySelector(".login-container h2");
+      if (loginHeader) {
+        loginHeader.textContent = " ";
+      }
+    }
+  }
+  function updateLoginText() {
+    if (window.innerWidth <= 767) {
+      const loginHeader = document.querySelector(".login-container h2");
+      if (loginHeader) {
+        loginHeader.textContent = " ";
+      }
+    }
+  }
+
+  // Run on page load
+  updateLoginText();
+
+  // Run on window resize
+  window.addEventListener("resize", updateLoginText);
+</script>
+
+
