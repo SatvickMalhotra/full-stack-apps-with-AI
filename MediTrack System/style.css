@@ -1,0 +1,152 @@
+/* General Styles */
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  font-family: 'Open Sans', sans-serif;
+  color: white;
+  overflow: hidden;
+  --mouse-x: 0px;
+  --mouse-y: 0px;
+  animation: gradient-shift 15s infinite alternate ease-in-out;
+}
+
+@keyframes gradient-shift 
+
+
+{
+  0% { background: linear-gradient(135deg, #1e3c72, #2a5298); }
+  25% { background: linear-gradient(135deg, #ff6f61, #ff9a8b); }
+  50% { background: linear-gradient(135deg, #6a11cb, #2575fc); }
+  75% { background: linear-gradient(135deg, #ff9a8b, #ff6f61); }
+  100% { background: linear-gradient(135deg, #2a5298, #1e3c72); }
+}
+
+.container {
+  text-align: center;
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+}
+
+/* Logo with Rotation Animation */
+.logo-container {
+  position: relative;
+  margin: 0 auto 20px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: float-logo 4s infinite ease-in-out;
+}
+
+.logo-content {
+  height: 150px;
+  width: 150px;
+  background: #000;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.3);
+  animation: rotate-logo 6s infinite alternate ease-in-out;
+}
+
+.logo-content img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@keyframes rotate-logo {
+  0% { transform: rotate(0deg) scale(1); }
+  100% { transform: rotate(360deg) scale(1.1); }
+}
+
+@keyframes float-logo {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+
+/* Heading */
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: linear-gradient(45deg, #ff6f61, #ff9a8b, #ff6f61);
+  background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: glowing 2s infinite alternate;
+}
+
+@keyframes glowing {
+  0% { background-position: 0%; transform: scale(1); }
+  100% { background-position: 100%; transform: scale(1.05); }
+}
+
+/* Login Box */
+.login-box {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 65px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  display: inline-block;
+  animation: float 3s infinite ease-in-out;
+  width: 100%;
+}
+
+.login-box:hover {
+  transform: rotateY(20deg);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.login-box input {
+  width: 94%;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.login-box input:focus {
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(45deg, #ff6f61, #ff9a8b);
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  animation: particle-float 5s infinite ease-in-out;
+}
+
+@keyframes particle-float {
+  0% { transform: translateY(0) translateX(0); }
+  50% { transform: translateY(-50px) translateX(50px); }
+  100% { transform: translateY(0) translateX(0); }
+}
