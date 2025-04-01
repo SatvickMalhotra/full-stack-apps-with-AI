@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>M-Swasth Blog Bolte</title>
+  <style>
+    /* General Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Header Styles */
+    .blog-header {
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      padding: 20px 10px;
+      text-align: center;
+      position: relative;
+      animation: fadeIn 1.5s ease-in-out;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .blog-header h1 {
+      font-size: 2rem;
+      margin-left: 20px;
+      letter-spacing: 1px;
+      animation: slideInLeft 1s ease-in-out;
+    }
+
+    .logout-button {
+      background: white;
+      color: #6a11cb;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-right: 20px;
+    }
+
+    .logout-button:hover {
+      background: #2575fc;
+      color: white;
+    }
+
+    /* Logo */
+    .company-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-left: 20px;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    /* Blog Container */
+    .blog-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .blog-entry {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      width: 300px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      position: relative;
+    }
+
+    .blog-entry:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .blog-entry img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      transition: transform 0.3s ease, filter 0.3s ease;
+    }
+
+    .blog-entry img:hover {
+      transform: scale(1.1);
+      filter: brightness(0.9);
+    }
+
+    .blog-entry-content {
+      padding: 15px;
+    }
+
+    .blog-entry-content h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: #444;
+      animation: fadeInUp 1s ease-in-out;
+    }
+
+    .blog-entry-content p {
+      font-size: 0.9rem;
+      color: #666;
+      animation: fadeInUp 1.2s ease-in-out;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #2575fc;
+      color: white;
+      margin-top: 20px;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .blog-header h1 {
+        font-size: 1.5rem;
+      }
+
+      .blog-container {
+        gap: 15px;
+        padding: 15px;
+      }
+
+      .blog-entry {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="blog-page">
+  <!-- Header -->
+  <header class="blog-header">
+    <img src="https://play-lh.googleusercontent.com/kPo5X-98SBrclvOSGuMpsgfXZxqGI5kMOZ7qEwYaaf0j0_ymmlk2efzkQ5Qdd1EMRS4=w240-h480-rw" alt="Company Logo" class="company-logo" />
+    <h1>M-Swasth Blog Bolte</h1>
+    <button class="logout-button" onclick="location.href='index.html'">Back to Home</button>
+  </header>
+
+  <!-- Blog Container -->
+  <div class="blog-container">
+    <!-- Blog Entry 1 -->
+    <div class="blog-entry">
+      <a href="https://docs.google.com/presentation/d/e/2PACX-1vQGPD7BZZJK1R8FcdbdSrvcObzsq58AqwVm0rCEqTvkT_PT2rjf3HHtSxRzSdbTTA/embed?start=false&loop=true&delayms=10000" target="_blank">
+        <img src="https://cdn.glitch.global/9b0ef332-0d03-418d-a8f3-76cb6bc35231/imresizer-1734500449289.jpg?v=1734500461971" alt="Blog Thumbnail" />
+      </a>
+      <div class="blog-entry-content">
+        <h3>Telehealth Training</h3>
+        <p>M-Swasth Telehealth Training for Nurses- Please check out this PowerPoint presentation to learn how the system works and to better understand the processes involved.</p>
+      </div>
+    </div>
+
+    <!-- Blog Entry 2 -->
+    <div class="blog-entry">
+      <a href="https://cdn.glitch.global/bad0e68d-ec6b-4537-b65e-1032811b5088/WhatsApp%20Video%202025-01-16%20at%2016.51.44_d0e3ac9e11.mp4?v=1737974086386" target="_blank">
+        <img src="https://cdn.glitch.global/bad0e68d-ec6b-4537-b65e-1032811b5088/WhatsApp%20Image%202025-01-27%20at%2016.13.53_080dc42f.jpg?v=1737974702434" alt="Video Thumbnail" />
+      </a>
+      <div class="blog-entry-content">
+        <h3>Video on Using the App</h3>
+        <p>Video on Using the App this video will show the user in depth how to use the minsure app.</p>
+      </div>
+    </div>
+
+    <!-- Blog Entry 3 -->
+    <div class="blog-entry">
+      <a href="https://docs.google.com/presentation/d/e/2PACX-1vSmeRCs3DcHhy-50BNl0l9_XzJ8czuMRnTtUox8O7OrmEadHqzppeDYl4_sF9OwBg/pub?start=false&loop=false&delayms=3000" target="_blank">
+        <img src="https://cdn.glitch.global/bad0e68d-ec6b-4537-b65e-1032811b5088/WhatsApp%20Image%202025-02-23%20at%2019.56.56_9d0c9a04.jpg?v=1740320842300" alt="Blog Thumbnail" />
+      </a>
+      <div class="blog-entry-content">
+        <h3>Tata Telemed Hindi (Feb'2025)</h3>
+        <p>M-Swasth Tata Telemed Hindi (Feb'2025).</p>
+      </div>
+    </div>
+
+    <!-- Blog Entry 4 -->
+    <div class="blog-entry">
+      <a href="https://docs.google.com/presentation/d/e/2PACX-1vT46XGt_3ttjkLm7PGtpqE783OjL6WGSuxEOwBUsMIkcxML7Y1vlj0RQtt55vZNnA/pub?start=false&loop=false&delayms=3000" target="_blank">
+        <img src="https://cdn.glitch.global/bad0e68d-ec6b-4537-b65e-1032811b5088/WhatsApp%20Image%202025-02-23%20at%2019.56.56_9d0c9a04.jpg?v=1740320842300" alt="Blog Thumbnail" />
+      </a>
+      <div class="blog-entry-content">
+        <h3>Tata Telemed English (Feb'2025)</h3>
+        <p>M-Swasth Tata Telemed English (Feb'2025).</p>
+      </div>
+    </div>
+
+    <!-- Blog Entry 5 -->
+    <div class="blog-entry">
+      <a href="https://docs.google.com/presentation/d/e/2PACX-1vSKYXmtzx2qLRteZPW4raJRg4Ttg_jAITXvJrEl-4sJu_OUwcCBBDD85vC-LNhj_A/pub?start=false&loop=false&delayms=3000" target="_blank">
+        <img src="https://cdn.glitch.global/bad0e68d-ec6b-4537-b65e-1032811b5088/WhatsApp%20Image%202025-02-23%20at%2020.01.22_4424f2f6.jpg?v=1740321101074" alt="Blog Thumbnail" />
+      </a>
+      <div class="blog-entry-content">
+        <h3>humanaTRAINING Final (Jan_2025)</h3>
+        <p>M-Swasth humanaTRAINING Final (Jan_2025) (1).</p>
+      </div>
+    </div>
+
+    <!-- Blog Entry 6 -->
+    <div class="blog-entry">
+      <a href="https://docs.google.com/presentation/d/e/2PACX-1vToN92HBVQKUQCis73F48ILqJdDeuh-hZBUjhgED1yGAHP7PKDgXwkjvmxH9yUGaA/pub?start=false&loop=false&delayms=3000" target="_blank">
+        <img src="https://cdn.glitch.global/bad0e68d-ec6b-4537-b65e-1032811b5088/WhatsApp%20Image%202025-02-23%20at%2019.56.56_9d0c9a04.jpg?v=1740320842300" alt="Blog Thumbnail" />
+      </a>
+      <div class="blog-entry-content">
+        <h3>Namra Hindi (Feb_2025)</h3>
+        <p>M-Swasth Namra Hindi (Feb_2025).</p>
+      </div>
+    </div>
+    
+    <!-- Blog Entry 6 -->
+    <div class="blog-entry">
+      <a href="https://cdn.glitch.me/bad0e68d-ec6b-4537-b65e-1032811b5088/Data%20Security%20and%20IT%20Policy%20(2).mp4?v=1740321838278" target="_blank">
+        <img src="https://cdn.glitch.global/bad0e68d-ec6b-4537-b65e-1032811b5088/WhatsApp%20Image%202025-02-23%20at%2020.14.59_f2e8e0f4.jpg?v=1740321921342" alt="Blog Thumbnail" />
+      </a>
+      <div class="blog-entry-content">
+        <h3>Data Security Team Video</h3>
+        <p>Data Security Team Video click on it to see it.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 M-Swasth Solutions. All rights reserved.</p>
+  </footer>
+</body>
+</html>
+```

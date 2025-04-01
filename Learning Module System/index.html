@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M-Swasth Test Portal</title>
+    <link rel="stylesheet" href="mainpage.css">
+    <script type="module" src="auth.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="https://play-lh.googleusercontent.com/kPo5X-98SBrclvOSGuMpsgfXZxqGI5kMOZ7qEwYaaf0j0_ymmlk2efzkQ5Qdd1EMRS4=w240-h480-rw" alt="M-Swasth Logo" class="logo">
+            </div>
+            <h1 class="animated-heading">Welcome to M-Swasth Training Portal</h1>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="blogs.html" class="nav-link blog-button">SELF LEARNING MODULE</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <!-- Customer and Admin Login Sections -->
+            <div class="login-container">
+                <!-- Customer Login Section -->
+                <section id="customer" class="portal-section">
+                    <h2 class="highlight-heading">Customer Login</h2>
+                    <form class="login-form" id="customerLoginForm">
+                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="password" name="password" placeholder="Password" required>
+                        <button type="submit">Login as Customer</button>
+                    </form>
+                </section>
+                <!-- Admin Login Section -->
+                <section id="admin" class="portal-section">
+                    <h2 class="highlight-heading">Admin Login</h2>
+                    <form class="login-form" id="adminLoginForm">
+                        <input type="email" name="email" placeholder="Admin Email" required>
+                        <input type="password" name="password" placeholder="Admin Password" required>
+                        <button type="submit">Login as Admin</button>
+                    </form>
+                </section>
+            </div>
+        </main>
+        <footer>
+            <p>&copy; 2025 M-Swasth Portal. All rights reserved.</p>
+        </footer>
+    </div>
+    <!-- Firebase Scripts -->
+    <script type="module" src="script.js"></script>
+    <script>
+        // Background color change animation
+        const colors = ['orange', 'darkorange', 'orange', 'darkorange'];
+        let currentIndex = 0;
+
+        function changeBackgroundColor() {
+            document.body.style.background = `linear-gradient(135deg, ${colors[currentIndex]}, ${colors[(currentIndex + 1) % colors.length]})`;
+            currentIndex = (currentIndex + 1) % colors.length;
+        }
+
+        setInterval(changeBackgroundColor, 5000);
+    </script>
+</body>
+</html>

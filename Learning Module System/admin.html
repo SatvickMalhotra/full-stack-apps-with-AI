@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - M-Swasth</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="admin-page">
+    <header class="admin-header">
+        <div class="logo-container">
+            <img src="https://cdn.glitch.global/9b0ef332-0d03-418d-a8f3-76cb6bc35231/m_swasth_solutions_pvt_ltd_logo%20(1).jpg?v=1733910118176" 
+                 alt="M-Swasth Logo" 
+                 class="company-logo">
+        </div>
+        <h1>Admin Dashboard</h1>
+        <button id="logoutButton" class="logout-button" onclick="handleLogout()">Logout</button>
+    </header>
+
+    <main class="admin-container">
+        <!-- Navigation Tabs -->
+        <div class="admin-tabs">
+            <button class="tab-button active" data-tab="users">Customer Credentials</button>
+            <button class="tab-button" data-tab="results">Test Results</button>
+            <button class="tab-button" data-tab="analysis">Analysis</button>
+        </div>
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Users Tab -->
+            <div id="users" class="tab-pane active">
+                <div class="section-header">
+                    <h2>Customer Credentials</h2>
+                    <button id="addCustomerBtn" class="add-customer-btn">Add New Customer</button>
+                </div>
+                <div class="user-grid" id="userGrid"></div>
+            </div>
+
+            <!-- Add Customer Modal -->
+            <div id="addCustomerModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Add New Customer</h2>
+                    <form id="addCustomerForm">
+                        <div class="form-group">
+                            <label for="customerEmail">Email:</label>
+                            <input type="email" id="customerEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerPassword">Password:</label>
+                            <input type="password" id="customerPassword" required>
+                        </div>
+                        <div class="form-group username-preview">
+                            <label>Username will be:</label>
+                            <span id="usernamePreview" class="preview-text">Enter email to see username</span>
+                        </div>
+                        <button type="submit" class="submit-btn">Add Customer</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results Tab -->
+            <div id="results" class="tab-pane">
+                <div class="section-header">
+                    <h2>Test Results</h2>
+                </div>
+                <div class="results-container">
+                    <div class="filter-section">
+                        <div class="filter-group">
+                            <label for="userFilter">Filter by User:</label>
+                            <select id="userFilter">
+                                <option value="all">All Users</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="testFilter">Filter by Test:</label>
+                            <select id="testFilter">
+                                <option value="all">All Tests</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="results-grid" id="resultsGrid"></div>
+                </div>
+            </div>
+
+            <!-- Analysis Tab -->
+            <div id="analysis" class="tab-pane">
+                <div class="section-header">
+                    <h2>Performance Analysis</h2>
+                </div>
+                <!-- Filters Section -->
+                <div class="filter-section">
+                    <div class="filter-group">
+                        <label for="analysisUserFilter">Filter by User:</label>
+                        <select id="analysisUserFilter">
+                            <option value="all">All Users</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="analysisTestFilter">Filter by Test:</label>
+                        <select id="analysisTestFilter">
+                            <option value="all">All Tests</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="analysis-container">
+                    <!-- Metrics Overview -->
+                    <div class="metrics-overview" id="metricsContainer"></div>
+                    <div class="chart-header">
+                        <h3 class="chart-title">Test Performance Analysis</h3>
+                    </div>
+                    
+                    <!-- Chart Section -->
+                    <div class="chart-container">
+                        <canvas id="averageScoresChart"></canvas>
+                    </div>
+                    
+                    <!-- Statistics Section -->
+                    <div class="stats-container" id="statsContainer"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="admin-footer">
+        <p>&copy; 2025 M-Swasth Solutions. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>

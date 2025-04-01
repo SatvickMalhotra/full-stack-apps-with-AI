@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Dashboard - M-Swasth</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script type="module" src="auth.js"></script>
+  </head>
+  <body class="dashboard-page">
+    <!-- Header with Logo, Web Training, and Logout -->
+    <header class="dashboard-header">
+      <div class="logo-container">
+        <img
+          src="https://cdn.glitch.global/9b0ef332-0d03-418d-a8f3-76cb6bc35231/m_swasth_solutions_pvt_ltd_logo%20(1).jpg?v=1733910118176"
+          alt="M-Swasth Logo"
+          class="company-logo"
+        />
+      </div>
+      <div class="header-buttons">
+        <a href="web_training.html" class="web-training-top-button">
+          Web Based Training
+        </a>
+        <button id="logoutButton" class="logout-button" onclick="handleLogout()">
+          Logout
+        </button>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <div class="welcome-section">
+        <h1>Welcome to M-Swasth Learning Portal</h1>
+        <p class="welcome-text">Access your tests below</p>
+      </div>
+
+      <div class="content-grid">
+        <!-- Content cards will be dynamically populated by JavaScript -->
+      </div>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 M-Swasth Solutions. All rights reserved.</p>
+    </footer>
+
+    <script type="module" src="customer.js"></script>
+  </body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web-Based Training Portal</title>
+  <style>
+    /* General Styling */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+    }
+
+    /* Header Section */
+    header {
+      background-color: #ff7f00; /* Orange background */
+      color: white;
+      text-align: center;
+      padding: 20px;
+      animation: slideInFromTop 2s ease-out; /* Animation for header */
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.5em;
+      animation: fadeIn 3s ease-in-out infinite alternate; /* Animation for heading text */
+    }
+
+    /* Blog Post Container */
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px; /* Space between blog posts */
+      justify-content: center; /* Center the blog posts */
+    }
+
+    /* Blog Post Styling */
+    .blog-post {
+      background-color: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      width: calc(48% - 10px); /* Two blogs per row with slight spacing */
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover animation */
+    }
+
+    .blog-post:hover {
+      transform: translateY(-10px); /* Slight pop-up effect */
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+    }
+
+    .blog-post img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .blog-content {
+      padding: 15px;
+    }
+
+    .blog-content h2 {
+      margin-top: 0;
+      font-size: 1.5em;
+      color: #333;
+    }
+
+    .blog-content p {
+      font-size: 1em;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .blog-content a {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background-color: #0073e6;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .blog-content a:hover {
+      background-color: #005bb5;
+    }
+/* Logout Button */
+    .logout-button {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background-color: #e74c3c; /* Red color for logout */
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background-color 0.3s ease;
+    }
+
+    .logout-button:hover {
+      background-color: #c0392b; /* Darker red on hover */
+    }
+    /* Keyframes for Animations */
+    @keyframes slideInFromTop {
+      0% {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0.8;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .blog-post {
+        width: 100%; /* One blog per row on smaller screens */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Section -->
+  <header>
+    <h1>Web-Based Training Portal</h1>
+  </header>
+    <button class="logout-button" onclick="window.location.href='index.html'">Logout</button>
+
+  <!-- Main Content Section -->
+  <div class="container">
+
+    <!-- Blog Post 1 -->
+    <div class="blog-post">
+      <img src="https://cdn.glitch.global/bad0e68d-ec6b-4537-b65e-1032811b5088/WhatsApp%20Image%202025-02-23%20at%2020.14.59_f2e8e0f4.jpg?v=1740321921342" alt="Training Module Data Security Assessment">
+      <div class="blog-content">
+        <h2>Training Module: Data Security Assessment</h2>
+        <p>This module covers the fundamentals of data security assessment, including risk analysis and mitigation strategies.</p>
+        <a href="https://cdn.glitch.me/bad0e68d-ec6b-4537-b65e-1032811b5088/Data%20Security%20and%20IT%20Policy%20(2).mp4?v=1740321838278" target="_blank">Watch Video</a>
+      </div>
+    </div>
+
+    <!-- Blog Post 2 -->
+    <div class="blog-post">
+      <img src="https://cdn.glitch.global/bad0e68d-ec6b-4537-b65e-1032811b5088/WhatsApp%20Image%202025-02-23%20at%2020.14.59_f2e8e0f4.jpg?v=1740321921342" alt="Training Module Data Security">
+      <div class="blog-content">
+        <h2>Training Module: Data Security</h2>
+        <p>Learn about best practices for securing sensitive data and protecting it from unauthorized access.</p>
+        <a href="https://cdn.glitch.me/bad0e68d-ec6b-4537-b65e-1032811b5088/Data%20Security%20and%20IT%20Policy%20(2).mp4?v=1740321838278" target="_blank">Watch Video</a>
+      </div>
+    </div>
+
+    <!-- Blog Post 3 -->
+    <div class="blog-post">
+      <img src="https://cdn.glitch.global/bad0e68d-ec6b-4537-b65e-1032811b5088/WhatsApp%20Image%202025-02-23%20at%2020.14.59_f2e8e0f4.jpg?v=1740321921342" alt="Training Security Assessment">
+      <div class="blog-content">
+        <h2>Training Module: Security Assessment</h2>
+        <p>This module provides an overview of security assessments and how to evaluate the effectiveness of your security measures.</p>
+        <a href="https://cdn.glitch.me/bad0e68d-ec6b-4537-b65e-1032811b5088/Data%20Security%20and%20IT%20Policy%20(2).mp4?v=1740321838278" target="_blank">Watch Video</a>
+      </div>
+    </div>
+
+    <!-- Add More Blog Posts Here -->
+    <!-- Follow the same structure as above -->
+    <!-- Example:
+    <div class="blog-post">
+      <img src="ADD_THUMBNAIL_LINK_HERE" alt="Your Blog Title">
+      <div class="blog-content">
+        <h2>Your Blog Title</h2>
+        <p>Your blog description goes here.</p>
+        <a href="ADD_VIDEO_LINK_HERE" target="_blank">Watch Video</a>
+      </div>
+    </div>
+    -->
+
+  </div>
+
+</body>
+</html>
