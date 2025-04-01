@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Clinic Locator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    :root {
+      --primary: #2c7be5;
+      --success: #00d97e;
+      --gray-100: #f8f9fa;
+      --gray-900: #212529;
+      --danger: #ff4444;
+      --dark-bg: #1a1a1a;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+      min-height: 100vh;
+      background-color: var(--gray-100);
+      color: var(--gray-900);
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: var(--primary);
+      margin-bottom: 2rem;
+      font-size: 2.5rem;
+      position: relative;
+    }
+
+    h1::after {
+      content: '';
+      display: block;
+      width: 60px;
+      height: 3px;
+      background: var(--primary);
+      margin: 1rem auto;
+    }
+
+    .controls {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .dropdown {
+      position: relative;
+      flex: 1 1 300px;
+      min-width: 300px;
+    }
+
+    .dropdown-toggle {
+      background: white;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .dropdown-toggle:hover {
+      background: var(--gray-100);
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      width: 100%;
+      max-height: 400px;
+      overflow-y: auto;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      background: white;
+      z-index: 1000;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      padding: 0.5rem;
+    }
+
+    .dropdown-menu::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .dropdown-menu::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 4px;
+    }
+
+    .dropdown-menu::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu label {
+      padding: 0.75rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.2s ease;
+    }
+
+    .dropdown-menu label:hover {
+      background: rgba(44, 123, 229, 0.1);
+    }
+
+    .dropdown-menu input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+    }
+
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.25rem;
+    }
+
+    #mapStyleSelector {
+      flex: 1 1 200px;
+      min-width: 200px;
+    }
+
+    #map {
+      height: 80vh;
+      width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      transition: box-shadow 0.3s;
+    }
+
+    .leaflet-popup-content {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .leaflet-popup-content b {
+      color: var(--primary);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      .controls {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Clinic Locator</h1>
+
+    <div class="controls">
+      <div style="display: flex; gap: 10px; min-width: 300px;">
+        <input type="text" id="searchInput" class="dropdown-toggle" placeholder="Search clinics..." style="flex: 1;">
+        <button id="searchBtn" class="dropdown-toggle" style="background: var(--primary); color: white; border: none; width: 100px;">
+          Search
+        </button>
+      </div>
+      <!-- Temporarily commented out radius search feature
+      <div style="display: flex; gap: 10px; min-width: 300px;">
+        <input type="number" id="radiusInput" class="dropdown-toggle" placeholder="Radius in km" style="flex: 1;">
+        <button id="radiusSearchBtn" class="dropdown-toggle" style="background: var(--primary); color: white; border: none; width: 100px;">
+          Search
+        </button>
+      </div>
+      -->
+      <div class="dropdown" id="stateFilterDropdown">
+        <div class="dropdown-toggle" onclick="toggleDropdown('stateFilterDropdown')">
+          <span>Select States</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708"/>
+          </svg>
+        </div>
+        <div class="dropdown-menu" id="stateCheckboxes">
+          <!-- Checkboxes will be populated here -->
+        </div>
+      </div>
+
+      <select id="mapStyleSelector" class="dropdown-toggle">
+        <option value="osm">Default</option>
+        <option value="dark">Dark Mode</option>
+        <option value="satellite">Satellite</option>
+        <option value="topo">Topographic</option>
+      </select>
+
+      <button id="findNearestBtn" class="dropdown-toggle" style="background: var(--primary); color: white; border: none;">
+        Find Nearest Clinics
+      </button>
+      <button id="resetBtn" class="dropdown-toggle" style="background: var(--danger); color: white; border: none;">
+        Reset Map
+      </button>
+    </div>
+
+    <div id="map"></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <script>
+    const firebaseConfig = {
+      apiKey: "",
+      authDomain: "-..com",
+      databaseURL: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: "1::web:"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    let clinicsData = [];
+    let currentMarkers = [];
+    let currentTileLayer;
+
+    const map = L.map('map').setView([20.5937, 78.9629], 5);
+    const clinicIcon = L.icon({
+      iconUrl: 'https://cdn.glitch.global/5d064fad-89cf-4314-bfe4-ece9d0098ff9/clinic.png?v=1742458287608',
+      iconSize: [35, 35],
+      iconAnchor: [17, 35],
+      popupAnchor: [0, -30]
+    });
+
+    // Define tile layers
+    const tileLayers = {
+      osm: L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }),
+      dark: L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; CARTO'
+      }),
+      satellite: L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles &copy; Esri'
+      }),
+      topo: L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data: &copy; OpenStreetMap contributors'
+      })
+    };
+
+    // Set default tile layer
+    tileLayers.osm.addTo(map);
+    currentTileLayer = tileLayers.osm;
+
+    // Map click handler removed to prevent unexpected nearest clinic search
+    map.on('click', function() {
+      // Empty click handler to allow future functionality if needed
+    });
+
+    // Map style selector
+    document.getElementById('mapStyleSelector').addEventListener('change', (e) => {
+      const selected = e.target.value;
+      map.removeLayer(currentTileLayer);
+      tileLayers[selected].addTo(map);
+      currentTileLayer = tileLayers[selected];
+    });
+
+    function fetchData() {
+      database.ref('clinic_data').once('value')
+        .then(snapshot => {
+          if (snapshot.exists()) {
+            clinicsData = Object.values(snapshot.val()).map(clinic => ({
+              ...clinic,
+              Latitude: parseFloat(clinic.Latitude),
+              Longitude: parseFloat(clinic.Longitude)
+            }));
+
+            populateStateCheckboxes(clinicsData);
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching data:", error);
+        });
+    }
+
+    function populateStateCheckboxes(data) {
+      const container = document.getElementById('stateCheckboxes');
+      const uniqueStates = [...new Set(data.map(c => c.State).filter(Boolean))].sort();
+      
+      // Add "Select All" checkbox
+      const selectAllLabel = document.createElement('label');
+      const selectAllCheckbox = document.createElement('input');
+      selectAllCheckbox.type = 'checkbox';
+      selectAllCheckbox.id = 'selectAllStates';
+      selectAllCheckbox.addEventListener('change', (e) => {
+        const checkboxes = document.querySelectorAll('#stateCheckboxes input[type="checkbox"]:not(#selectAllStates)');
+        checkboxes.forEach(cb => cb.checked = e.target.checked);
+        handleCheckboxChange();
+      });
+      
+      selectAllLabel.appendChild(selectAllCheckbox);
+      selectAllLabel.appendChild(document.createTextNode('Select All'));
+      container.appendChild(selectAllLabel);
+      
+      // Add separator
+      const separator = document.createElement('hr');
+      separator.style.margin = '8px 0';
+      container.appendChild(separator);
+
+      uniqueStates.forEach(state => {
+        const label = document.createElement('label');
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.value = state;
+        checkbox.addEventListener('change', handleCheckboxChange);
+
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(state));
+        container.appendChild(label);
+      });
+    }
+
+    function handleCheckboxChange() {
+      const checkboxes = document.querySelectorAll('#stateCheckboxes input[type="checkbox"]');
+      const checkedStates = Array.from(checkboxes)
+        .filter(cb => cb.checked)
+        .map(cb => cb.value);
+
+      const filtered = checkedStates.length 
+        ? clinicsData.filter(c => checkedStates.includes(c.State))
+        : [];
+
+      renderMarkers(filtered);
+      updateDropdownLabel(checkedStates);
+    }
+
+    function renderMarkers(data) {
+      currentMarkers.forEach(marker => map.removeLayer(marker));
+      currentMarkers = [];
+
+      if (data.length === 0) return;
+
+      data.forEach(clinic => {
+        const marker = L.marker([clinic.Latitude, clinic.Longitude], { icon: clinicIcon })
+          .bindPopup(`
+            <div class="clinic-popup">
+              <b>${clinic['Clinic Code']}</b>
+              <p>${clinic.Address || ''}</p>
+              <button onclick="getDirections(${clinic.Latitude}, ${clinic.Longitude})" style="background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 4px; margin-top: 5px; cursor: pointer;">
+                Get Directions
+              </button>
+            </div>
+          `)
+          .addTo(map);
+
+        currentMarkers.push(marker);
+      });
+    }
+
+    function toggleDropdown(dropdownId) {
+      const dropdown = document.getElementById(dropdownId);
+      const menu = dropdown.querySelector('.dropdown-menu');
+      menu.classList.toggle('show');
+    }
+
+    function updateDropdownLabel(selectedStates) {
+      const label = document.querySelector('#stateFilterDropdown .dropdown-toggle span');
+      if (selectedStates.length === 0) {
+        label.textContent = 'Select States';
+      } else if (selectedStates.length > 3) {
+        label.textContent = `${selectedStates.length} states selected`;
+      } else {
+        label.textContent = selectedStates.join(', ');
+      }
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+          menu.classList.remove('show');
+        });
+      }
+    });
+
+    function findNearestClinics() {
+      if (!navigator.geolocation) {
+        alert('Geolocation is not supported by your browser');
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(position => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+
+        // Calculate distances and sort clinics
+        const clinicsWithDistance = clinicsData.map(clinic => ({
+          ...clinic,
+          distance: calculateDistance(userLat, userLng, clinic.Latitude, clinic.Longitude)
+        })).sort((a, b) => a.distance - b.distance);
+
+        // Get 2 nearest clinics
+        const nearestClinics = clinicsWithDistance.slice(0, 2);
+
+        // Clear existing markers and show nearest clinics
+        renderMarkers(nearestClinics);
+
+        // Create bounds to fit user and nearest clinics
+        const bounds = L.latLngBounds([
+          [userLat, userLng],
+          ...nearestClinics.map(c => [c.Latitude, c.Longitude])
+        ]);
+
+        // Add user marker
+        const userMarker = L.marker([userLat, userLng], {
+          icon: L.divIcon({
+            className: 'user-location',
+            html: '<div style="background-color: #2196F3; width: 15px; height: 15px; border-radius: 50%; border: 3px solid white;"></div>'
+          })
+        }).addTo(map).bindPopup('Your Location');
+
+        currentMarkers.push(userMarker);
+        map.fitBounds(bounds, { padding: [50, 50] });
+      }, error => {
+        alert('Error getting your location: ' + error.message);
+      });
+    }
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371; // Earth's radius in km
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return R * c;
+    }
+
+    let polylines = [];
+
+    function getDirections(lat, lng) {
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+    }
+
+    function drawLines(userLat, userLng, clinics) {
+      // Clear existing lines
+      polylines.forEach(line => map.removeLayer(line));
+      polylines = [];
+
+      // Draw lines to each clinic
+      clinics.forEach(clinic => {
+        const line = L.polyline(
+          [[userLat, userLng], [clinic.Latitude, clinic.Longitude]],
+          {
+            color: '#2196F3',
+            weight: 3,
+            opacity: 0.6,
+            dashArray: '10, 10'
+          }
+        ).addTo(map);
+        polylines.push(line);
+      });
+    }
+
+    // Modify findNearestClinics to include line drawing
+    const originalFindNearestClinics = findNearestClinics;
+    findNearestClinics = function() {
+      navigator.geolocation.getCurrentPosition(position => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+
+        const clinicsWithDistance = clinicsData.map(clinic => ({
+          ...clinic,
+          distance: calculateDistance(userLat, userLng, clinic.Latitude, clinic.Longitude)
+        })).sort((a, b) => a.distance - b.distance);
+
+        const nearestClinics = clinicsWithDistance.slice(0, 2);
+        renderMarkers(nearestClinics);
+        drawLines(userLat, userLng, nearestClinics);
+
+        const bounds = L.latLngBounds([
+          [userLat, userLng],
+          ...nearestClinics.map(c => [c.Latitude, c.Longitude])
+        ]);
+
+        const userMarker = L.marker([userLat, userLng], {
+          icon: L.divIcon({
+            className: 'user-location',
+            html: '<div style="background-color: #2196F3; width: 15px; height: 15px; border-radius: 50%; border: 3px solid white;"></div>'
+          })
+        }).addTo(map).bindPopup('Your Location');
+
+        currentMarkers.push(userMarker);
+        map.fitBounds(bounds, { padding: [50, 50] });
+      }, error => {
+        alert('Error getting your location: ' + error.message);
+      });
+    };
+
+    // Initialize marker cluster group
+    const markerCluster = L.markerClusterGroup();
+    map.addLayer(markerCluster);
+
+    // Search functionality
+    function searchClinics() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const filtered = clinicsData.filter(clinic => 
+        (clinic['Clinic Code']?.toLowerCase() || '').includes(searchTerm) ||
+        (clinic.Address?.toLowerCase() || '').includes(searchTerm)
+      );
+      renderMarkers(filtered);
+    }
+
+    // Add search button and input event listeners
+    document.getElementById('searchInput').addEventListener('input', searchClinics);
+    document.getElementById('searchBtn').addEventListener('click', searchClinics);
+
+    // Radius filter (temporarily commented out)
+    /*
+    document.getElementById('radiusSearchBtn').addEventListener('click', () => {
+      const radius = parseFloat(document.getElementById('radiusInput').value);
+      if (!radius || !navigator.geolocation) {
+        alert('Please enter a valid radius');
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(position => {
+        const userLat = position.coords.latitude;
+        const userLng = position.coords.longitude;
+
+        // Add user location marker with big blue dot
+        const userMarker = L.marker([userLat, userLng], {
+          icon: L.divIcon({
+            className: 'user-location',
+            html: '<div style="background-color: #2196F3; width: 25px; height: 25px; border-radius: 50%; border: 4px solid white; box-shadow: 0 0 10px rgba(33, 150, 243, 0.5);"></div>'
+          })
+        }).addTo(map).bindPopup('Your Location');
+        currentMarkers.push(userMarker);
+
+        const filtered = clinicsData.filter(clinic => 
+          calculateDistance(userLat, userLng, clinic.Latitude, clinic.Longitude) <= radius
+        );
+
+        renderMarkers(filtered);
+        
+        // Fit map to show all markers
+        const bounds = L.latLngBounds(
+          [[userLat, userLng], 
+          ...filtered.map(c => [c.Latitude, c.Longitude])]
+        );
+        map.fitBounds(bounds, { padding: [50, 50] });
+      }, error => {
+        alert('Error getting your location: ' + error.message);
+      });
+    });
+    */
+
+    // Modified renderMarkers to use clustering
+    function renderMarkers(data) {
+      markerCluster.clearLayers();
+      currentMarkers.forEach(marker => {
+        if (!markerCluster.hasLayer(marker)) {
+          map.removeLayer(marker);
+        }
+      });
+      currentMarkers = [];
+
+      if (data.length === 0) return;
+
+      data.forEach(clinic => {
+        const marker = L.marker([clinic.Latitude, clinic.Longitude], { icon: clinicIcon })
+          .bindPopup(`
+            <div class="clinic-popup">
+              <b>${clinic['Clinic Code']}</b>
+              <p>${clinic.Address || ''}</p>
+              <button onclick="getDirections(${clinic.Latitude}, ${clinic.Longitude})" 
+                style="background: var(--primary); color: white; border: none; padding: 5px 10px; border-radius: 4px; margin-top: 5px; cursor: pointer;">
+                Get Directions
+              </button>
+              <button onclick="toggleFavorite('${clinic['Clinic Code']}')"
+                style="background: var(--success); color: white; border: none; padding: 5px 10px; border-radius: 4px; margin-top: 5px; cursor: pointer;">
+                ❤️ Favorite
+              </button>
+            </div>
+          `);
+        
+        markerCluster.addLayer(marker);
+        currentMarkers.push(marker);
+      });
+    }
+
+    // Favorites functionality
+    function toggleFavorite(clinicCode) {
+      let favorites = JSON.parse(localStorage.getItem('favoritesClinics') || '[]');
+      const index = favorites.indexOf(clinicCode);
+      
+      if (index === -1) {
+        favorites.push(clinicCode);
+        alert('Added to favorites!');
+      } else {
+        favorites.splice(index, 1);
+        alert('Removed from favorites!');
+      }
+      
+      localStorage.setItem('favoritesClinics', JSON.stringify(favorites));
+    }
+
+    // Reset functionality
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      location.reload();
+    });
+    
+    document.getElementById('findNearestBtn').addEventListener('click', findNearestClinics);
+    fetchData();
+  </script>
+</body>
+</html>
