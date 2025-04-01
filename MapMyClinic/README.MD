@@ -1,4 +1,4 @@
-#MapMyClinic Information in depth 🗺️
+# MapMyClinic Information in depth 🗺️
 
 ## Project Overview 🗺️🍩
 This project allows users to keep track of their stocks locally. Additionally, it includes a comprehensive map feature designed for a client with 5000 clinics across India.
