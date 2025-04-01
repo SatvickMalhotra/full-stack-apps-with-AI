@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manage Clinics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .table-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Section -->
+    <div id="loginSection" class="login-container">
+        <h3 class="text-center mb-4">Admin Login</h3>
+        <div class="mb-3">
+            <input type="text" class="form-control" id="username" placeholder="Username" required>
+        </div>
+        <div class="mb-3">
+            <input type="password" class="form-control" id="password" placeholder="Password" required>
+        </div>
+        <button class="btn btn-primary w-100" onclick="handleLogin()">Login</button>
+    </div>
+
+    <!-- Main Content (Initially Hidden) -->
+    <div id="mainContent" style="display: none;">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white mb-4">
+            <div class="container-fluid">
+                <h1 class="navbar-brand mb-0">Clinic Management</h1>
+                <button class="btn btn-outline-danger" onclick="handleLogout()">Logout</button>
+            </div>
+        </nav>
+
+        <div class="table-container">
+            <div class="d-flex justify-content-between mb-3">
+                <button class="btn btn-primary" id="editBtn">Edit</button>
+                <button class="btn btn-success" id="updateBtn" disabled>Update All</button>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Clinic Code</th>
+                            <th>State</th>
+                            <th>Latitude</th>
+                            <th>Longitude</th>
+                            <th>Pincode</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clinicTableBody">
+                        <tr class="text-center">
+                            <td colspan="6">Loading...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script>
+        // Authentication variables
+        const validUsername = 'admin';
+        const validPassword = 'admin';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAZ9iT5P7zjNOd9oPn20062H9Y3edb9PIA",
+            authDomain: "clinic-maping.firebaseapp.com",
+            databaseURL: "https://clinic-maping-default-rtdb.firebaseio.com",
+            projectId: "clinic-maping",
+            storageBucket: "clinic-maping.firebasestorage.app",
+            messagingSenderId: "645239817563",
+            appId: "1:645239817563:web:26670cd8c6f5373b6b067e"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Check session storage for existing login
+        if(sessionStorage.getItem('authenticated') === 'true') {
+            showMainContent();
+        }
+
+        // Login handler
+        function handleLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            if(username === validUsername && password === validPassword) {
+                sessionStorage.setItem('authenticated', 'true');
+                showMainContent();
+                fetchClinics();
+            } else {
+                alert('Invalid credentials');
+            }
+        }
+
+        // Logout handler
+        function handleLogout() {
+            sessionStorage.removeItem('authenticated');
+            window.location.reload();
+        }
+
+        // Show main content and hide login
+        function showMainContent() {
+            document.getElementById('loginSection').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        // Clinic data storage
+        let clinicsData = {};
+
+        // Fetch and populate clinic data
+        function fetchClinics() {
+            db.ref('clinic_data').once('value')
+                .then(snapshot => {
+                    const tableBody = document.getElementById('clinicTableBody');
+                    tableBody.innerHTML = '';
+                    clinicsData = {};
+
+                    snapshot.forEach(childSnapshot => {
+                        const key = childSnapshot.key;
+                        const data = childSnapshot.val();
+                        clinicsData[key] = data;
+
+                        const row = document.createElement('tr');
+                        row.setAttribute('data-key', key);
+                        row.innerHTML = `
+                            <td><input type="text" class="form-control" value="${data['Clinic Code'] || ''}" disabled /></td>
+                            <td><input type="text" class="form-control" value="${data.State || ''}" disabled /></td>
+                            <td><input type="number" class="form-control" step="any" value="${data.Latitude || ''}" disabled /></td>
+                            <td><input type="number" class="form-control" step="any" value="${data.Longitude || ''}" disabled /></td>
+                            <td><input type="text" class="form-control" value="${data.Pincode || ''}" disabled /></td>
+                            <td>
+                                <select class="form-select" disabled>
+                                    <option value="true" ${data.clinic_live === true ? 'selected' : ''}>Active</option>
+                                    <option value="false" ${data.clinic_live === false ? 'selected' : ''}>Inactive</option>
+                                </select>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    tableBody.innerHTML = '<tr class="text-center"><td colspan="6">Error loading data</td></tr>';
+                });
+        }
+
+        // Edit button click handler
+        document.getElementById('editBtn').addEventListener('click', () => {
+            document.querySelectorAll('#clinicTableBody input, #clinicTableBody select')
+                .forEach(input => input.disabled = false);
+            document.getElementById('updateBtn').disabled = false;
+        });
+
+        // Update button click handler
+        document.getElementById('updateBtn').addEventListener('click', () => {
+            const rows = document.querySelectorAll('#clinicTableBody tr');
+            const updates = {};
+
+            rows.forEach(row => {
+                const key = row.getAttribute('data-key');
+                const inputs = row.querySelectorAll('input, select');
+                
+                updates[`clinic_data/${key}`] = {
+                    'Clinic Code': inputs[0].value,
+                    State: inputs[1].value,
+                    Latitude: parseFloat(inputs[2].value),
+                    Longitude: parseFloat(inputs[3].value),
+                    Pincode: inputs[4].value,
+                    clinic_live: inputs[5].value === 'true'
+                };
+            });
+
+            db.ref().update(updates)
+                .then(() => {
+                    alert('Update successful!');
+                    fetchClinics();
+                    document.querySelectorAll('#clinicTableBody input, #clinicTableBody select')
+                        .forEach(input => input.disabled = true);
+                    document.getElementById('updateBtn').disabled = true;
+                })
+                .catch(error => {
+                    console.error('Update failed:', error);
+                    alert('Update failed. Check console for details.');
+                });
+        });
+    </script>
+</body>
+</html>
