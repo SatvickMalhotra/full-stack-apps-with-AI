@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>M-Swasth Employee Registration Form</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <style>
+    /* Particle Background */
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(135deg, #2193b0, #6dd5ed);
+    }
+    
+    /* Global Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    
+    /* Floating Form Container */
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      animation: float 3s ease-in-out infinite;
+      position: relative;
+      z-index: 1;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    
+    /* Header Styling */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      animation: fadeInDown 1s;
+    }
+    
+    .header h2 {
+      color: #fff;
+      font-weight: 700;
+      background: linear-gradient(45deg, #2193b0, #6dd5ed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2.2em;
+      margin: 0;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    }
+    
+    .logo {
+      height: 60px;
+      cursor: pointer;
+      transition: transform 0.3s;
+      animation: bounce 2s infinite;
+    }
+    
+    .logo:hover {
+      transform: rotate(-5deg) scale(1.05);
+    }
+    
+    /* Form Enhancements */
+    .form-section {
+      margin-bottom: 25px;
+      padding-bottom: 20px;
+      border-bottom: 2px dashed #ddd;
+    }
+    
+    .form-section h3 {
+      color: #2c3e50;
+      font-size: 1.5em;
+      margin-bottom: 15px;
+      position: relative;
+      padding-left: 20px;
+    }
+    
+    .form-section h3:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      background: #2196f3;
+      border-radius: 50%;
+    }
+    
+    input, select, textarea {
+      border: 2px solid #eee;
+      border-radius: 10px;
+      padding: 15px;
+      font-size: 1em;
+      width: calc(100% - 20px);
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      border-color: #2196f3;
+      box-shadow: 0 0 0 2px rgba(33,150,243,0.2);
+      outline: none;
+    }
+    
+    label {
+      color: #34495e;
+      font-weight: 500;
+      margin-bottom: 8px;
+      display: block;
+    }
+    
+    /* Submit Button */
+    .submit-btn {
+      background: linear-gradient(135deg, #2193b0, #6dd5ed);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 1.2em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      box-shadow: 0 5px 15px rgba(33,149,243,0.3);
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(33,149,243,0.4);
+    }
+    
+    /* Loading Animation */
+    .loading {
+      display: none;
+      color: #e74c3c;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 15px;
+      animation: pulse 1.5s infinite;
+    }
+    
+    /* File Input Styling */
+    input[type="file"] {
+      border: none;
+      padding: 10px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin: 5px 0;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .container {
+        margin: 20px;
+        padding: 20px;
+      }
+      
+      .header h2 {
+        font-size: 1.8em;
+      }
+    }
+    
+    /* Animations */
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; }
+      100% { opacity: 0.6; }
+    }
+    
+    @keyframes fadeInDown {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Particle Background -->
+  <div id="particles-js"></div>
+  
+  <!-- Header -->
+  <div class="header">
+    <h2>M-Swasth Employee Registration Form</h2>
+    <a href="https://play.google.com/store/apps/details?id=in.m_insure.patient_app" target="_blank">
+      <img 
+        src="https://play-lh.googleusercontent.com/kPo5X-98SBrclvOSGuMpsgfXZxqGI5kMOZ7qEwYaaf0j0_ymmlk2efzkQ5Qdd1EMRS4=w240-h480-rw"
+        alt="M-Swasth Logo"
+        class="logo"
+      />
+    </a>
+  </div>
+
+  <div class="container">
+    <form id="userForm" onsubmit="handleSubmit(event)">
+      <!-- Basic Details -->
+      <div class="form-section">
+        <h3>Basic Details</h3>
+        <label>Employee Code</label>
+        <input type="text" id="empCode" required>
+        <label>Employee Name(as per adhar card)</label>
+        <input type="text" id="empName" required>
+        <label>First Name</label>
+        <input type="text" id="firstName" required>
+        <label>Middle Name</label>
+        <input type="text" id="middleName">
+        <label>Last Name</label>
+        <input type="text" id="lastName" required>
+        <label>Father's Name</label>
+        <input type="text" id="fatherName" required>
+        <label>Gender</label>
+        <select id="gender" required>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+        <label>Date of Birth</label>
+        <input type="date" id="dob" required>
+        <label>Date of Joining</label>
+        <input type="date" id="doj" required>
+      </div>
+      
+      <!-- Contact & Work Details -->
+      <div class="form-section">
+        <h3>Contact & Work Details</h3>
+        <label>Email</label>
+        <input type="email" id="email" required>
+        <label>Mobile No</label>
+        <input type="number" id="mobile" required>
+        <label>Department</label>
+        <input type="text" id="department" required>
+        <label> your Designation</label>
+        <input type="text" id="designation" required>
+        <label>Role</label>
+        <input type="text" id="role" required>
+        <label> current Location</label>
+        <input type="text" id="location" required>
+        <label>Reporting Manager Name</label>
+        <input type="text" id="reportingManager" required>
+        <label>PF Applicable</label>
+        <input type="text" id="pfApplicable" required>
+        <label>ESIC Applicable</label>
+        <input type="text" id="esicApplicable" required>
+        <label>ESIC Account Number</label>
+        <input type="text" id="esicAccount" required>
+      </div>
+      
+      <!-- Bank Details -->
+      <div class="form-section">
+        <h3>Bank Details</h3>
+        <label>Bank Name</label>
+        <input type="text" id="bankName" required>
+        <label>Bank Account Number</label>
+        <input type="text" id="bankAcctNo" required>
+        <label>IFSC Code</label>
+        <input type="text" id="ifscCode" required>
+      </div>
+      
+      <!-- Address Details -->
+      <div class="form-section">
+        <h3>Address Details</h3>
+        <label>Present Address</label>
+        <textarea id="presentAddress" required></textarea>
+        <label>Present City</label>
+        <input type="text" id="presentCity" required>
+        <label>Present Pin</label>
+        <input type="text" id="presentPin" required>
+        <label>Permanent Address</label>
+        <textarea id="permanentAddress" required></textarea>
+        <label>Permanent City</label>
+        <input type="text" id="permanentCity" required>
+        <label>Permanent Pin code</label>
+        <input type="text" id="permanentPin" required>
+      </div>
+      
+      <!-- Personal Details -->
+      <div class="form-section">
+        <h3>Personal Details</h3>
+        <label>Marital Status</label>
+        <select id="maritalStatus" required>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+        </select>
+        <label>Personal Email</label>
+        <input type="email" id="personalEmail" required>
+        <label>Blood Group</label>
+        <input type="text" id="bloodGroup" required>
+        <label>Current Experience</label>
+        <input type="text" id="currentExperience" required>
+        <label>Nationality</label>
+        <input type="text" id="nationality" required>
+        <label>Physical Status</label>
+        <input type="text" id="physicalStatus" required>
+      </div>
+      
+      <!-- File Uploads -->
+      <div class="form-section">
+        <h3>Uploads</h3>
+        <label>Adhar Card</label>
+        <input type="file" id="adhar" accept="image/*,application/pdf" required>
+        <label>Pan Card</label>
+        <input type="file" id="pan" accept="image/*,application/pdf" required>
+        <label>Picture</label>
+        <input type="file" id="picture" accept="image/*" required>
+        <label>Passbook/Cancelled Cheque</label>
+        <input type="file" id="passbook" accept="image/*,application/pdf" required>
+      </div>
+      
+      <button type="submit" class="submit-btn">Submit</button>
+      <p class="loading" id="loadingText">Uploading your data... Please wait.</p>
+    </form>
+  </div>
+  
+  <script>
+    function handleSubmit(event) {
+      event.preventDefault();
+      document.getElementById("loadingText").style.display = "block";
+
+      // Gather all text field values
+      var empCode = document.getElementById("empCode").value;
+      var empName = document.getElementById("empName").value;
+      var firstName = document.getElementById("firstName").value;
+      var middleName = document.getElementById("middleName").value;
+      var lastName = document.getElementById("lastName").value;
+      var fatherName = document.getElementById("fatherName").value;
+      var gender = document.getElementById("gender").value;
+      var dob = document.getElementById("dob").value;
+      var doj = document.getElementById("doj").value;
+      var email = document.getElementById("email").value;
+      var mobile = document.getElementById("mobile").value;
+      var department = document.getElementById("department").value;
+      var designation = document.getElementById("designation").value;
+      var role = document.getElementById("role").value;
+      var location = document.getElementById("location").value;
+      var reportingManager = document.getElementById("reportingManager").value;
+      var pfApplicable = document.getElementById("pfApplicable").value;
+      var esicApplicable = document.getElementById("esicApplicable").value;
+      var esicAccount = document.getElementById("esicAccount").value;
+      var bankName = document.getElementById("bankName").value;
+      var bankAcctNo = document.getElementById("bankAcctNo").value;
+      var ifscCode = document.getElementById("ifscCode").value;
+      var presentAddress = document.getElementById("presentAddress").value;
+      var presentCity = document.getElementById("presentCity").value;
+      var presentPin = document.getElementById("presentPin").value;
+      var permanentAddress = document.getElementById("permanentAddress").value;
+      var permanentCity = document.getElementById("permanentCity").value;
+      var permanentPin = document.getElementById("permanentPin").value;
+      var maritalStatus = document.getElementById("maritalStatus").value;
+      var personalEmail = document.getElementById("personalEmail").value;
+      var bloodGroup = document.getElementById("bloodGroup").value;
+      var currentExperience = document.getElementById("currentExperience").value;
+      var nationality = document.getElementById("nationality").value;
+      var physicalStatus = document.getElementById("physicalStatus").value;
+
+      // Get files
+      var adharFile = document.getElementById("adhar").files[0];
+      var panFile = document.getElementById("pan").files[0];
+      var pictureFile = document.getElementById("picture").files[0];
+      var passbookFile = document.getElementById("passbook").files[0];
+      
+      if (!adharFile || !panFile || !pictureFile || !passbookFile) {
+        alert("Please upload all required files.");
+        document.getElementById("loadingText").style.display = "none";
+        return;
+      }
+      
+      var readerAdhar = new FileReader();
+      readerAdhar.onload = function(e) {
+        var adharBase64 = e.target.result.split(",")[1];
+        var readerPan = new FileReader();
+        readerPan.onload = function(e) {
+          var panBase64 = e.target.result.split(",")[1];
+          var readerPicture = new FileReader();
+          readerPicture.onload = function(e) {
+            var pictureBase64 = e.target.result.split(",")[1];
+            var readerPassbook = new FileReader();
+            readerPassbook.onload = function(e) {
+              var passbookBase64 = e.target.result.split(",")[1];
+              // Call server side function with all parameters including passbook data
+              google.script.run.withSuccessHandler(function(response) {
+                alert(response);
+                document.getElementById("userForm").reset();
+                document.getElementById("loadingText").style.display = "none";
+              }).processForm(
+                empCode, empName, firstName, middleName, lastName, fatherName, gender, dob, doj, email, mobile,
+                department, designation, role, location, reportingManager, pfApplicable, esicApplicable, esicAccount,
+                bankName, bankAcctNo, ifscCode, presentAddress, presentCity, presentPin, permanentAddress, permanentCity, permanentPin,
+                maritalStatus, personalEmail, bloodGroup, currentExperience, nationality, physicalStatus,
+                adharBase64, adharFile.name, panBase64, panFile.name, pictureBase64, pictureFile.name,
+                passbookBase64, passbookFile.name
+              );
+            };
+            readerPassbook.readAsDataURL(passbookFile);
+          };
+          readerPicture.readAsDataURL(pictureFile);
+        };
+        readerPan.readAsDataURL(panFile);
+      };
+      readerAdhar.readAsDataURL(adharFile);
+    }
+  </script>
+</body>
+</html>
