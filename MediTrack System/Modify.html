@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>M-Swasth Inventory Modification Portal</title>
+    <link rel="stylesheet" href="modify.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Medicine Inventory Control Center</h1>
+      
+      <!-- Partner Selector -->
+      <div class="partner-container">
+        <label for="partner-selector">Filter by Partner:</label>
+        <select id="partner-selector"></select>
+      </div>
+      
+      <!-- Search Bar for Clinics -->
+      <div class="search-container">
+        <input
+          type="text"
+          id="clinic-search"
+          placeholder="Search for clinics..."
+        />
+      </div>
+      
+      <!-- Clinic Selector with Pagination -->
+      <div class="clinic-container">
+        <select id="clinic-selector"></select>
+        <button id="load-more-clinics">Load More</button>
+      </div>
+      
+      <!-- Back to Top Button -->
+      <button id="back-to-top">Back to Top</button>
+      
+      <!-- Inventory Table -->
+      <table id="inventory-table">
+        <thead>
+          <tr>
+            <th>Medicine Name</th>
+            <th>Batch Name</th>
+            <th>Quantity</th>
+            <th>Expiry Date</th>
+            <th>Manufacturing Date</th>
+            <th>Update</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      
+      <!-- Update and Download Buttons -->
+      <div class="action-buttons">
+        <button id="update-all">Update All</button>
+        <button id="download-data">Download Inventory Data</button>
+      </div>
+    </div>
+    
+    <button id="logoutButton">Logout</button>
+    
+    <script>
+      // Get the logout button element
+      const logoutButton = document.getElementById("logoutButton");
+      // Add a click event listener to the button
+      logoutButton.addEventListener("click", function () {
+        // Redirect to index.html
+        window.location.href = "index.html";
+      });
+    </script>
+    <script src="modify.js" type="module"></script>
+  </body>
+</html>
