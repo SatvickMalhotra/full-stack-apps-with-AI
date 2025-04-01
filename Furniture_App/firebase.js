@@ -14,14 +14,14 @@ import {
   getDownloadURL,
 } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-storage.js";
   const firebaseConfig = {
-    apiKey: "AIzaSyBcq39PH6bkzoELqGz_JKhVedKsm5NEXzk",
-    authDomain: "mswasth-3b411.firebaseapp.com",
-    databaseURL: "https://mswasth-3b411-default-rtdb.firebaseio.com",
-    projectId: "mswasth-3b411",
-    storageBucket: "mswasth-3b411.appspot.com",
-    messagingSenderId: "239221617325",
-    appId: "1:239221617325:web:3391c6482c9e632dcb8c24",
-    measurementId: "G-84MM1NKC4V"
+    apiKey: "",
+    authDomain: "-..com",
+    databaseURL: "https://-3b411--..com",
+    projectId: "-3b411",
+    storageBucket: "-3b411..com",
+    messagingSenderId: "",
+    appId: "1::web:",
+    measurementId: "G-"
   };
 
 // Initialize Firebase
