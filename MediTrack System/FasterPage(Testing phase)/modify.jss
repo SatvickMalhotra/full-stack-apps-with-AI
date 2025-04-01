@@ -7,12 +7,12 @@ import {
 
 // Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCUU6K4zed1v0h_VXxntzGO6IAbi5MVNp8",
-  authDomain: "medicine-inv.firebaseapp.com",
-  projectId: "medicine-inv",
-  storageBucket: "medicine-inv.appspot.com",
-  messagingSenderId: "567115066968",
-  appId: "1:567115066968:web:7a03e36c298bebbfaea42d"
+  apiKey: "",
+  authDomain: "-inv..com",
+  projectId: "-inv",
+  storageBucket: "-inv..com",
+  messagingSenderId: "",
+  appId: "1::web:"
 };
 
 // Initialize Firebase app and Firestore
