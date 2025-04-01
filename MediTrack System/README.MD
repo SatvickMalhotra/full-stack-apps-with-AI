@@ -25,10 +25,10 @@ This project is designed to manage a comprehensive medication database system. I
 - **Data Tracking**: All users can keep track of medication data efficiently.
 
 ## Technologies Used
-- **HTML**: For structuring the web pages.
+- **HTML**: For structuring the web pages(Glitch and Github for Frontend).
 - **CSS**: For styling the application and enhancing user experience.
 - **JavaScript**: For client-side scripting and interactivity.
-- **Python**: For backend functionality and database management.
+- **Python**: For backend functionality and database management(google Firebase and Google Cloud).
 
 ## Installation
 1. Clone the repository:
