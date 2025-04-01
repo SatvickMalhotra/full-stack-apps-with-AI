@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Partner Medicine Data</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        width: 90%;
+        max-width: 600px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 4px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      h1 {
+        margin-bottom: 20px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+      }
+      select {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+      }
+      button {
+        padding: 12px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Download Partner Medicine Data</h1>
+      <div class="form-group">
+        <label for="partner-selector">Select Partner:</label>
+        <select id="partner-selector">
+          <option value="">Loading partners...</option>
+        </select>
+      </div>
+      <button id="download-btn">Download Data as Excel (CSV)</button>
+    </div>
+
+    <!-- Firebase App and Firestore SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
+
+    <!-- Inline Script (module) -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+      import { 
+        getFirestore, collection, getDocs, query, where
+      } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
+      // Your Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyCUU6K4zed1v0h_VXxntzGO6IAbi5MVNp8",
+        authDomain: "medicine-inv.firebaseapp.com",
+        projectId: "medicine-inv",
+        storageBucket: "medicine-inv.appspot.com",
+        messagingSenderId: "567115066968",
+        appId: "1:567115066968:web:7a03e36c298bebbfaea42d"
+      };
+
+      // Initialize Firebase and Firestore
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+
+      // DOM Elements
+      const partnerSelector = document.getElementById("partner-selector");
+      const downloadBtn = document.getElementById("download-btn");
+
+      // 1) Utility: Convert array of objects to CSV
+      function convertToCSV(data) {
+        if (!data || !data.length) return "";
+
+        const headers = Object.keys(data[0]);
+        const csvRows = [];
+        csvRows.push(headers.join(","));  // CSV header row
+
+        for (const row of data) {
+          const values = headers.map(header => {
+            let val = row[header] || "";
+            // Escape double quotes
+            val = String(val).replace(/"/g, '""');
+            return `"${val}"`;
+          });
+          csvRows.push(values.join(","));
+        }
+        return csvRows.join("\n");
+      }
+
+      // 2) Download CSV File (Excel can open CSV)
+      function downloadCSV(csvContent, filename) {
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", filename);
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      // 3) Load All Partners
+      async function loadPartners() {
+        const partnerSet = new Set();
+        const qSnap = await getDocs(collection(db, "medicine_inventory"));
+        qSnap.forEach(docSnap => {
+          const data = docSnap.data();
+          if (data.name_of_partner) {
+            partnerSet.add(data.name_of_partner);
+          }
+        });
+        const partners = Array.from(partnerSet).sort();
+        updatePartnerDropdown(partners);
+      }
+
+      function updatePartnerDropdown(partners) {
+        partnerSelector.innerHTML = `<option value="">Select a Partner</option>`;
+        partners.forEach(partner => {
+          const option = document.createElement("option");
+          option.value = partner;
+          option.textContent = partner;
+          partnerSelector.appendChild(option);
+        });
+      }
+
+      // 4) Expand medicines array into multiple rows
+      async function downloadPartnerData(partner) {
+        if (!partner) {
+          alert("Please select a partner.");
+          return;
+        }
+
+        // Query all documents for the selected partner
+        const q = query(
+          collection(db, "medicine_inventory"), 
+          where("name_of_partner", "==", partner)
+        );
+        const querySnapshot = await getDocs(q);
+
+        // We'll create one CSV row per medicine item
+        const expandedData = [];
+
+        querySnapshot.forEach(docSnap => {
+          const docData = docSnap.data();
+          const docId = docSnap.id;
+          const clinicName = docData.name_of_clinic || "";
+          const nurseName = docData.name_of_nurse || "";
+          const partnerName = docData.name_of_partner || "";
+          
+          // If there's a medicines array, expand each object into a separate row
+          const medicines = docData.medicines || [];
+          if (medicines.length === 0) {
+            // If no medicines, at least push a row with doc info
+            expandedData.push({
+              doc_id: docId,
+              name_of_clinic: clinicName,
+              name_of_nurse: nurseName,
+              name_of_partner: partnerName,
+              med_name: "",
+              batch_name: "",
+              quantity: "",
+              expiry_date: "",
+              manufacturing_date: "",
+              status: "",
+              totalCost: ""
+            });
+          } else {
+            medicines.forEach(med => {
+              expandedData.push({
+                doc_id: docId,
+                name_of_clinic: clinicName,
+                name_of_nurse: nurseName,
+                name_of_partner: partnerName,
+                med_name: med.name || "",
+                batch_name: med.batch_name || "",
+                quantity: med.quantity || "",
+                expiry_date: med.expiry_date || "",
+                manufacturing_date: med.manufacturing_date || "",
+                status: med.status || "",
+                totalCost: med.totalCost || ""
+              });
+            });
+          }
+        });
+
+        if (!expandedData.length) {
+          alert(`No data found for partner "${partner}"`);
+          return;
+        }
+
+        // Convert expanded data to CSV
+        const csvContent = convertToCSV(expandedData);
+        const filename = partner + "_data_" + new Date().toISOString().split("T")[0] + ".csv";
+        downloadCSV(csvContent, filename);
+      }
+
+      // 5) Event Listeners
+      downloadBtn.addEventListener("click", async () => {
+        const selectedPartner = partnerSelector.value;
+        await downloadPartnerData(selectedPartner);
+      });
+
+      // 6) On Page Load, fetch partners
+      loadPartners();
+    </script>
+  </body>
+</html>
