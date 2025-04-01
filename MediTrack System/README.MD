@@ -3,6 +3,20 @@
 ## Project Overview 💊📦
 This project is designed to manage a comprehensive medication database system. It allows various users to interact with the inventory, place orders, and maintain records effectively.
 
+# vendor files
+- Vendor files are used to design vendor page where vendor can place a order for the clinic here and approve the meds that needs to be dispatched here 
+- Vendor files can be approved by the admin also 
+
+# modify files
+- Modify are designed for the page which is used by the pharmasist to do medicine invenotry in the database here 
+- Name of the page is medicine protal images have been shared here 
+
+# INV_Manage files 
+- this file is created for parneters to bulk download the data for any partners here or any other clinics here
+
+# Index Page
+- this is main login page here which is designed to allow the users or partner to access there page based on the ids they will be send to the respected pages
+
 ## Features
 - **Clinic Inventory**: Users can check the current inventory of medications available at the clinic.
 - **Admin Functionality**: Admin users can edit and update the inventory as needed.
