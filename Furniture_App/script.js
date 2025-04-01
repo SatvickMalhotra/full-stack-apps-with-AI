@@ -614,27 +614,13 @@ document.addEventListener("DOMContentLoaded", function () {
 // document.addEventListener("DOMContentLoaded", function () {
 //   const users = {
 //     v: "1",
-//     SATVICK: "123456",
-//     SIDDHARTH: "123456",
-//     PRAKASH: "123456",
-//     HIMANSHU: "123456",
-//     RAVI: "123456",
-//     DEBAL: "123456",
-//     AMBIKA: "123456",
-//     NAVNEET: "123456",
-//     SAURAB: "123456",
-//     ABHISHEK: "123456",
-//     SHAIRA: "123456",
-//     Gauranga: "123456",
-//     suryakant: "123456",
+//     
 //     // Add more users here in the format "USERNAME": "PASSWORD"
 //   };
 
 //   const admins = {
 //         q: "1",
-//         ADMIN1: "adminpass1",
-//         ADMIN2: "adminpass2",
-//         ADMIN3: "adminpass3",
+//         
 //         // Add more admins here in the format "USERNAME": "PASSWORD"
 //       };
 
