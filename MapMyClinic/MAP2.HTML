@@ -1,1 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nearest Clinic Finder</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    #map {
+      height: 100vh;
+      width: 100%;
+    }
+    #findNearestBtn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #2c7be5;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <button id="findNearestBtn">Find Nearest Clinic</button>
+  <div id="map"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Firebase configuration
+      const firebaseConfig = {
+        apiKey: "AIzaSyAZ9iT5P7zjNOd9oPn20062H9Y3edb9PIA",
+        authDomain: "clinic-maping.firebaseapp.com",
+        databaseURL: "https://clinic-maping-default-rtdb.firebaseio.com",
+        projectId: "clinic-maping",
+        storageBucket: "clinic-maping.firebasestorage.app",
+        messagingSenderId: "645239817563",
+        appId: "1:645239817563:web:26670cd8c6f5373b6b067e"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      const database = firebase.database();
+
+      let clinicsData = [];
+      let userMarker, clinicMarker, connectionLine;
+      const clinicIcon = L.icon({
+        iconUrl: 'https://cdn.glitch.global/4828a184-b656-4341-b892-da4b48e0246e/clinic.png?v=1742729814239',
+        iconSize: [35, 35],
+        iconAnchor: [17, 35],
+        popupAnchor: [0, -30]
+      });
+
+      // Red user marker using a divIcon
+      const userIcon = L.divIcon({
+        className: 'custom-user-icon',
+        html: '<div style="background: red; width: 15px; height: 15px; border-radius: 50%; border: 3px solid white;"></div>',
+        iconAnchor: [10, 10]
+      });
+
+      const map = L.map('map').setView([20.5937, 78.9629], 5);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Fetch clinic data from Firebase
+      function fetchData() {
+        database.ref('clinic_data').once('value')
+          .then(snapshot => {
+            if (snapshot.exists()) {
+              clinicsData = Object.values(snapshot.val()).map(clinic => ({
+                ...clinic,
+                Latitude: parseFloat(clinic.Latitude),
+                Longitude: parseFloat(clinic.Longitude)
+              }));
+              // Auto-find nearest clinic once data is available
+              findNearestClinic();
+            }
+          })
+          .catch(error => console.error('Error fetching data:', error));
+      }
+
+      // Calculate distance using the Haversine formula
+      function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Earth's radius in km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1 * Math.PI / 180) *
+                  Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2;
+        return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      }
+
+      // Opens Google Maps for directions
+      window.openGoogleMaps = function(lat, lng) {
+        window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+      }
+
+      // Find and display the nearest clinic relative to user's location,
+      // but only consider clinics where clinic_live is true.
+      function findNearestClinic() {
+        if (!navigator.geolocation) {
+          alert('Geolocation is not supported by your browser.');
+          return;
+        }
+        
+        navigator.geolocation.getCurrentPosition(position => {
+          const userLat = position.coords.latitude;
+          const userLng = position.coords.longitude;
+
+          // Remove previous markers and lines if they exist
+          if (userMarker) { map.removeLayer(userMarker); }
+          if (clinicMarker) { map.removeLayer(clinicMarker); }
+          if (connectionLine) { map.removeLayer(connectionLine); }
+
+          // Add user marker (red)
+          userMarker = L.marker([userLat, userLng], { icon: userIcon })
+            .addTo(map)
+            .bindPopup('You are here')
+            .openPopup();
+
+          // Filter out clinics that are not live
+          const liveClinics = clinicsData.filter(clinic => clinic.clinic_live === true);
+
+          if (liveClinics.length === 0) {
+            alert('No active clinics available.');
+            return;
+          }
+
+          // Find the nearest clinic from the live clinics
+          const nearestClinic = liveClinics.reduce((nearest, clinic) => {
+            const distance = calculateDistance(userLat, userLng, clinic.Latitude, clinic.Longitude);
+            return distance < nearest.distance ? { ...clinic, distance } : nearest;
+          }, { distance: Infinity });
+
+          // Add nearest clinic marker with clinic icon and popup with a button
+          clinicMarker = L.marker([nearestClinic.Latitude, nearestClinic.Longitude], { icon: clinicIcon })
+            .addTo(map)
+            .bindPopup(
+              `<b>Nearest Clinic: ${nearestClinic['Clinic Code']}</b><br>${nearestClinic.Address || ''}<br>
+               <button onclick="openGoogleMaps(${nearestClinic.Latitude}, ${nearestClinic.Longitude})" style="margin-top: 5px; padding: 5px 10px; background: #2c7be5; color: white; border: none; border-radius: 4px; cursor: pointer;">Get Directions</button>`
+            )
+            .openPopup();
+
+          // Draw a dashed line between user and nearest clinic
+          connectionLine = L.polyline([
+            [userLat, userLng],
+            [nearestClinic.Latitude, nearestClinic.Longitude]
+          ], { color: '#2c7be5', weight: 3, dashArray: '10, 10' }).addTo(map);
+
+          // Adjust map bounds to include both markers
+          map.fitBounds([
+            [userLat, userLng],
+            [nearestClinic.Latitude, nearestClinic.Longitude]
+          ], { padding: [50, 50] });
+
+        }, error => {
+          alert('Location error: ' + error.message);
+        });
+      }
+
+      document.getElementById('findNearestBtn').addEventListener('click', findNearestClinic);
+      fetchData();
+    });
+  </script>
+</body>
+</html>
 
