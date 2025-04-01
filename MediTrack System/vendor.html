@@ -1,0 +1,468 @@
+<!-- Excel Import Modal -->
+<div
+  class="modal fade"
+  id="multiClinicModal"
+  tabindex="-1"
+  aria-labelledby="multiClinicModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="multiClinicModalLabel">
+          Multiple Clinics Data Found
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>Your Excel file contains data for multiple clinics:</p>
+        <div class="list-group" id="clinic-list">
+          <!-- Clinic options will be populated here -->
+        </div>
+        <div class="alert alert-info mt-3">
+          <i class="fas fa-info-circle me-2"></i>All clinic data will be
+          uploaded to the database when you click "Upload All".
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+        <button
+          type="button"
+          id="upload-all-clinics-btn"
+          class="btn btn-success"
+        >
+          <i class="fas fa-cloud-upload-alt me-1"></i>Upload All
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Medicine Inventory Management</title>
+
+    <!-- Bootstrap CSS (CDN) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+
+    <!-- Font Awesome for icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="vendor.css" />
+  </head>
+  <body>
+    <div class="container py-4">
+      <!-- Navigation tabs -->
+      <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="upload-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#upload"
+            type="button"
+            role="tab"
+            aria-controls="upload"
+            aria-selected="true"
+          >
+            <i class="fas fa-upload me-2"></i>Vendor Upload
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="view-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#view"
+            type="button"
+            role="tab"
+            aria-controls="view"
+            aria-selected="false"
+          >
+            <i class="fas fa-table me-2"></i>Clinic View
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content" id="myTabContent">
+        <!-- Upload Tab -->
+        <div
+          class="tab-pane fade show active"
+          id="upload"
+          role="tabpanel"
+          aria-labelledby="upload-tab"
+        >
+          <h1 class="text-center mb-4">Vendor Data Upload</h1>
+
+          <!-- Excel Import Instructions -->
+          <div class="card mb-4 shadow">
+            <div class="card-header bg-light">
+              <h5 class="mb-0">
+                <button
+                  class="btn btn-link text-decoration-none text-primary p-0"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#importInstructions"
+                  aria-expanded="false"
+                  aria-controls="importInstructions"
+                >
+                  <i class="fas fa-info-circle me-2"></i>Excel Import
+                  Instructions (Click to expand)
+                </button>
+              </h5>
+            </div>
+            <div class="collapse" id="importInstructions">
+              <div class="card-body">
+                <h6 class="fw-bold">How to Prepare Your Excel File:</h6>
+                <ol>
+                  <li>
+                    Create an Excel file with the following columns in the first
+                    row:
+                    <ul class="mt-2">
+                      <li>
+                        <strong>Clinic Name</strong> - Name of the clinic
+                        (required)
+                      </li>
+                      <li>
+                        <strong>Medicine Name</strong> - Name of the medicine
+                        (required)
+                      </li>
+                      <li>
+                        <strong>Quantity</strong> - Number of units (required)
+                      </li>
+                      <li>
+                        <strong>Price (₹)</strong> - Price per unit (required)
+                      </li>
+                      <li><strong>Batch Name</strong> - Batch identifier</li>
+                      <li>
+                        <strong>Manufacturing Date</strong> - Format: YYYY-MM-DD
+                      </li>
+                      <li><strong>Expiry Date</strong> - Format: YYYY-MM-DD</li>
+                    </ul>
+                  </li>
+                  <li class="mt-2">
+                    For data for multiple clinics, group rows by clinic name
+                  </li>
+                  <li>
+                    Ensure dates are in YYYY-MM-DD format (Excel date format is
+                    also supported)
+                  </li>
+                  <li>Save the file as .xlsx or .xls format</li>
+                </ol>
+
+                <div class="alert alert-info">
+                  <strong>Multiple Clinics:</strong> You can include data for
+                  multiple clinics in a single Excel file. The system will
+                  detect all clinics and allow you to upload them all at once.
+                </div>
+
+                <h6 class="fw-bold mt-3">Example Format:</h6>
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Clinic Name</th>
+                        <th>Medicine Name</th>
+                        <th>Quantity</th>
+                        <th>Price (₹)</th>
+                        <th>Batch Name</th>
+                        <th>Manufacturing Date</th>
+                        <th>Expiry Date</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Apollo Clinic</td>
+                        <td>Paracetamol</td>
+                        <td>100</td>
+                        <td>5.50</td>
+                        <td>PARA2025</td>
+                        <td>2024-06-15</td>
+                        <td>2025-06-14</td>
+                      </tr>
+                      <tr>
+                        <td>Apollo Clinic</td>
+                        <td>Amoxicillin</td>
+                        <td>50</td>
+                        <td>12.75</td>
+                        <td>AMOX2025</td>
+                        <td>2024-07-10</td>
+                        <td>2025-07-09</td>
+                      </tr>
+                      <tr>
+                        <td>MediCare Center</td>
+                        <td>Ibuprofen</td>
+                        <td>75</td>
+                        <td>8.25</td>
+                        <td>IBU2025</td>
+                        <td>2024-05-20</td>
+                        <td>2025-05-19</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <h6 class="fw-bold mt-3">How to Upload:</h6>
+                <ol>
+                  <li>Click "Choose File" to select your Excel file</li>
+                  <li>Click "Import" to process the data</li>
+                  <li>
+                    For multiple clinics, review the list and click "Upload All"
+                  </li>
+                  <li>The system will process your data and show results</li>
+                </ol>
+
+                <div class="mt-3 text-center">
+                  <a
+                    href="#"
+                    class="btn btn-outline-success"
+                    id="download-sample-excel"
+                  >
+                    <i class="fas fa-download me-2"></i>Download Sample Excel
+                    Template
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vendor Form -->
+          <form id="vendor-form" class="card p-4 shadow">
+            <div class="row mb-3">
+              <div class="col-md-8">
+                <label for="clinic_name" class="form-label fw-bold"
+                  >Clinic Name:</label
+                >
+                <input
+                  type="text"
+                  id="clinic_name"
+                  class="form-control"
+                  placeholder="Enter clinic name"
+                  required
+                />
+              </div>
+              <div class="col-md-4">
+                <label class="form-label fw-bold">Import from Excel:</label>
+                <div class="input-group">
+                  <input
+                    type="file"
+                    class="form-control"
+                    id="excel-file-input"
+                    accept=".xlsx, .xls"
+                  />
+                  <button
+                    class="btn btn-secondary"
+                    type="button"
+                    id="import-excel-btn"
+                    title="Import data from Excel file"
+                  >
+                    <i class="fas fa-file-excel me-1"></i>Import
+                  </button>
+                </div>
+                <small class="text-muted"
+                  >Supports multiple clinics in a single file</small
+                >
+              </div>
+            </div>
+
+            <div id="medicine-container">
+              <h5 class="fw-bold">Medicine Details</h5>
+              <!-- Initial Medicine Entry -->
+              <div class="medicine-entry border rounded p-3 mb-3">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Medicine Name:</label>
+                    <input
+                      type="text"
+                      class="form-control medicine_name"
+                      placeholder="Medicine name"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Batch Name:</label>
+                    <input
+                      type="text"
+                      class="form-control batch_name"
+                      placeholder="Batch name"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label">Quantity:</label>
+                    <input
+                      type="number"
+                      class="form-control quantity"
+                      placeholder="0"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label">Price:</label>
+                    <div class="input-group">
+                      <span class="input-group-text">₹</span>
+                      <input
+                        type="number"
+                        step="0.01"
+                        class="form-control price"
+                        placeholder="0.00"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label">Total:</label>
+                    <div class="input-group">
+                      <span class="input-group-text">₹</span>
+                      <input
+                        type="text"
+                        class="form-control total-price"
+                        readonly
+                        placeholder="0.00"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Manufacturing Date:</label>
+                    <input
+                      type="date"
+                      class="form-control manufacturing_date"
+                      required
+                    />
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Expiry Date:</label>
+                    <input
+                      type="date"
+                      class="form-control expiry_date"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <!-- Remove button (hidden for first entry) -->
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-danger remove-entry d-none"
+                >
+                  <i class="fas fa-trash me-1"></i>Remove
+                </button>
+              </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-3">
+              <button
+                type="button"
+                id="add-medicine"
+                class="btn btn-outline-primary"
+              >
+                <i class="fas fa-plus me-1"></i>Add More Medicine
+              </button>
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-cloud-upload-alt me-1"></i>Upload Data
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- View Tab -->
+        <div
+          class="tab-pane fade"
+          id="view"
+          role="tabpanel"
+          aria-labelledby="view-tab"
+        >
+          <h1 class="text-center mb-4">Clinic View</h1>
+
+          <div class="card p-3 shadow mb-4">
+            <div class="row g-2">
+              <div class="col-md-8">
+                <input
+                  type="text"
+                  id="clinic-search-view"
+                  placeholder="Enter clinic name to search..."
+                  class="form-control"
+                />
+              </div>
+              <div class="col-md-4">
+                <button id="clinic-view-button" class="btn btn-primary w-100">
+                  <i class="fas fa-search me-1"></i>Search Clinic
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Vendor Data Table -->
+          <div class="card shadow">
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table
+                  id="vendor-data-table"
+                  class="table table-bordered table-striped align-middle mb-0"
+                >
+                  <thead class="table-dark">
+                    <tr>
+                      <th>Clinic Name</th>
+                      <th>Medicine Name</th>
+                      <th>Quantity</th>
+                      <th>Price (₹)</th>
+                      <th>Batch Name</th>
+                      <th>Manufacturing Date</th>
+                      <th>Expiry Date</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- Vendor data will be loaded here -->
+                    <tr>
+                      <td colspan="7" class="text-center py-3">
+                        Search for a clinic to view inventory data
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="mt-5 text-center text-muted">
+        <small>&copy; 2025 Medicine Inventory Management System</small>
+      </footer>
+    </div>
+<div style="position: fixed; bottom: 10px; right: 10px;">
+  <button style="font-size: 18px; font-weight: bold; background-color: white; border: 1px solid #ccc; padding: 10px 20px; cursor: pointer;" onclick="window.location.href='index.html'">
+    Logout
+  </button>
+</div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Your Vendor JS -->
+    <script type="module" src="vendor.js"></script>
+  </body>
+</html>
