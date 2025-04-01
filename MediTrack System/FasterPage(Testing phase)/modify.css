@@ -1,0 +1,275 @@
+/* Prevent mobile pull-to-refresh behavior */
+html, body {
+  overscroll-behavior: contain;
+}
+
+/* General Styling */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+/* Heading */
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+/* Partner Selector */
+.partner-container {
+  margin-bottom: 15px;
+}
+
+#partner-selector {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: white;
+}
+
+.partner-container label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Search Box */
+#clinic-search {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Clinic Selector */
+#clinic-selector {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: white;
+}
+
+/* Sticky Selectors */
+#partner-selector, #clinic-search, #clinic-selector, #load-more-clinics {
+  position: sticky;
+  top: 10px;
+  background: white;
+  z-index: 100;
+}
+
+/* Load More Button */
+#load-more-clinics {
+  width: 100%;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-bottom: 15px;
+}
+#load-more-clinics:hover {
+  background-color: #0056b3;
+}
+
+
+#progress-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #ddd;
+  z-index: 1000;
+}
+
+#progress-bar {
+  height: 4px;
+  width: 0%;
+  background-color: #28a745;
+  transition: width 0.3s;
+}
+
+#progress-text {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.hidden {
+  display: none;
+}
+
+
+
+
+/* Inventory Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  margin-top: 20px;
+}
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+th {
+  background: #007bff;
+  color: white;
+}
+td input {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+/* Update Button */
+.update-btn {
+  padding: 8px 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.update-btn:hover {
+  background-color: #218838;
+}
+
+/* Duplicate Button */
+.duplicate-btn {
+  padding: 8px 12px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 5px;
+}
+.duplicate-btn:hover {
+  background-color: #5a6268;
+}
+
+/* Back to Top Button */
+#back-to-top {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 10px;
+  background-color: #ff6600;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: none; /* Initially hidden */
+  font-size: 16px;
+}
+#back-to-top:hover {
+  background-color: #cc5500;
+}
+
+/* Action Buttons Container */
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+/* Update All Button */
+#update-all {
+  flex: 1;
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+#update-all:hover {
+  background-color: #218838;
+}
+
+/* Download Button */
+#download-data {
+  flex: 1;
+  padding: 10px;
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+#download-data:hover {
+  background-color: #138496;
+}
+
+/* Logout Button */
+#logoutButton {
+  width: 100%;
+  max-width: 1200px;
+  padding: 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 15px auto;
+  display: block;
+}
+#logoutButton:hover {
+  background-color: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  th, td {
+    padding: 8px;
+    font-size: 14px;
+  }
+  #partner-selector, #clinic-selector, #clinic-search {
+    font-size: 14px;
+    padding: 8px;
+  }
+  #load-more-clinics, #logoutButton, #update-all, #download-data, .update-btn, .duplicate-btn {
+    font-size: 14px;
+    padding: 8px;
+  }
+  #back-to-top {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .partner-container label {
+    font-size: 14px;
+  }
+  .action-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+}
