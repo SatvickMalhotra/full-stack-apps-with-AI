@@ -6,7 +6,7 @@ function doGet() {
 function processForm(empCode, empName, firstName, middleName, lastName, fatherName, gender, dob, doj, email, mobile, department, designation, role, location, reportingManager, pfApplicable, esicApplicable, esicAccount, bankName, bankAcctNo, ifscCode, presentAddress, presentCity, presentPin, permanentAddress, permanentCity, permanentPin, maritalStatus, personalEmail, bloodGroup, currentExperience, nationality, physicalStatus, adharBase64, adharName, panBase64, panName, pictureBase64, pictureName, passbookBase64, passbookName) {
   try {
     // Open Google Sheet using the provided Sheet ID
-    var sheet = SpreadsheetApp.openById("15DQo1VL_Wl2OhLzrOu0oXKWSE3Q8bhhcCPE09lzrXgI").getActiveSheet();
+    var sheet = SpreadsheetApp.openById("google sheet id here will be in link of the sheet").getActiveSheet();
     
     // Append employee details to the sheet (adjust column order as needed)
     sheet.appendRow([
@@ -17,7 +17,7 @@ function processForm(empCode, empName, firstName, middleName, lastName, fatherNa
     ]);
     
     // Get the parent folder using the provided Drive Folder ID
-    var parentFolder = DriveApp.getFolderById("1yyUU2spmhYDhDAf1Rrsc56JIXSq6_1L4");
+    var parentFolder = DriveApp.getFolderById("drive folder id where this needs to be uploaded ");
     
     // Create a new folder for the employee (folder name includes Employee Name)
     var userFolder = parentFolder.createFolder(empName + "_" + empCode + "_Docs");
