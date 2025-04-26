@@ -1,0 +1,272 @@
+/* Import Font */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+
+/* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: #333;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 20px auto;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+}
+
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 20px;
+}
+
+h1 {
+    color: #2c3e50;
+    font-weight: 700;
+    font-size: 2.2em;
+}
+
+h2 {
+    color: #34495e;
+    margin-bottom: 0; /* Removed bottom margin as it's handled by dev-header */
+    font-weight: 400;
+    font-size: 1.4em;
+    display: flex;
+    align-items: center;
+}
+
+/* Card Style for Sections */
+.card {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Input Section */
+.input-section label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: #555;
+    font-size: 0.95em;
+}
+
+.input-section input[type="text"],
+.input-section input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+}
+
+.input-section input[type="text"]:focus,
+.input-section input[type="password"]:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+/* Options Group (for checkbox) */
+.options-group {
+    margin: 15px 0;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+}
+
+.options-group label {
+    font-weight: 500;
+    color: #333;
+    cursor: pointer;
+    display: inline-flex; /* Align checkbox and text nicely */
+    align-items: center;
+}
+
+.options-group input[type="checkbox"] {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+/* Button Group */
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Buttons */
+button { cursor: pointer; border: none; border-radius: 6px; padding: 10px 20px; font-size: 1em; font-weight: 500; transition: background-color 0.3s ease, transform 0.1s ease, box-shadow 0.2s ease; }
+button:active { transform: translateY(1px); }
+button:hover { box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
+.cta-button { background-color: #007bff; color: white; flex-grow: 1; padding: 12px 20px; }
+.cta-button:hover { background-color: #0056b3; }
+.secondary-button { background-color: #6c757d; color: white; padding: 12px 20px; }
+.secondary-button:hover { background-color: #5a6268; }
+.small-button { padding: 6px 14px; font-size: 0.9em; background-color: #17a2b8; color: white; }
+.small-button:hover { background-color: #138496; }
+button:disabled { background-color: #cccccc !important; color: #666666 !important; cursor: not-allowed; box-shadow: none; transform: none; }
+
+/* Combined Status and Cost Section */
+.status-cost-section {
+    padding: 15px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-align: center;
+    transition: background-color 0.5s ease, color 0.5s ease, border-color 0.5s ease;
+    min-height: 1.6em;
+    border-width: 1px;
+    border-style: solid;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+#cost-display {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #454545;
+    border-top: 1px dashed #ccc;
+    padding-top: 10px;
+}
+
+/* Developer Output Styling */
+.developer-step .dev-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.developer-step h2 {
+    margin-bottom: 0;
+    border: none;
+    padding: 0;
+    flex-grow: 1; /* Take available space */
+}
+
+.developer-step h2 .dev-badge {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 0.85em;
+    font-weight: 700;
+    margin-right: 12px;
+    flex-shrink: 0;
+}
+
+.model-selector {
+    margin-left: 15px; /* Space from title */
+    display: flex;
+    align-items: center;
+}
+
+.model-selector label {
+    font-size: 0.85em; /* Match badge size better */
+    margin-right: 5px;
+    font-weight: 500;
+    color: #555;
+}
+
+.model-selector select {
+    font-size: 0.85em;
+    padding: 3px 5px; /* Adjust padding */
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #fff; /* Ensure background */
+}
+
+/* Loader defined in <head> style */
+
+.toggle-collapse {
+    cursor: pointer;
+    font-size: 1.4em; /* Make arrow bigger */
+    margin-left: 15px; /* Space from loader/model selector */
+    padding: 0 8px;
+    user-select: none;
+    color: #6c757d; /* Grey arrow */
+    line-height: 1; /* Align better */
+}
+.toggle-collapse:hover { color: #343a40; }
+.collapsed .toggle-collapse { transform: rotate(-90deg); } /* Point right when collapsed */
+
+/* Collapsible Content Area */
+.collapsible-content {
+    overflow: hidden;
+    transition: max-height 0.4s ease-in-out, opacity 0.3s ease-in-out, margin 0.4s ease-in-out, padding 0.4s ease-in-out;
+    max-height: 1500px; /* Generous max height */
+    opacity: 1;
+}
+
+.collapsed .collapsible-content {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-top: none;
+    border-bottom: none;
+}
+
+
+/* Explanation Box Style */
+.explanation-box {
+    background-color: #f0f4f8;
+    border: 1px solid #d6dde4;
+    border-left: 4px solid #17a2b8; /* Use info color */
+    border-radius: 4px;
+    padding: 12px 18px;
+    margin-bottom: 15px;
+    font-size: 0.95em;
+}
+.explanation-box strong { color: #2c3e50; display: block; margin-bottom: 6px; font-weight: 700; }
+.explanation-box p { color: #5a6a7a; margin: 0; white-space: pre-wrap; line-height: 1.5; }
+
+/* Code Blocks */
+.code-block { display: block; white-space: pre-wrap; word-wrap: break-word; background-color: #282c34; color: #abb2bf; padding: 20px; border-radius: 6px; font-family: "Menlo", "Consolas", "Courier New", Courier, monospace; font-size: 0.9em; max-height: 450px; overflow-y: auto; border: 1px solid #3a3f4a; min-height: 50px; }
+
+/* Final Output Section */
+.final-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+.final-header h2 { margin-bottom: 0; border-bottom: none; padding-bottom: 0; }
+
+/* Utility */
+.hidden { display: none !important; } /* Use important if needed to override other styles */
+
+/* Responsive */
+@media (max-width: 768px) {
+    .container { padding: 15px; }
+    h1 { font-size: 1.8em; }
+    h2 { font-size: 1.2em; }
+    .button-group { flex-direction: column; }
+    .cta-button, .secondary-button { width: 100%; }
+    .code-block { max-height: 350px; }
+    #cost-display { font-size: 0.85em; }
+    .dev-header { flex-wrap: wrap; } /* Allow wrapping on small screens */
+    .model-selector { margin-left: 0; margin-top: 5px; width: 100%; /* Take full width below title */ justify-content: flex-end; }
+    .toggle-collapse { margin-left: 10px; } /* Reduce margin */
+}
