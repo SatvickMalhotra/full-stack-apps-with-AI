@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced AI Developer Team</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Simple loading spinner CSS -->
+    <style>
+        .loader { border: 4px solid #f3f3f3; border-radius: 50%; border-top: 4px solid #3498db; width: 20px; height: 20px; -webkit-animation: spin 1s linear infinite; animation: spin 1s linear infinite; display: inline-block; margin-left: 10px; vertical-align: middle; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .hidden { display: none; }
+        .collapsible-content { overflow: hidden; transition: max-height 0.3s ease-out; max-height: 1000px; /* Adjust as needed */ }
+        .collapsed .collapsible-content { max-height: 0; padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0; border-top: none; border-bottom: none; opacity: 0; }
+        .toggle-collapse { cursor: pointer; font-size: 1.2em; margin-left: auto; padding: 0 5px; user-select: none; color: #007bff; }
+        .toggle-collapse:hover { color: #0056b3; }
+        .dev-header { display: flex; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+        .dev-header h2 { margin-bottom: 0; border: none; padding: 0; flex-grow: 1; }
+        .model-selector label { font-size: 0.8em; margin-right: 5px; font-weight: 500; color: #555; }
+        .model-selector select { font-size: 0.8em; padding: 2px 4px; border-radius: 4px; border: 1px solid #ccc; }
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+             <h1>✨ Advanced AI Developer Team ✨</h1>
+        </header>
+
+        <section class="input-section card">
+            <label for="project-request">Enter Project Request or Improvements:</label>
+            <input type="text" id="project-request" placeholder="e.g., build a 2048 game (HTML, CSS, JS)">
+
+            <label for="api-key">OpenAI API Key (Warning: Insecure Client-Side):</label>
+            <input type="password" id="api-key" placeholder="Enter your key (visible in browser source)">
+
+            <div class="options-group">
+                <label for="quality-analysis-toggle">
+                    <input type="checkbox" id="quality-analysis-toggle">
+                    Run AI Code Quality Analysis (Step 6)
+                </label>
+            </div>
+
+            <div class="button-group">
+                <button id="start-button" class="cta-button">Start / Improve Project</button>
+                <button id="reset-button" class="secondary-button">Reset All</button>
+            </div>
+        </section>
+
+        <!-- Combined Status and Cost Section -->
+        <section class="status-cost-section card" id="status-cost-section">
+             <div id="status-message">Enter API key and project request...</div>
+             <div id="cost-display">Cost: $0.000000 (Tokens In: 0, Out: 0)</div>
+        </section>
+
+        <!-- Developer Outputs with Explanations -->
+        <section class="developer-outputs">
+            <!-- Dev 1 -->
+            <div class="developer-step card" id="dev1-card">
+                <div class="dev-header">
+                    <h2><span class="dev-badge">1</span> Developer 1: Basic Code / Improvement</h2>
+                    <div class="model-selector">
+                        <label for="dev1-model">Model:</label>
+                        <select id="dev1-model"></select> <!-- Options added by JS -->
+                    </div>
+                     <span class="loader hidden" id="dev1-loader"></span>
+                    <span class="toggle-collapse" data-target="dev1-content">▼</span>
+                </div>
+                <div class="collapsible-content" id="dev1-content">
+                    <pre><code class="code-block" id="dev1-code">Waiting...</code></pre>
+                </div>
+            </div>
+            <!-- Dev 2 -->
+            <div class="developer-step card" id="dev2-card">
+                 <div class="dev-header">
+                    <h2><span class="dev-badge">2</span> Developer 2: Refinement & Robustness</h2>
+                     <div class="model-selector">
+                        <label for="dev2-model">Model:</label>
+                        <select id="dev2-model"></select>
+                    </div>
+                    <span class="loader hidden" id="dev2-loader"></span>
+                    <span class="toggle-collapse" data-target="dev2-content">▼</span>
+                 </div>
+                 <div class="collapsible-content" id="dev2-content">
+                    <div class="explanation-box">
+                        <strong>Changes Made:</strong>
+                        <p id="dev2-explanation">Waiting...</p>
+                    </div>
+                    <pre><code class="code-block" id="dev2-code">Waiting...</code></pre>
+                 </div>
+            </div>
+            <!-- Dev 3 -->
+            <div class="developer-step card" id="dev3-card">
+                <div class="dev-header">
+                    <h2><span class="dev-badge">3</span> Developer 3: Error Checking & Fixing</h2>
+                    <div class="model-selector">
+                        <label for="dev3-model">Model:</label>
+                        <select id="dev3-model"></select>
+                    </div>
+                    <span class="loader hidden" id="dev3-loader"></span>
+                    <span class="toggle-collapse" data-target="dev3-content">▼</span>
+                </div>
+                 <div class="collapsible-content" id="dev3-content">
+                    <div class="explanation-box">
+                        <strong>Changes Made / Errors Found:</strong>
+                        <p id="dev3-explanation">Waiting...</p>
+                    </div>
+                    <pre><code class="code-block" id="dev3-code">Waiting...</code></pre>
+                 </div>
+            </div>
+            <!-- Dev 4 -->
+            <div class="developer-step card" id="dev4-card">
+                 <div class="dev-header">
+                    <h2><span class="dev-badge">4</span> Developer 4: Senior Dev Polish</h2>
+                    <div class="model-selector">
+                        <label for="dev4-model">Model:</label>
+                        <select id="dev4-model"></select>
+                    </div>
+                    <span class="loader hidden" id="dev4-loader"></span>
+                    <span class="toggle-collapse" data-target="dev4-content">▼</span>
+                 </div>
+                 <div class="collapsible-content" id="dev4-content">
+                    <div class="explanation-box">
+                        <strong>Changes Made / Polishing Done:</strong>
+                        <p id="dev4-explanation">Waiting...</p>
+                    </div>
+                    <pre><code class="code-block" id="dev4-code">Waiting...</code></pre>
+                 </div>
+            </div>
+             <!-- Dev 5 -->
+             <div class="developer-step card" id="dev5-card">
+                 <div class="dev-header">
+                    <h2><span class="dev-badge">5</span> Developer 5: Head Dev Final Review</h2>
+                     <div class="model-selector">
+                        <label for="dev5-model">Model:</label>
+                        <select id="dev5-model"></select>
+                    </div>
+                    <span class="loader hidden" id="dev5-loader"></span>
+                    <span class="toggle-collapse" data-target="dev5-content">▼</span>
+                 </div>
+                 <div class="collapsible-content" id="dev5-content">
+                    <div class="explanation-box">
+                        <strong>Final Review Summary / Changes:</strong>
+                        <p id="dev5-explanation">Waiting...</p>
+                    </div>
+                    <pre><code class="code-block" id="dev5-code">Waiting...</code></pre>
+                 </div>
+            </div>
+             <!-- Dev 6 (Optional Quality Analysis) -->
+             <div class="developer-step card hidden" id="dev6-card">
+                 <div class="dev-header">
+                    <h2><span class="dev-badge">6</span> Developer 6: AI Quality Analysis</h2>
+                     <div class="model-selector">
+                        <label for="dev6-model">Model:</label>
+                        <select id="dev6-model"></select> <!-- Separate model for analysis -->
+                    </div>
+                    <span class="loader hidden" id="dev6-loader"></span>
+                    <span class="toggle-collapse" data-target="dev6-content">▼</span>
+                 </div>
+                 <div class="collapsible-content" id="dev6-content">
+                    <div class="explanation-box">
+                        <strong>Quality Report:</strong>
+                        <p id="dev6-explanation">Waiting...</p> <!-- Use explanation P tag for report -->
+                    </div>
+                    <!-- No code block needed for analysis report -->
+                 </div>
+            </div>
+        </section>
+
+        <!-- Final Code Section -->
+        <section class="final-output card">
+             <div class="final-header">
+                <h2>🏁 Final Consolidated Code (from Dev 5)</h2>
+                <button id="copy-button" class="small-button" disabled>Copy Code</button>
+             </div>
+            <pre><code class="code-block" id="final-code">Waiting...</code></pre>
+        </section>
+
+    </div> <!-- /container -->
+
+    <script src="script.js"></script>
+</body>
+</html>
