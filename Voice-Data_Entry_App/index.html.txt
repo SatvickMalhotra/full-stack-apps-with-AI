@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- Language attribute will be updated by JS -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate-key="pageTitle">Advanced Customer Data Entry w/ Admin</title>
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <!-- Toastify JS CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</head>
+<body class="light-theme"> <!-- Default theme -->
+
+    <!-- Loading Indicator -->
+    <div id="loadingIndicator" class="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container fade-in">
+
+        <!-- Header Area -->
+        <div class="header-controls">
+            <h1 data-translate-key="mainHeading" class="glowing-text">Customer Data Entry</h1>
+            <div class="top-right-controls">
+                <div class="controls language-selector">
+                    <label for="languageSwitcher" class="sr-only" data-translate-key="lblLanguage">Language:</label>
+                    <i class="fas fa-globe"></i>
+                    <select id="languageSwitcher" title="Select UI Language">
+                        <option value="en">English</option>
+                        <option value="hi">हिन्दी (Hindi)</option>
+                    </select>
+                </div>
+                 <div class="controls speech-language-selector">
+                    <label for="speechLangSelect" class="sr-only" data-translate-key="titleSpeechLangSelect">Speech Language:</label>
+                    <i class="fas fa-language"></i>
+                    <select id="speechLangSelect" data-translate-key="titleSpeechLangSelect" title="Select Speech Language">
+                        <option value="en-US">English (US)</option>
+                        <option value="en-IN">English (India)</option>
+                        <option value="hi-IN">Hindi (India)</option>
+                        <!-- Add other languages as needed, ensure codes match SpeechRecognition support -->
+                        <!-- <option value="bn-IN">Bengali (India)</option> -->
+                    </select>
+                </div>
+                <button id="toggleDataEntryModeButton" class="control-button" data-translate-key="btnEnterDataEntryMode" title="Toggle Data Entry View">
+                    <i class="fas fa-columns"></i> <span data-translate-key="lblEnterDataEntryMode">Focus Mode</span>
+                </button>
+                <button id="themeToggleButton" class="control-button" title="Toggle Theme">
+                    <!-- Icon/Text updated by JS -->
+                    <i class="fas fa-sun"></i> <span class="theme-icon-text" data-translate-key="btnThemeLight">Light</span>
+                </button>
+                <button id="dashboardButton" class="control-button" data-translate-key="btnDashboard" title="Show Dashboard">
+                    <i class="fas fa-chart-pie"></i> <span data-translate-key="btnDashboard">Dashboard</span>
+                </button>
+                 <button id="adminButton" class="control-button" data-translate-key="btnAdminLogin" title="Admin Panel"> <!-- Changed key to btnAdminLogin -->
+                    <i class="fas fa-user-shield"></i> <span data-translate-key="btnAdminLogin">Admin</span> <!-- Changed key to btnAdminLogin -->
+                </button>
+            </div>
+        </div>
+
+        <p id="status" class="status-message sr-only">Status messages will appear as toasts.</p>
+
+        <!-- Main Content Area (Form + Optional Image Viewer) -->
+        <div class="main-content-area">
+
+            <!-- Form - Changed ID to match JS cacheDomElements -->
+            <form id="customerForm" class="entry-form" novalidate>
+                <input type="hidden" id="editingId" value=""> <!-- Keep ID -->
+                <div class="form-grid">
+                    <!-- Column 1 -->
+                    <div class="form-column">
+                         <div class="form-field">
+                            <!-- Updated data-translate-key -->
+                            <label for="entryType" data-translate-key="lblEntryType">Entry Type:<span class="required-star">*</span></label>
+                             <select id="entryType" required> <!-- Keep ID, ensure it's in customerFieldKeys -->
+                                <option value="" data-translate-key="optSelectPartnerTypeFirst">-- Select Type First --</option> <!-- Updated key -->
+                                <!-- Values MUST match keys in partnerConfig JS object -->
+                                <option value="tele_health" data-translate-key="optEntryTypeTele_health">Tele Health 365</option> <!-- Updated key -->
+                                <option value="combo" data-translate-key="optEntryTypeCombo">Combo</option> <!-- Updated key -->
+                             </select>
+                         </div>
+                         <div class="form-field">
+                            <!-- Updated data-translate-key -->
+                            <label for="branchName" data-translate-key="lblBranchName">Branch Name:<span class="required-star">*</span></label>
+                            <div class="input-group">
+                                <input type="text" id="branchName" data-translate-key="phBranchName" placeholder="Enter Branch Name" required>
+                                <!-- Updated title keys -->
+                                <button type="button" class="mic-button" data-target="branchName" data-translate-key="titleMicButton" title="Record Branch Name"><i class="fas fa-microphone"></i></button>
+                                <button type="button" class="clean-button" data-target="branchName" data-translate-key="titleCleanButton" title="Clean Input"><i class="fas fa-broom"></i></button>
+                            </div>
+                        </div>
+                         <div class="form-field">
+                            <!-- Updated data-translate-key -->
+                            <label for="customerName" data-translate-key="lblCustomerName">Customer Name:<span class="required-star">*</span></label>
+                            <div class="input-group">
+                                <input type="text" id="customerName" data-translate-key="phCustomerName" placeholder="Enter Customer Name" required>
+                                 <!-- Updated title keys -->
+                                 <button type="button" class="mic-button" data-target="customerName" data-translate-key="titleMicButton" title="Record Customer Name"><i class="fas fa-microphone"></i></button>
+                                 <button type="button" class="clean-button" data-target="customerName" data-translate-key="titleCleanButton" title="Clean Input"><i class="fas fa-broom"></i></button>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <!-- Updated data-translate-key -->
+                            <label for="customerID" data-translate-key="lblCustomerID">Customer ID:<span class="required-star">*</span></label>
+                            <div class="input-group">
+                                <input type="text" id="customerID" data-translate-key="phCustomerID" placeholder="Enter Customer ID" required>
+                                 <!-- Updated title keys -->
+                                 <button type="button" class="mic-button" data-target="customerID" data-translate-key="titleMicButton" title="Record Customer ID"><i class="fas fa-microphone"></i></button>
+                                 <button type="button" class="clean-button" data-target="customerID" data-translate-key="titleCleanButton" title="Clean Input"><i class="fas fa-broom"></i></button>
+                            </div>
+                        </div>
+                         <div class="form-field">
+                             <!-- Updated data-translate-key -->
+                             <label data-translate-key="lblGender">Gender:<span class="required-star">*</span></label>
+                            <div class="gender-group">
+                                 <!-- Keys match JS -->
+                                 <label><input type="radio" name="gender" value="Male" id="genderMale"> <span data-translate-key="optGenderMale">Male</span></label>
+                                 <label><input type="radio" name="gender" value="Female" id="genderFemale"> <span data-translate-key="optGenderFemale">Female</span></label>
+                                 <label><input type="radio" name="gender" value="Other" id="genderOther"> <span data-translate-key="optGenderOther">Other</span></label>
+                            </div>
+                        </div>
+                         <div class="form-field">
+                            <!-- Updated data-translate-key -->
+                            <label for="mobileNumber" data-translate-key="lblMobileNumber">Mobile Number:<span class="required-star">*</span></label>
+                            <div class="input-group">
+                                <input type="tel" id="mobileNumber" data-translate-key="phMobileNumber" placeholder="Enter 10-digit mobile number" required pattern="\d{10}" title="Enter a 10-digit mobile number"> <!-- Added pattern/title -->
+                                 <!-- Updated title keys -->
+                                 <button type="button" class="mic-button" data-target="mobileNumber" data-translate-key="titleMicButton" title="Record Mobile Number"><i class="fas fa-microphone"></i></button>
+                                 <button type="button" class="clean-button" data-target="mobileNumber" data-translate-key="titleCleanButton" title="Clean Input"><i class="fas fa-broom"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Column 2 -->
+                    <div class="form-column">
+                        <div class="form-field">
+                            <!-- Updated data-translate-key -->
+                            <label for="partnerId" data-translate-key="lblPartner">Partner:<span class="required-star">*</span></label>
+                            <select id="partnerId" disabled required> <!-- Keep ID, ensure it's in customerFieldKeys -->
+                                <!-- Text updated by JS -->
+                                <option value="" data-translate-key="optSelectPartnerTypeFirst">-- Select Type First --</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <!-- Updated data-translate-key -->
+                            <label for="enrolmentDate" data-translate-key="lblEnrolmentDate">Enrolment Date:</label>
+                            <input type="date" id="enrolmentDate"> <!-- NOT required -->
+                        </div>
+                        <div class="form-field">
+                            <!-- Updated data-translate-key -->
+                            <label for="dob" data-translate-key="lblDob">Date of Birth:</label> <!-- Changed key to lblDob -->
+                            <input type="date" id="dob"> <!-- NOT required -->
+                        </div>
+                         <div class="form-field">
+                            <!-- Updated data-translate-key -->
+                             <label for="savingsAccountNumber" data-translate-key="lblSavingsAccNum">Savings A/C No.:<span class="required-star">*</span></label> <!-- Changed key to lblSavingsAccNum -->
+                             <div class="input-group">
+                                <!-- Updated placeholder key -->
+                                <input type="text" id="savingsAccountNumber" data-translate-key="phSavingsAccNum" placeholder="Enter Savings Account Number" required>
+                                 <!-- Updated title keys -->
+                                 <button type="button" class="mic-button" data-target="savingsAccountNumber" data-translate-key="titleMicButton" title="Record Savings Account No"><i class="fas fa-microphone"></i></button>
+                                 <button type="button" class="clean-button" data-target="savingsAccountNumber" data-translate-key="titleCleanButton" title="Clean Input"><i class="fas fa-broom"></i></button>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <!-- Updated data-translate-key -->
+                            <label for="csbCode" data-translate-key="lblCsbCode">CSB Code:<span class="required-star">*</span></label> <!-- Changed key to lblCsbCode -->
+                            <div class="input-group">
+                                <!-- Updated placeholder key -->
+                                <input type="text" id="csbCode" data-translate-key="phCsbCode" placeholder="Enter CSB Code" required>
+                                <!-- Updated title keys -->
+                                <button type="button" class="mic-button" data-target="csbCode" data-translate-key="titleMicButton" title="Record CSB Code"><i class="fas fa-microphone"></i></button>
+                                <button type="button" class="clean-button" data-target="csbCode" data-translate-key="titleCleanButton" title="Clean Input"><i class="fas fa-broom"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- end form-grid -->
+                <div class="form-actions">
+                    <!-- Keys match JS -->
+                    <button type="button" id="addEntryButton" class="action-button add-button"><i class="fas fa-plus"></i> <span data-translate-key="btnAddEntry">Add Entry</span></button>
+                    <button type="reset" id="clearFormButton" class="action-button clear-button"><i class="fas fa-times"></i> <span data-translate-key="btnClearForm">Clear Form</span></button> <!-- Changed type to reset -->
+                </div>
+            </form>
+
+             <!-- Image Upload & Viewer Section -->
+            <div class="image-handling-section">
+                 <input type="file" id="imageUploadInput" multiple accept="image/*" style="display: none;">
+                 <!-- Updated keys -->
+                 <button type="button" id="uploadImageButton" class="action-button info-button"><i class="fas fa-upload"></i> <span data-translate-key="btnUploadImage">Upload Images</span></button>
+                 <button type="button" id="toggleImageViewerButton" class="action-button secondary-button" disabled><i class="fas fa-eye"></i> <span data-translate-key="btnToggleImageViewer">View Images</span> (<span id="imageCount">0</span>)</button>
+
+                 <div id="imageViewerSection" class="image-viewer" style="display: none;">
+                     <h3 class="sr-only" data-translate-key="ImageViewerTitle">Image Viewer</h3> <!-- Added title -->
+                     <button class="carousel-button prev" id="prevImageButton" data-translate-key="btnPrev" title="Previous Image" aria-label="Previous Image"><i class="fas fa-chevron-left"></i></button>
+                     <div class="image-display-area">
+                         <img id="currentImageView" src="" alt="Uploaded Image Preview">
+                     </div>
+                     <!-- Status below image area -->
+                     <p id="imageViewerStatus" data-translate-key="ImageViewerStatus">Image {current} of {total}</p>
+                     <button class="carousel-button next" id="nextImageButton" data-translate-key="btnNext" title="Next Image" aria-label="Next Image"><i class="fas fa-chevron-right"></i></button>
+                 </div>
+             </div>
+
+        </div> <!-- end main-content-area -->
+
+
+        <hr class="separator">
+
+        <!-- Table Area -->
+        <div class="table-header">
+             <h2 data-translate-key="tblHeading">Collected Entries</h2>
+             <button id="fullscreenButton" class="control-button" data-translate-key="btnFullscreen" title="Toggle Table Fullscreen">
+                 <i class="fas fa-expand"></i> <span data-translate-key="btnFullscreen">Fullscreen</span>
+            </button>
+        </div>
+        <div id="tableContainer" class="table-container">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <!-- CRITICAL: data-translate-key MUST match keys used in JS getExportData() -->
+                        <th data-sort-key="branchName" data-translate-key="tblColBranch">Branch <span class="sort-icon"></span></th>
+                        <th data-sort-key="customerName" data-translate-key="tblColName">Customer Name <span class="sort-icon"></span></th>
+                        <th data-sort-key="customerID" data-translate-key="tblColCustID">Cust ID <span class="sort-icon"></span></th>
+                        <th data-sort-key="gender" data-translate-key="tblColGender">Gender <span class="sort-icon"></span></th>
+                        <th data-sort-key="mobileNumber" data-translate-key="tblColMobile">Mobile <span class="sort-icon"></span></th>
+                        <th data-sort-key="enrolmentDate" data-translate-key="tblColEnrolDate">Enrl. Date <span class="sort-icon"></span></th>
+                        <th data-sort-key="dob" data-translate-key="tblColDOB">DOB <span class="sort-icon"></span></th>
+                        <th data-sort-key="savingsAccountNumber" data-translate-key="tblColSavingsAcc">Sav. Acc <span class="sort-icon"></span></th>
+                        <th data-sort-key="csbCode" data-translate-key="tblColCSB">CSB Code <span class="sort-icon"></span></th>
+                        <th data-sort-key="partnerName" data-translate-key="tblColPartner">Partner Name <span class="sort-icon"></span></th>
+                        <th data-sort-key="subscriptionAmount" data-translate-key="tblColSubscrAmt">Subscr. Amt <span class="sort-icon"></span></th>
+                        <th data-translate-key="tblColActions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTableBody">
+                    <!-- Row content generated by JS -->
+                    <tr class="no-data-row"><td colspan="12" data-translate-key="tblNoEntries">No entries added yet.</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Download Buttons -->
+        <div class="download-actions">
+             <!-- Updated keys -->
+             <button id="saveExcelButton" class="action-button save-button"><i class="fas fa-file-excel"></i> <span data-translate-key="btnSaveExcel">Download Excel & Clear</span></button>
+             <button id="saveCsvButton" class="action-button info-button"><i class="fas fa-file-csv"></i> <span data-translate-key="btnSaveCsv">Download CSV</span></button>
+             <button id="savePdfButton" class="action-button danger-button"><i class="fas fa-file-pdf"></i> <span data-translate-key="btnSavePdf">Download PDF</span></button>
+        </div>
+
+    </div> <!-- end container -->
+
+    <!-- Dashboard Modal -->
+    <div id="dashboardModal" class="modal">
+        <div class="modal-content">
+             <!-- Updated title key -->
+             <span class="close-button" id="closeDashboardButton" data-translate-key="btnClose" title="Close">×</span>
+             <h2 data-translate-key="DashboardTitle">Dashboard</h2> <!-- Updated key -->
+             <div class="dashboard-stats">
+                 <!-- Added IDs for JS to update -->
+                 <!-- Keys should exist in translations -->
+                <div class="stat-card"><h3 data-translate-key="dashTotalEntries">Total Entries</h3><p id="statTotalEntries">0</p></div>
+                <div class="stat-card"><h3 data-translate-key="dashFemaleRatio">Female Ratio</h3><p id="statFemaleRatio">0%</p></div>
+                <div class="stat-card"><h3 data-translate-key="dashBlankEntries">Entries w/ Blanks</h3><p id="statBlankEntries">0</p></div>
+            </div>
+             <hr class="separator">
+             <div class="dashboard-carousel-container">
+                <!-- Updated title keys -->
+                <button class="carousel-button prev" id="prevChartButton" data-translate-key="btnPrev" title="Previous Chart" aria-label="Previous Chart"><i class="fas fa-chevron-left"></i></button>
+                <div class="dashboard-carousel-wrapper"><div class="dashboard-carousel-slides" id="dashboardCarouselSlides">
+                    <!-- Updated keys -->
+                    <div class="chart-slide"><div class="chart-container"><h3 data-translate-key="DashboardGenderTitle">Entries by Gender</h3><canvas id="genderChart"></canvas></div></div>
+                    <div class="chart-slide"><div class="chart-container"><h3 data-translate-key="DashboardBranchTitle">Entries by Branch (Top 5)</h3><canvas id="branchChart"></canvas></div></div>
+                    <div class="chart-slide"><div class="chart-container"><h3 data-translate-key="DashboardPartnerTitle">Entries by Partner</h3><canvas id="partnerChart"></canvas></div></div>
+                </div></div>
+                 <button class="carousel-button next" id="nextChartButton" data-translate-key="btnNext" title="Next Chart" aria-label="Next Chart"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="modal">
+        <div class="modal-content modal-small">
+            <!-- Updated title key -->
+            <span class="close-button" id="closeAdminLoginButton" data-translate-key="btnClose" title="Close">×</span>
+            <h2 data-translate-key="lblAdminLoginTitle">Admin Login</h2> <!-- Updated key -->
+            <form id="adminLoginForm">
+                <!-- Updated keys -->
+                <div class="form-field"><label for="adminUsername" data-translate-key="lblUsername">Username:</label><input type="text" id="adminUsername" data-translate-key="phAdminUsername" placeholder="Admin Username" required></div>
+                <div class="form-field"><label for="adminPassword" data-translate-key="lblPassword">Password:</label><input type="password" id="adminPassword" data-translate-key="phAdminPassword" placeholder="Admin Password" required autocomplete="current-password"></div> <!-- Added autocomplete -->
+                <!-- Updated key -->
+                <div class="form-actions"><button type="submit" class="action-button add-button" data-translate-key="btnAdminLogin">Login</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Edit Panel Modal -->
+    <div id="adminEditModal" class="modal">
+        <div class="modal-content modal-large">
+             <!-- Updated title key -->
+             <span class="close-button" id="closeAdminEditButton" data-translate-key="btnClose" title="Close">×</span>
+            <h2 data-translate-key="lblAdminEditTitle">Edit Partner Details</h2> <!-- Updated key -->
+            <!-- Changed ID -->
+            <form id="adminEditForm">
+                <!-- Grid content generated by JS -->
+                <div id="adminEditGrid" class="admin-edit-grid"></div>
+                 <!-- Updated key -->
+                <div class="form-actions"><button type="submit" class="action-button add-button"><i class="fas fa-save"></i> <span data-translate-key="btnAdminSaveChanges">Save Changes</span></button></div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- JavaScript Libraries (Order Matters!) -->
+    <!-- Toastify -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- SheetJS (XLSX) -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <!-- jsPDF-AutoTable -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script> <!-- Check version compatibility -->
+
+    <!-- Your Main Script -->
+    <script src="script.js"></script>
+</body>
+</html>

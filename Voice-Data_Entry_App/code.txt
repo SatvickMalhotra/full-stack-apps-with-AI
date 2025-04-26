@@ -1,0 +1,1088 @@
+// --- Global Variables & Constants ---
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition;
+let currentTargetInput = null;
+let collectedData = []; // Customer data store
+let partnerConfig = {}; // Partner config store { type: [partners] }
+const LS_DATA_KEY = 'customerEntriesData_v4'; // Incremented version
+const LS_PARTNER_KEY = 'customerPartnerConfig_v3';
+const LS_THEME_KEY = 'customerAppTheme';
+const LS_UI_LANG_KEY = 'customerAppUiLang_v2';
+let genderChartInstance, branchChartInstance, partnerChartInstance;
+let currentChartSlide = 0;
+let uploadedImages = []; // Store base64 image data for current session
+let currentImageIndex = 0;
+const MAX_IMAGE_UPLOADS = 50;
+
+// Field Keys (used for data handling, validation, etc.)
+const customerFieldKeys = [
+    'entryType', 'branchName', 'customerName', 'customerID', 'gender', 'mobileNumber',
+    'enrolmentDate', 'dob', 'savingsAccountNumber', 'csbCode', 'partnerId'
+];
+const textInputIds = ['branchName', 'customerName', 'customerID', 'mobileNumber', 'savingsAccountNumber', 'csbCode'];
+// Define required fields dynamically (all except dates)
+const optionalFields = ['enrolmentDate', 'dob']; // Fields NOT required
+const requiredFields = customerFieldKeys.filter(f => !optionalFields.includes(f));
+
+// Fields checked for duplicate detection (customize as needed)
+const duplicateCheckFields = ['customerName', 'mobileNumber', 'savingsAccountNumber'];
+// Fields checked for 'missing' highlight (use the dynamically generated requiredFields)
+const criticalFieldsForBlanks = [...requiredFields]; // Use the same required fields for blank check highlight
+
+// Admin Credentials
+const ADMIN_USERNAME = 'satvick';
+const ADMIN_PASSWORD = 'satvickisbest';
+
+// --- i18n Translations ---
+const translations = {
+    en: {
+        pageTitle: "Advanced Customer Data Entry", mainHeading: "Customer Data Entry", lblLanguage: "Language:", lblSpeechLanguage: "Speech Language:",
+        btnThemeLight: "Light", btnThemeDark: "Dark", btnDashboard: "Dashboard", btnAdmin: "Admin",
+        lblEntryType: "Entry Type:", optSelectType: "-- Select Type --", // New Type select
+        lblBranchName: "Branch Name:", plhBranchName: "Enter Branch Name", btnRecord: "Record", btnClean: "Clean",
+        lblCustomerName: "Customer Name:", plhCustomerName: "Enter Customer Name", lblCustomerID: "Customer ID:", plhCustomerID: "Enter Customer ID",
+        lblGender: "Gender:", optGenderMale: "Male", optGenderFemale: "Female", optGenderOther: "Other", optGenderUnknown: "Unknown",
+        lblMobileNumber: "Mobile Number:", plhMobileNumber: "Enter Mobile Number", lblEnrolmentDate: "Enrolment Date:", lblDOB: "Date of Birth:",
+        lblSavingsAcc: "Savings Acc No:", plhSavingsAcc: "Enter Savings Account Number", lblCSBCode: "CSB Code:", plhCSBCode: "Enter CSB Code",
+        lblPartnerSelect: "Select Partner:", optSelectPartner: "-- Select a Partner --", optSelectPartnerTypeFirst: "-- Select Type First --", // New option
+        btnAddEntry: "Add / Update Entry", btnUpdateEntry: "Update Entry", btnClearForm: "Clear Form",
+        btnUploadImages: "Upload Images", btnViewImages: "View Images", // Image buttons
+        tblHeading: "Collected Entries", btnFullscreen: "Fullscreen", btnExitFullscreen: "Exit Fullscreen",
+        tblColBranch: "Branch", tblColCustomerName: "Customer Name", tblColCustID: "Cust ID", tblColGender: "Gender", tblColMobile: "Mobile",
+        tblColEnrlDate: "Enrl. Date", tblColDOB: "DOB", tblColSavAcc: "Sav. Acc", tblColCSBCode: "CSB Code",
+        tblColPartnerName: "Partner Name", tblColSubscrAmt: "Subscr. Amt", tblColActions: "Actions",
+        tblNoEntries: "No entries added yet.",
+        btnDownloadExcel: "Download Excel & Clear", btnDownloadCsv: "Download CSV", btnDownloadPdf: "Download PDF", // Download buttons
+        dashHeading: "Dashboard", dashTotalEntries: "Total Entries", dashFemaleRatio: "Female Ratio", dashBlankEntries: "Entries w/ Blanks",
+        dashChartGender: "Entries by Gender", dashChartBranch: "Entries by Branch (Top 5)", dashChartPartner: "Entries by Partner",
+        adminLoginHeading: "Admin Login", lblUsername: "Username:", lblPassword: "Password:", btnLogin: "Login",
+        adminEditHeading: "Edit Partner Details", lblAdminPartnerName: "Partner Name:", lblAdminSubAmount: "Subscription Amount:", btnSaveChanges: "Save Changes",
+        adminNote: "Note: Partner IDs cannot be changed. Changes affect future lookups.",
+        toastLangChange: "UI language set to", toastSpeechUnsupp: "Speech Recognition not supported. Use Chrome/Edge.",
+        toastLoadErr: "Could not load saved customer data (corrupted).", toastPartnerLoadErr: "Could not load partner data.",
+        toastPartnerSaveErr: "Could not save partner configuration.", toastCustSaveErr: "Could not save customer data.",
+        toastLoginSuccess: "Admin login successful.", toastLoginFail: "Invalid admin credentials.",
+        toastAdminSaveSuccess: "Partner details updated successfully!", toastAdminSaveNoChange: "No changes detected.",
+        toastAdminSaveValidation: "Validation failed. Please check inputs.", toastExcelErr: "Error exporting customer data.",
+        toastExcelSuccess: "Customer data exported and cleared locally. Partner settings remain.", toastDataCleared: "Customer entry data cleared locally.",
+        toastNoDataExport: "No customer data to export.", toastDashErr: "Failed to generate dashboard.", toastFormCleared: "Form cleared.",
+        toastEntryAdded: "Entry added for {name}", toastEntryUpdated: "Entry updated for {name}", toastEntryDeleted: "Entry deleted for {name}",
+        toastEditing: "Editing entry for {name}", toastInputCleaned: "Input cleaned", toastListening: "Listening...", toastHeard: "Heard:",
+        toastSpeechErr: "Speech Error:", toastMicDenied: "Mic permission denied?", toastNoSpeech: "No speech detected.",
+        toastAudioErr: "Microphone hardware issue?", toastFullscreenErr: "Fullscreen Error: {message}",
+        toastReqFieldsWarning: "Please fill out all required fields: {fields}", // Blank field warning
+        toastGenericErr: "An unexpected error occurred.", toastCsvSuccess: "Data exported as CSV.", toastCsvErr: "Error exporting data to CSV.",
+        toastPdfSuccess: "Data exported as PDF.", toastPdfErr: "Error exporting data to PDF.",
+        toastImageUploadSuccess: "{count} images loaded for viewing.", toastImageUploadLimit: "Cannot upload more than {limit} images.",
+        toastImageUploadErr: "Error reading image file: {name}", toastNoImages: "No images uploaded to view.",
+        EditEntry: "Edit Entry", DeleteEntry: "Delete Entry", PrevImage: "Previous Image", NextImage: "Next Image",
+        ImageViewerStatus: "Image {current} of {total}",
+        btnEnterDataEntryMode: "Enter Entry Mode", lblEnterDataEntryMode: "Entry Mode", // Data Entry Mode Button
+        btnExitDataEntryMode: "Exit Entry Mode", lblExitDataEntryMode: "Exit Mode"     // Data Entry Mode Button
+    },
+    hi: {
+        pageTitle: "उन्नत ग्राहक डेटा प्रविष्टि", mainHeading: "ग्राहक डेटा प्रविष्टि", lblLanguage: "भाषा:", lblSpeechLanguage: "बोलने की भाषा:",
+        btnThemeLight: "लाइट", btnThemeDark: "डार्क", btnDashboard: "डैशबोर्ड", btnAdmin: "व्यवस्थापक",
+        lblEntryType: "प्रविष्टि प्रकार:", optSelectType: "-- प्रकार चुनें --",
+        lblBranchName: "शाखा का नाम:", plhBranchName: "शाखा का नाम दर्ज करें", btnRecord: "रिकॉर्ड", btnClean: "साफ़ करें",
+        lblCustomerName: "ग्राहक का नाम:", plhCustomerName: "ग्राहक का नाम दर्ज करें", lblCustomerID: "ग्राहक आईडी:", plhCustomerID: "ग्राहक आईडी दर्ज करें",
+        lblGender: "लिंग:", optGenderMale: "पुरुष", optGenderFemale: "महिला", optGenderOther: "अन्य", optGenderUnknown: "अज्ञात",
+        lblMobileNumber: "मोबाइल नंबर:", plhMobileNumber: "मोबाइल नंबर दर्ज करें", lblEnrolmentDate: "नामांकन तिथि:", lblDOB: "जन्म तिथि:",
+        lblSavingsAcc: "बचत खाता संख्या:", plhSavingsAcc: "बचत खाता संख्या दर्ज करें", lblCSBCode: "सीएसबी कोड:", plhCSBCode: "सीएसबी कोड दर्ज करें",
+        lblPartnerSelect: "साझेदार चुनें:", optSelectPartner: "-- एक साझेदार चुनें --", optSelectPartnerTypeFirst: "-- पहले प्रकार चुनें --",
+        btnAddEntry: "प्रविष्टि जोड़ें / अपडेट करें", btnUpdateEntry: "प्रविष्टि अपडेट करें", btnClearForm: "फ़ॉर्म साफ़ करें",
+        btnUploadImages: "छवियाँ अपलोड करें", btnViewImages: "छवियाँ देखें",
+        tblHeading: "एकत्रित प्रविष्टियाँ", btnFullscreen: "पूर्ण स्क्रीन", btnExitFullscreen: "पूर्ण स्क्रीन से बाहर निकलें",
+        tblColBranch: "शाखा", tblColCustomerName: "ग्राहक का नाम", tblColCustID: "ग्राहक आईडी", tblColGender: "लिंग", tblColMobile: "मोबाइल",
+        tblColEnrlDate: "नामांकन तिथि", tblColDOB: "जन्म तिथि", tblColSavAcc: "बचत खाता", tblColCSBCode: "सीएसबी कोड",
+        tblColPartnerName: "साझेदार का नाम", tblColSubscrAmt: "सदस्यता राशि", tblColActions: "कार्रवाई",
+        tblNoEntries: "अभी तक कोई प्रविष्टि नहीं जोड़ी गई है।",
+        btnDownloadExcel: "एक्सेल डाउनलोड करें और साफ़ करें", btnDownloadCsv: "सीएसवी डाउनलोड करें", btnDownloadPdf: "पीडीएफ़ डाउनलोड करें",
+        dashHeading: "डैशबोर्ड", dashTotalEntries: "कुल प्रविष्टियाँ", dashFemaleRatio: "महिला अनुपात", dashBlankEntries: "रिक्त वाली प्रविष्टियाँ",
+        dashChartGender: "लिंग के अनुसार प्रविष्टियाँ", dashChartBranch: "शाखा के अनुसार प्रविष्टियाँ (शीर्ष 5)", dashChartPartner: "साझेदार के अनुसार प्रविष्टियाँ",
+        adminLoginHeading: "व्यवस्थापक लॉगिन", lblUsername: "उपयोगकर्ता नाम:", lblPassword: "पासवर्ड:", btnLogin: "लॉग इन करें",
+        adminEditHeading: "साझेदार विवरण संपादित करें", lblAdminPartnerName: "साझेदार का नाम:", lblAdminSubAmount: "सदस्यता राशि:", btnSaveChanges: "बदलाव सहेजें",
+        adminNote: "ध्यान दें: पार्टनर आईडी बदली नहीं जा सकती। परिवर्तन भविष्य के लुकअप को प्रभावित करेंगे।",
+        toastLangChange: "UI भाषा इसमें सेट की गई", toastSpeechUnsupp: "वाक् पहचान समर्थित नहीं है। क्रोम/एज का उपयोग करें।",
+        toastLoadErr: "सहेजा गया ग्राहक डेटा लोड नहीं हो सका (भ्रष्ट)।", toastPartnerLoadErr: "साझेदार डेटा लोड नहीं हो सका।",
+        toastPartnerSaveErr: "साझेदार कॉन्फ़िगरेशन सहेजा नहीं जा सका।", toastCustSaveErr: "ग्राहक डेटा सहेजा नहीं जा सका।",
+        toastLoginSuccess: "व्यवस्थापक लॉगिन सफल।", toastLoginFail: "अमान्य व्यवस्थापक क्रेडेंशियल।",
+        toastAdminSaveSuccess: "साझेदार विवरण सफलतापूर्वक अपडेट किया गया!", toastAdminSaveNoChange: "कोई बदलाव नहीं पाया गया।",
+        toastAdminSaveValidation: "सत्यापन विफल। कृपया इनपुट जांचें।", toastExcelErr: "ग्राहक डेटा निर्यात करने में त्रुटि।",
+        toastExcelSuccess: "ग्राहक डेटा निर्यात किया गया और स्थानीय रूप से साफ़ किया गया। साझेदार सेटिंग्स बनी हुई हैं।",
+        toastDataCleared: "ग्राहक प्रविष्टि डेटा स्थानीय रूप से साफ़ किया गया।", toastNoDataExport: "निर्यात करने के लिए कोई ग्राहक डेटा नहीं है।",
+        toastDashErr: "डैशबोर्ड बनाने में विफल।", toastFormCleared: "फ़ॉर्म साफ़ किया गया।",
+        toastEntryAdded: "{name} के लिए प्रविष्टि जोड़ी गई", toastEntryUpdated: "{name} के लिए प्रविष्टि अपडेट की गई", toastEntryDeleted: "{name} के लिए प्रविष्टि हटाई गई",
+        toastEditing: "{name} के लिए प्रविष्टि संपादित की जा रही है", toastInputCleaned: "इनपुट साफ़ किया गया", toastListening: "सुन रहा हूँ...",
+        toastHeard: "सुना:", toastSpeechErr: "वाक् त्रुटि:", toastMicDenied: "माइक अनुमति अस्वीकृत?", toastNoSpeech: "कोई भाषण नहीं पहचाना गया।",
+        toastAudioErr: "माइक्रोफ़ोन हार्डवेयर समस्या?", toastFullscreenErr: "पूर्णस्क्रीन त्रुटि: {message}",
+        toastReqFieldsWarning: "कृपया सभी आवश्यक फ़ील्ड भरें: {fields}",
+        toastGenericErr: "एक अप्रत्याशित त्रुटि हुई।", toastCsvSuccess: "डेटा सीएसवी के रूप में निर्यात किया गया।", toastCsvErr: "डेटा को सीएसवी में निर्यात करने में त्रुटि।",
+        toastPdfSuccess: "डेटा पीडीएफ के रूप में निर्यात किया गया।", toastPdfErr: "डेटा को पीडीएफ में निर्यात करने में त्रुटि।",
+        toastImageUploadSuccess: "{count} छवियाँ देखने के लिए लोड की गईं।", toastImageUploadLimit: "{limit} से अधिक छवियाँ अपलोड नहीं कर सकते।",
+        toastImageUploadErr: "छवि फ़ाइल पढ़ने में त्रुटि: {name}", toastNoImages: "देखने के लिए कोई छवि अपलोड नहीं की गई।",
+        EditEntry: "प्रविष्टि संपादित करें", DeleteEntry: "प्रविष्टि हटाएं", PrevImage: "पिछली छवि", NextImage: "अगली छवि",
+        ImageViewerStatus: "छवि {current} का {total}",
+        btnEnterDataEntryMode: "एंट्री मोड दर्ज करें", lblEnterDataEntryMode: "एंट्री मोड", // Data Entry Mode Button
+        btnExitDataEntryMode: "एंट्री मोड से बाहर निकलें", lblExitDataEntryMode: "मोड से बाहर" // Data Entry Mode Button
+    }
+};
+let currentLang = 'en';
+
+// --- DOM Elements ---
+const tableBody = document.getElementById('dataTableBody');
+const form = document.getElementById('userInfoForm');
+const editingIdInput = document.getElementById('editingId');
+const loadingIndicator = document.getElementById('loadingIndicator');
+const themeToggleButton = document.getElementById('themeToggleButton');
+const entryTypeSelect = document.getElementById('entryTypeSelect'); // New Type select
+const partnerSelect = document.getElementById('partnerSelect');
+const dashboardModal = document.getElementById('dashboardModal');
+const closeDashboardButton = document.getElementById('closeDashboardButton');
+const dashboardButton = document.getElementById('dashboardButton');
+const adminLoginModal = document.getElementById('adminLoginModal');
+const closeAdminLoginButton = document.getElementById('closeAdminLoginButton');
+const adminLoginForm = document.getElementById('adminLoginForm');
+const adminButton = document.getElementById('adminButton');
+const adminEditModal = document.getElementById('adminEditModal');
+const closeAdminEditButton = document.getElementById('closeAdminEditButton');
+const adminEditForm = document.getElementById('adminEditForm');
+const adminEditGrid = document.querySelector('#adminEditForm .admin-edit-grid');
+const fullscreenButton = document.getElementById('fullscreenButton');
+const tableContainer = document.getElementById('tableContainer');
+const saveExcelButton = document.getElementById('saveExcelButton'); // Specific Excel button
+const saveCsvButton = document.getElementById('saveCsvButton');   // New CSV button
+const savePdfButton = document.getElementById('savePdfButton');   // New PDF button
+const clearFormButton = document.getElementById('clearFormButton');
+const addEntryButton = document.getElementById('addEntryButton');
+const languageSelect = document.getElementById('languageSelect'); // Speech language
+const languageSwitcher = document.getElementById('languageSwitcher'); // UI language
+const dashboardCarouselSlides = document.getElementById('dashboardCarouselSlides');
+const prevChartButton = document.getElementById('prevChartButton');
+const nextChartButton = document.getElementById('nextChartButton');
+const imageUploadInput = document.getElementById('imageUploadInput');
+const uploadImageButton = document.getElementById('uploadImageButton');
+const toggleImageViewerButton = document.getElementById('toggleImageViewerButton');
+const imageViewerSection = document.getElementById('imageViewerSection');
+const currentImageView = document.getElementById('currentImageView');
+const imageViewerStatus = document.getElementById('imageViewerStatus');
+const prevImageButton = document.getElementById('prevImageButton');
+const nextImageButton = document.getElementById('nextImageButton');
+const imageCountSpan = document.getElementById('imageCount');
+const toggleDataEntryModeButton = document.getElementById('toggleDataEntryModeButton'); // New Button
+
+
+// --- Initialization ---
+document.addEventListener('DOMContentLoaded', () => {
+    showLoader();
+    initializeTheme();
+    initializeLanguage(); // Sets lang, triggers translation updates & applyRequiredAttributes
+    loadPartnerData(); // Load/initialize partner config
+    loadDataFromLocalStorage(); // Load customer data
+    // applyRequiredAttributes is called within initializeLanguage now
+    populatePartnerDropdown(entryTypeSelect.value); // Populate based on initial (likely empty) type
+
+    if (!window.SpeechRecognition) {
+        showToast(translate('toastSpeechUnsupp'), 'error', 5000);
+        disableSpeechFunctionality();
+    } else {
+        initializeSpeechRecognition();
+    }
+
+    setupEventListeners();
+    updateDataEntryModeButton(); // Set initial state of Data Entry Mode button
+    renderTable();
+    hideLoader();
+});
+
+// --- Apply Required Attributes ---
+function applyRequiredAttributes() {
+    // Remove existing required attributes first to avoid duplicates if run multiple times
+    form.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
+
+    // Add required attribute based on the 'requiredFields' array
+    requiredFields.forEach(key => {
+        let element;
+        if (key === 'entryType') { element = entryTypeSelect; }
+        else if (key === 'partnerId') {
+            element = partnerSelect;
+            // Only make partnerSelect required if it's enabled (i.e., entryType selected)
+            if (element && element.disabled) return; // Skip if disabled
+        }
+        else if (key === 'gender') {
+             // Gender validation is done in JS (handleAddOrUpdateEntry) as radios are tricky with 'required'
+             // We ensure at least one is checked there. No required attribute needed here.
+             return;
+        }
+        else { element = document.getElementById(key); }
+
+        if (element) {
+            element.setAttribute('required', '');
+        }
+    });
+}
+
+
+// --- Internationalization (i18n) ---
+function translate(key, replacements = {}) {
+    const langTranslations = translations[currentLang] || translations.en;
+    let translation = langTranslations[key] || key; // Default to key if not found
+    for (const placeholder in replacements) {
+        translation = translation.replace(`{${placeholder}}`, replacements[placeholder]);
+    }
+    return translation;
+}
+
+
+function setLanguage(lang) {
+    if (!translations[lang]) { lang = 'en'; }
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    localStorage.setItem(LS_UI_LANG_KEY, lang);
+    document.querySelectorAll('[data-translate-key]').forEach(element => {
+        const key = element.dataset.translateKey;
+        // Use specific keys if available, otherwise fall back to the main key
+        const titleKey = element.dataset.translateTitleKey || (element.title ? key : null);
+        const placeholderKey = element.dataset.translatePlaceholderKey || (element.placeholder ? key : null);
+
+        // Update text content
+        // Handle spans inside buttons/elements carefully
+        let textNode = Array.from(element.childNodes).find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim() && !node.parentElement.classList.contains('required-star')); // Ensure we don't target the required star's parent
+        let spanTarget = element.querySelector('span:not(.sr-only):not(.sort-icon):not(.required-star)'); // Find a relevant span, exclude required star
+
+        if (spanTarget && !element.classList.contains('stat-card') && !element.classList.contains('gender-group')) { // Prefer span if exists and not special case
+             spanTarget.textContent = translate(key);
+        } else if (textNode) { // If direct text node exists and isn't inside the star span
+             // Check if it's directly under the element or one level down (like in gender labels)
+             if (textNode.parentNode === element || textNode.parentNode.parentNode === element){
+                 textNode.textContent = translate(key);
+             }
+        } else if (element.tagName !== 'INPUT' && element.tagName !== 'SELECT' && element.tagName !== 'TEXTAREA' && element.children.length === 0) { // Otherwise update element text if simple element
+             element.textContent = translate(key);
+        } else if (element.tagName === 'OPTION' && element.value === "") { // Handle placeholder options
+             element.textContent = translate(key);
+        }
+
+        // Update placeholder
+        if (placeholderKey && (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA')) {
+            element.placeholder = translate(placeholderKey);
+        }
+        // Update title
+        if (titleKey) {
+             element.title = translate(titleKey);
+        }
+    });
+
+    // Special updates after main translation
+    applyTheme(localStorage.getItem(LS_THEME_KEY) || 'light-theme'); // Re-apply theme to update button text
+    updateFullscreenButtonText();
+    updateDataEntryModeButton(); // Update Data Entry Mode button text
+    if (languageSwitcher) languageSwitcher.value = lang;
+    populatePartnerDropdown(entryTypeSelect.value); // Repopulate with current type
+    applyRequiredAttributes(); // Re-apply required attributes as labels/state might change
+    renderTable(); // Re-render table for translated headers/gender etc.
+}
+function initializeLanguage() {
+    const savedLang = localStorage.getItem(LS_UI_LANG_KEY) || navigator.language.split('-')[0] || 'en';
+    setLanguage(savedLang); // This will also trigger applyRequiredAttributes via its chain
+}
+
+// --- Theme Management ---
+function initializeTheme() { const theme = localStorage.getItem(LS_THEME_KEY) || 'light-theme'; applyTheme(theme); }
+// Applies theme AND ensures data-entry-mode is preserved if active
+function applyTheme(theme) {
+    const currentClasses = document.body.className;
+    const isDataEntryMode = currentClasses.includes('data-entry-mode');
+    // Remove only theme classes
+    document.body.className = currentClasses.replace(/light-theme|dark-theme/g, '').trim();
+    // Add new theme class
+    document.body.classList.add(theme);
+    // Re-add data-entry-mode if it was present
+    if (isDataEntryMode) {
+        document.body.classList.add('data-entry-mode');
+    }
+
+    const icon = themeToggleButton.querySelector('i');
+    const text = themeToggleButton.querySelector('.theme-icon-text');
+    if (theme === 'dark-theme') {
+        icon.classList.remove('fa-sun'); icon.classList.add('fa-moon');
+        if (text) text.textContent = translate('btnThemeDark');
+    } else {
+        icon.classList.remove('fa-moon'); icon.classList.add('fa-sun');
+        if (text) text.textContent = translate('btnThemeLight');
+    }
+    localStorage.setItem(LS_THEME_KEY, theme);
+}
+function toggleTheme() { const currentTheme = document.body.classList.contains('dark-theme') ? 'dark-theme' : 'light-theme'; const newTheme = currentTheme === 'dark-theme' ? 'light-theme' : 'dark-theme'; applyTheme(newTheme); showToast(`Theme changed to ${newTheme.replace('-theme','')}`, 'info'); }
+
+
+// --- Data Entry Mode ---
+function toggleDataEntryMode() {
+    document.body.classList.toggle('data-entry-mode');
+    updateDataEntryModeButton();
+    // Optional: Scroll to top when entering/exiting mode
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateDataEntryModeButton() {
+    if (!toggleDataEntryModeButton) return; // Guard clause
+    const isInEntryMode = document.body.classList.contains('data-entry-mode');
+    const button = toggleDataEntryModeButton;
+    const icon = button.querySelector('i');
+    const span = button.querySelector('span');
+
+    if (isInEntryMode) {
+        button.setAttribute('data-translate-key', 'btnExitDataEntryMode'); // Set key for potential re-translation
+        button.title = translate('btnExitDataEntryMode'); // Translate title immediately
+        if (span) span.textContent = translate('lblExitDataEntryMode'); // Translate text immediately
+        icon.classList.remove('fa-columns');
+        icon.classList.add('fa-table');
+    } else {
+        button.setAttribute('data-translate-key', 'btnEnterDataEntryMode');
+        button.title = translate('btnEnterDataEntryMode');
+        if (span) span.textContent = translate('lblEnterDataEntryMode');
+        icon.classList.remove('fa-table');
+        icon.classList.add('fa-columns');
+    }
+}
+
+
+// --- Partner Data Management (Restructured) ---
+function initializeDefaultPartnerData() {
+    // Structure: { type: [ {id, name, amount} ] }
+    return {
+        tele_health: [
+            { id: 'th_p1', name: 'Partner 1 (TH)', subscriptionAmount: 100 },
+            { id: 'th_p2', name: 'Partner 2 (TH)', subscriptionAmount: 200 },
+            { id: 'th_p3', name: 'Partner 3 (TH)', subscriptionAmount: 300 },
+        ],
+        combo: [
+            { id: 'co_p1', name: 'Partner 1 (Co)', subscriptionAmount: 500 },
+            { id: 'co_p2', name: 'Partner 2 (Co)', subscriptionAmount: 650 },
+            { id: 'co_p3', name: 'Partner 3 (Co)', subscriptionAmount: 1050 },
+        ]
+    };
+}
+function loadPartnerData() {
+    const storedData = localStorage.getItem(LS_PARTNER_KEY);
+    if (storedData) {
+        try {
+            partnerConfig = JSON.parse(storedData);
+            // Basic validation: check if it has the expected structure
+            if (typeof partnerConfig !== 'object' || !partnerConfig.tele_health || !partnerConfig.combo) {
+                console.warn("Stored partner data structure invalid, resetting.");
+                partnerConfig = initializeDefaultPartnerData();
+                savePartnerData();
+            }
+        } catch (e) { console.error("Error parsing partner data:", e); partnerConfig = initializeDefaultPartnerData(); savePartnerData(); showToast(translate('toastPartnerLoadErr'), 'error'); }
+    } else { partnerConfig = initializeDefaultPartnerData(); savePartnerData(); }
+}
+function savePartnerData() {
+    try { localStorage.setItem(LS_PARTNER_KEY, JSON.stringify(partnerConfig)); }
+    catch (e) { console.error("Error saving partner data:", e); showToast(translate('toastPartnerSaveErr'), 'error'); }
+}
+function populatePartnerDropdown(selectedType) {
+    const currentSelection = partnerSelect.value;
+    partnerSelect.innerHTML = ''; // Clear existing options
+
+    if (!selectedType || !partnerConfig[selectedType]) {
+        // No type selected or type has no partners
+        partnerSelect.innerHTML = `<option value="">${translate('optSelectPartnerTypeFirst')}</option>`;
+        partnerSelect.disabled = true;
+        partnerSelect.removeAttribute('required'); // Not required if disabled
+        return;
+    }
+
+    partnerSelect.disabled = false;
+    partnerSelect.innerHTML = `<option value="">${translate('optSelectPartner')}</option>`; // Add default select option
+    const partners = partnerConfig[selectedType];
+    partners.forEach(partner => {
+        const option = document.createElement('option');
+        option.value = partner.id;
+        option.textContent = `${partner.name} (${formatCurrency(partner.subscriptionAmount)})`;
+        partnerSelect.appendChild(option);
+    });
+
+     // Re-apply required attribute if this field is in requiredFields list and dropdown is enabled
+     if(requiredFields.includes('partnerId')) {
+         partnerSelect.setAttribute('required', '');
+     } else {
+         partnerSelect.removeAttribute('required');
+     }
+
+    // Attempt to restore previous selection if it's valid for the new type
+    if (partners.some(p => p.id === currentSelection)) {
+        partnerSelect.value = currentSelection;
+    }
+    // Trigger validation style update if needed
+    partnerSelect.dispatchEvent(new Event('change', { bubbles: true }));
+}
+function formatCurrency(amount) { return Number(amount).toLocaleString('en-IN', { style: 'currency', currency: 'INR', minimumFractionDigits: 0 }); }
+
+// --- Customer Data Persistence ---
+function saveDataToLocalStorage() { try { localStorage.setItem(LS_DATA_KEY, JSON.stringify(collectedData)); } catch (e) { console.error("Cust save err:", e); showToast(translate('toastCustSaveErr'), 'error'); } }
+function loadDataFromLocalStorage() { const d = localStorage.getItem(LS_DATA_KEY); if (d) { try { collectedData = JSON.parse(d); if (!Array.isArray(collectedData)) { collectedData = []; localStorage.removeItem(LS_DATA_KEY); } } catch (e) { console.error("Cust parse err:", e); collectedData = []; localStorage.removeItem(LS_DATA_KEY); showToast(translate('toastLoadErr'), 'warning'); } } else { collectedData = []; } }
+function clearLocalStorageAndCustomerData() { localStorage.removeItem(LS_DATA_KEY); collectedData = []; renderTable(); showToast(translate('toastDataCleared'), 'success'); }
+
+// --- UI Feedback ---
+function showToast(message, type = 'info', duration = 3000) { let bg; switch (type) { case 'success': bg = "linear-gradient(to right, #00b09b, #96c93d)"; break; case 'error': bg = "linear-gradient(to right, #ff5f6d, #ffc371)"; break; case 'warning': bg = "linear-gradient(to right, #f7b733, #fc4a1a)"; break; default: bg = "linear-gradient(to right, #007bff, #0056b3)"; } Toastify({ text: message, duration: duration, close: true, gravity: "top", position: "right", stopOnFocus: true, style: { background: bg, borderRadius: "5px", zIndex: 10000 } }).showToast(); }
+function showLoader() { loadingIndicator.style.display = 'flex'; }
+function hideLoader() { loadingIndicator.style.display = 'none'; }
+
+// --- Speech Recognition ---
+function initializeSpeechRecognition() { try { recognition = new SpeechRecognition(); recognition.continuous = false; recognition.interimResults = false; recognition.maxAlternatives = 1; recognition.onstart = handleRecognitionStart; recognition.onresult = handleRecognitionResult; recognition.onspeechend = () => recognition.stop(); recognition.onend = handleRecognitionEnd; recognition.onerror = handleRecognitionError; } catch(e) { console.error("Speech Recognition init failed:", e); showToast(translate('toastSpeechUnsupp'), 'error', 5000); disableSpeechFunctionality(); } }
+function disableSpeechFunctionality() { document.querySelectorAll('.mic-button').forEach(btn => btn.disabled = true); if(languageSelect) languageSelect.disabled = true; }
+function handleRecognitionStart() { const btn = document.querySelector(`.mic-button[data-target="${currentTargetInput?.id}"]`); if (btn) btn.classList.add('listening'); }
+function handleRecognitionResult(event) { const transcript = event.results[0][0].transcript.trim(); showToast(`${translate('toastHeard')} "${transcript}"`, 'info'); if (currentTargetInput) { currentTargetInput.value = transcript; currentTargetInput.dispatchEvent(new Event('input')); /* Trigger validation check if needed */ currentTargetInput.dispatchEvent(new Event('change')); /* Ensure change event fires for frameworks/listeners */ } }
+function handleRecognitionEnd() { enableAllMicButtons(); currentTargetInput = null; }
+function handleRecognitionError(event) { console.error("Speech Error:", event.error, event.message); let key = 'toastSpeechErr'; let detail = event.error; if (event.error === 'not-allowed' || event.error === 'service-not-allowed') key = 'toastMicDenied'; else if (event.error === 'no-speech') key = 'toastNoSpeech'; else if (event.error === 'audio-capture') key = 'toastAudioErr'; else if (event.error === 'aborted') { handleRecognitionEnd(); return; } showToast(`${translate(key)} (${detail})`, 'error'); handleRecognitionEnd(); }
+function handleMicButtonClick(event) { const id = event.currentTarget.dataset.target; currentTargetInput = document.getElementById(id); if (!currentTargetInput) return; if (!recognition) { showToast(translate('toastSpeechUnsupp'), 'error'); return; } recognition.lang = languageSelect.value; try { recognition.stop(); /* Stop any previous */ } catch(e) { /* Ignore error if not running */ } try { disableAllMicButtons(); recognition.start(); showToast(translate('toastListening'), 'info', 1500); } catch (error) { console.error("Rec start err:", error); showToast(translate('toastGenericErr'), 'error'); handleRecognitionEnd(); } }
+
+// --- Input Cleaning ---
+function handleCleanButtonClick(event) { const id = event.currentTarget.dataset.target; const input = document.getElementById(id); if (input) { handleCleanInput(input); showToast(translate('toastInputCleaned'), 'success', 1500); } }
+function handleCleanInput(input) { if (!input || typeof input.value !== 'string') return; input.value = input.value.toLowerCase().replace(/\s+/g, ''); input.dispatchEvent(new Event('input')); input.dispatchEvent(new Event('change')); }
+
+// --- Image Handling ---
+// NOTE: Mobile upload issues might stem from browser-specific security restrictions
+// or subtle CSS interference (e.g., z-index). Using a <label> styled as a button,
+// pointing to the input's ID, is often more robust.
+// The current direct .click() method is kept, but if issues persist on mobile,
+// changing the "Upload Images" button to a <label for="imageUploadInput"> might help.
+function handleImageUploadTrigger() {
+    imageUploadInput.click();
+}
+function handleImageFiles(event) {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    const filesToProcess = Array.from(files).slice(0, MAX_IMAGE_UPLOADS - uploadedImages.length); // Respect limit
+
+    if (files.length + uploadedImages.length > MAX_IMAGE_UPLOADS) {
+        showToast(translate('toastImageUploadLimit', { limit: MAX_IMAGE_UPLOADS }), 'warning');
+    }
+
+    let processedCount = 0;
+    showLoader(); // Show loader during file reading
+
+    filesToProcess.forEach(file => {
+        if (!file.type.startsWith('image/')) {
+             console.warn(`Skipping non-image file: ${file.name}`);
+             processedCount++; // Still count as processed to potentially hide loader
+             if (processedCount === filesToProcess.length) hideLoader();
+             return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            uploadedImages.push({ name: file.name, dataUrl: e.target.result });
+            processedCount++;
+            if (processedCount === filesToProcess.length) {
+                hideLoader();
+                updateImageViewerState();
+                showToast(translate('toastImageUploadSuccess', { count: uploadedImages.length }), 'success');
+                 // Optionally open viewer if it's closed and we just uploaded images
+                 if (imageViewerSection.style.display === 'none' && uploadedImages.length > 0) {
+                     toggleImageViewer();
+                 }
+            }
+        };
+        reader.onerror = () => {
+            console.error("Error reading file:", file.name);
+            showToast(translate('toastImageUploadErr', { name: file.name }), 'error');
+            processedCount++; // Still count as processed to finish loading indicator
+            if (processedCount === filesToProcess.length) hideLoader();
+        };
+        reader.readAsDataURL(file); // Read file as Base64
+    });
+
+    imageUploadInput.value = ''; // Reset file input to allow re-uploading the same file
+}
+function toggleImageViewer() {
+    if (uploadedImages.length === 0) {
+        showToast(translate('toastNoImages'), 'info');
+        imageViewerSection.style.display = 'none'; // Ensure it's hidden
+        return;
+    }
+    const isHidden = imageViewerSection.style.display === 'none';
+    imageViewerSection.style.display = isHidden ? 'flex' : 'none'; // Use flex for internal layout
+    if (isHidden) {
+        currentImageIndex = 0;
+        displayCurrentImage();
+    }
+}
+function displayCurrentImage() {
+    if (uploadedImages.length === 0 || !uploadedImages[currentImageIndex]) {
+        imageViewerSection.style.display = 'none';
+        currentImageView.src = ''; // Clear image source
+        currentImageView.alt = '';
+        imageViewerStatus.textContent = translate('ImageViewerStatus', { current: 0, total: 0 });
+        return;
+    }
+    currentImageView.src = uploadedImages[currentImageIndex].dataUrl;
+    currentImageView.alt = uploadedImages[currentImageIndex].name;
+    imageViewerStatus.textContent = translate('ImageViewerStatus', { current: currentImageIndex + 1, total: uploadedImages.length });
+    prevImageButton.disabled = currentImageIndex === 0;
+    nextImageButton.disabled = currentImageIndex === uploadedImages.length - 1;
+}
+function showNextImage() { if (currentImageIndex < uploadedImages.length - 1) { currentImageIndex++; displayCurrentImage(); } }
+function showPrevImage() { if (currentImageIndex > 0) { currentImageIndex--; displayCurrentImage(); } }
+function updateImageViewerState() {
+    const count = uploadedImages.length;
+    imageCountSpan.textContent = count;
+    toggleImageViewerButton.disabled = count === 0;
+    if (count === 0) {
+        imageViewerSection.style.display = 'none'; // Hide viewer if no images
+        displayCurrentImage(); // Clear viewer content
+    } else {
+        // If images exist and viewer was open, refresh the current image display
+        if (imageViewerSection.style.display !== 'none') {
+            if(currentImageIndex >= count) currentImageIndex = Math.max(0, count - 1); // Adjust index if needed
+            displayCurrentImage();
+        }
+    }
+}
+
+// --- Core Customer Data Handling ---
+function handleAddOrUpdateEntry() {
+     // 1. Check basic HTML5 required validation
+     if (!form.checkValidity()) {
+         let missingFields = [];
+         form.querySelectorAll(':invalid').forEach(el => {
+             // Try to find the label associated with the invalid element
+             const labelElement = document.querySelector(`label[for='${el?.id}']`) || el?.closest('.form-field')?.querySelector('label:not(.gender-group label)'); // Prioritize specific label
+             let fieldName = 'field'; // Default name
+             if (labelElement) {
+                 // Clone node to avoid modifying original, remove star, get text
+                 const labelClone = labelElement.cloneNode(true);
+                 const star = labelClone.querySelector('.required-star');
+                 if(star) star.remove();
+                 fieldName = labelClone.textContent.replace(':', '').trim();
+             } else if (el?.id) {
+                 fieldName = el.id; // Fallback to ID
+             }
+             missingFields.push(fieldName);
+         });
+         // Remove duplicates if multiple elements fail for the same conceptual field (like radio buttons)
+         missingFields = [...new Set(missingFields)];
+
+         showToast(translate('toastReqFieldsWarning', { fields: missingFields.join(', ') }), 'warning', 5000);
+         form.reportValidity(); // Trigger browser's native validation UI
+         return; // Stop submission
+     }
+
+     // 2. Custom Validation (Example: Check if a gender radio is selected)
+     const genderSelected = form.querySelector('input[name="gender"]:checked');
+     if (!genderSelected) {
+         showToast(translate('toastReqFieldsWarning', { fields: translate('lblGender') }), 'warning', 5000);
+         // Optionally highlight the gender section
+         const genderGroup = form.querySelector('.gender-group');
+         if(genderGroup) {
+             genderGroup.style.outline = '1px solid var(--danger-color)'; // Add temporary outline
+             setTimeout(() => { genderGroup.style.outline = 'none'; }, 3000); // Remove outline after a delay
+         }
+         return; // Stop submission
+     }
+
+
+    // If all validation passes, proceed to gather data
+    const entryData = {};
+    customerFieldKeys.forEach(key => {
+        let value;
+        if (key === 'gender') {
+            value = genderSelected.value; // Already checked above
+        } else {
+            const element = document.getElementById(key);
+            value = element ? element.value.trim() : '';
+        }
+        entryData[key] = value;
+    });
+
+    // Proceed with adding or updating
+    const editingId = editingIdInput.value;
+    const name = entryData.customerName || 'N/A';
+    if (editingId) {
+        const i = collectedData.findIndex(e => e.id == editingId);
+        if (i > -1) {
+            // Preserve original ID and merge new data
+            collectedData[i] = { ...collectedData[i], ...entryData };
+            showToast(translate('toastEntryUpdated', { name: name }), 'success');
+        } else {
+            console.warn("Editing ID not found, adding as new entry.");
+            entryData.id = Date.now(); // Assign new ID
+            collectedData.push(entryData);
+            showToast(translate('toastEntryAdded', { name: name }), 'success');
+        }
+        // Reset editing state
+        editingIdInput.value = '';
+        addEntryButton.querySelector('span').textContent = translate('btnAddEntry');
+    } else {
+        entryData.id = Date.now(); // Use timestamp as a simple unique ID
+        collectedData.push(entryData);
+        showToast(translate('toastEntryAdded', { name: name }), 'success');
+    }
+    saveDataToLocalStorage();
+    renderTable();
+    clearForm(); // Clear form after successful add/update
+}
+function handleEditEntry(id) {
+    const entry = collectedData.find(e => e.id == id); if (!entry) return;
+
+    // Reset form validation state before populating
+    clearFormValidationStyles();
+
+    customerFieldKeys.forEach(key => {
+         if (key === 'entryType') { entryTypeSelect.value = entry.entryType || ""; populatePartnerDropdown(entry.entryType); } // Populate partners for this type
+         else if (key === 'partnerId') { setTimeout(() => { partnerSelect.value = entry.partnerId || ""; }, 0); } // Set partner after dropdown populates (slight delay)
+         else if (key === 'gender') { document.querySelectorAll('input[name="gender"]').forEach(rb => { rb.checked = (rb.value === entry.gender); }); }
+         else { const el = document.getElementById(key); if (el) el.value = entry[key] || ''; }
+    });
+    editingIdInput.value = id; addEntryButton.querySelector('span').textContent = translate('btnUpdateEntry');
+    showToast(translate('toastEditing', { name: entry.customerName || 'N/A' }), 'info');
+    // Scroll form into view, especially useful in data entry mode
+    form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function handleDeleteEntry(id) {
+    const i = collectedData.findIndex(e => e.id == id); if (i > -1) { const name = collectedData[i].customerName || 'this record'; if (confirm(`${translate('DeleteEntry')} "${name}"?`)) { collectedData.splice(i, 1); saveDataToLocalStorage(); renderTable(); showToast(translate('toastEntryDeleted', { name: name }), 'success'); if (editingIdInput.value == id) clearForm(); } }
+}
+
+// --- Duplicate Detection ---
+function findDuplicates(data) {
+    const combinations = new Map(); const duplicateIds = new Set();
+    data.forEach(entry => {
+        // Use fields defined in duplicateCheckFields array
+        const keyParts = duplicateCheckFields.map(field => (entry[field] || '').trim().toLowerCase());
+        if (keyParts.every(part => part)) { // Only check if all key fields have values
+            const key = keyParts.join('|');
+            if (combinations.has(key)) {
+                duplicateIds.add(entry.id); // Add current entry ID
+                duplicateIds.add(combinations.get(key)); // Add the ID of the first entry found with this key
+            } else {
+                 combinations.set(key, entry.id); // Store the ID of the first entry with this key
+            }
+        }
+    }); return duplicateIds;
+}
+
+// --- Table Sorting ---
+let sortColumn = null;
+let sortDirection = 'asc'; // 'asc' or 'desc'
+
+function sortData(key) {
+    const isAsc = sortColumn === key && sortDirection === 'asc';
+    sortDirection = isAsc ? 'desc' : 'asc';
+    sortColumn = key;
+
+    collectedData.sort((a, b) => {
+        let valA = a[key];
+        let valB = b[key];
+
+        // Special handling for partner details lookup
+        if (key === 'partnerName' || key === 'subscriptionAmount') {
+             // Find partner details from the correct type
+             const partnerA = partnerConfig[a.entryType]?.find(p => p.id === a.partnerId);
+             const partnerB = partnerConfig[b.entryType]?.find(p => p.id === b.partnerId);
+             valA = (key === 'partnerName') ? (partnerA?.name || '') : (partnerA?.subscriptionAmount ?? null); // Use null for sorting consistency
+             valB = (key === 'partnerName') ? (partnerB?.name || '') : (partnerB?.subscriptionAmount ?? null);
+        }
+
+        // Type handling for comparison
+        const typeA = typeof valA;
+        const typeB = typeof valB;
+
+        // Handle null/undefined consistently (treat as lowest value)
+        if (valA == null && valB == null) return 0;
+        if (valA == null) return isAsc ? -1 : 1; // nulls first in asc, last in desc
+        if (valB == null) return isAsc ? 1 : -1; // nulls first in asc, last in desc
+
+
+        if (typeA === 'number' && typeB === 'number') {
+            return isAsc ? valA - valB : valB - valA;
+        } else if (key === 'enrolmentDate' || key === 'dob') { // Explicit date handling
+             // Check if values are valid dates before creating Date objects
+             const dateAValid = valA && !isNaN(Date.parse(valA));
+             const dateBValid = valB && !isNaN(Date.parse(valB));
+             if(dateAValid && dateBValid) {
+                 const dateA = new Date(valA);
+                 const dateB = new Date(valB);
+                 // Check for invalid date objects just in case
+                 if (isNaN(dateA) && isNaN(dateB)) return 0;
+                 if (isNaN(dateA)) return isAsc ? -1 : 1;
+                 if (isNaN(dateB)) return isAsc ? 1 : -1;
+                 return isAsc ? dateA - dateB : dateB - dateA;
+             } else if (dateAValid) { return isAsc ? 1 : -1; } // Valid date > invalid/empty date
+             else if (dateBValid) { return isAsc ? -1 : 1; } // Invalid/empty date < valid date
+             else { return 0; } // Both invalid/empty
+        } else {
+             // String comparison (case-insensitive) using localeCompare for better sorting
+             const strA = String(valA).toLowerCase();
+             const strB = String(valB).toLowerCase();
+             return isAsc ? strA.localeCompare(strB) : strB.localeCompare(strA);
+        }
+    });
+
+    renderTable(); // Re-render with sorted data
+}
+
+function updateSortIcons() {
+    document.querySelectorAll('#dataTable thead th[data-sort-key]').forEach(th => {
+        const icon = th.querySelector('.sort-icon');
+        if(!icon) return; // Defensive check
+        if (th.dataset.sortKey === sortColumn) {
+            icon.textContent = sortDirection === 'asc' ? '▲' : '▼';
+            icon.style.opacity = '1'; // Make active icon visible
+        } else {
+            icon.textContent = '▲'; // Show potential sort icon faintly
+             icon.style.opacity = '0.3';
+        }
+    });
+}
+
+
+// --- Table Rendering ---
+function renderTable() {
+    tableBody.innerHTML = '';
+    if (collectedData.length === 0) { tableBody.innerHTML = `<tr class="no-data-row"><td colspan="12">${translate('tblNoEntries')}</td></tr>`; updateSortIcons(); return; }
+
+    const duplicateIds = findDuplicates(collectedData);
+    const oneHourAgo = Date.now() - 3600000; // For recent highlight
+
+    collectedData.forEach(entry => {
+        const row = tableBody.insertRow(); row.dataset.id = entry.id; // Add ID for potential targeting
+        //row.classList.add('fade-in'); // Apply fade-in animation // Let CSS handle this based on parent potentially
+
+        // Find partner details based on the stored partnerId AND type
+        const partner = partnerConfig[entry.entryType]?.find(p => p.id === entry.partnerId);
+        const pName = partner?.name || 'N/A';
+        const pAmount = partner?.subscriptionAmount ?? 0; // Use nullish coalescing for amount
+
+        // Determine row highlighting
+        // Use criticalFieldsForBlanks (derived from requiredFields) for missing check
+        let isMissing = criticalFieldsForBlanks.some(k => !entry[k]); // Includes gender check implicitly now
+        let isRecent = entry.id > oneHourAgo;
+        let isDuplicate = duplicateIds.has(entry.id);
+
+        // Apply highlight classes (Duplicate > Missing > Recent)
+        row.className = 'fade-in'; // Start with fade-in, add highlights on top
+        if (isDuplicate) row.classList.add('row-highlight-duplicate');
+        else if (isMissing) row.classList.add('row-highlight-missing');
+        else if (isRecent) row.classList.add('row-highlight-recent');
+
+        // Populate cells
+        row.insertCell().textContent = entry.branchName || '';
+        row.insertCell().textContent = entry.customerName || '';
+        row.insertCell().textContent = entry.customerID || '';
+        // Translate gender value for display
+        row.insertCell().textContent = translate(`optGender${entry.gender || 'Unknown'}`) || entry.gender || '';
+        row.insertCell().textContent = entry.mobileNumber || '';
+        row.insertCell().textContent = entry.enrolmentDate || '';
+        row.insertCell().textContent = entry.dob || '';
+        row.insertCell().textContent = entry.savingsAccountNumber || '';
+        row.insertCell().textContent = entry.csbCode || '';
+        row.insertCell().textContent = pName; // Partner Name
+        const amountCell = row.insertCell();
+        amountCell.textContent = (partner?.subscriptionAmount != null) ? formatCurrency(pAmount) : ''; // Display formatted amount or empty
+        amountCell.style.textAlign = 'right'; // Align amount right
+
+        // Action buttons cell
+        const actionCell = row.insertCell(); actionCell.classList.add('action-cell');
+        actionCell.innerHTML = `
+            <button class="edit-btn" data-id="${entry.id}" title="${translate('EditEntry')}"><i class="fas fa-pencil-alt"></i></button>
+            <button class="delete-btn" data-id="${entry.id}" title="${translate('DeleteEntry')}"><i class="fas fa-trash-alt"></i></button>`;
+    });
+    updateSortIcons(); // Update icons after rendering
+}
+
+function clearFormValidationStyles() {
+    // Remove validation styles manually (reset doesn't clear custom styles or :invalid state sometimes)
+    form.querySelectorAll('.form-field input, .form-field select').forEach(el => {
+        el.classList.remove('invalid'); // Assuming you might add an 'invalid' class
+        // Reset border if it was changed for validation
+        el.style.borderColor = ''; // Let CSS handle the default border
+        // Remove custom validation messages if any (not used here but good practice)
+        el.setCustomValidity('');
+    });
+     // Reset gender group outline if it was added
+     const genderGroup = form.querySelector('.gender-group');
+     if(genderGroup) genderGroup.style.outline = 'none';
+}
+
+function clearForm() {
+    form.reset(); // Resets text, date, radio buttons, select
+    clearFormValidationStyles(); // Clear any lingering validation styles
+
+    // Reset partner dropdown state based on the current type selection
+    populatePartnerDropdown(entryTypeSelect.value); // This handles disabling and required status
+
+    editingIdInput.value = '';
+    addEntryButton.querySelector('span').textContent = translate('btnAddEntry'); // Reset button text
+
+    // DO NOT clear images when clearing the form, they are session-based
+    // showToast(translate('toastFormCleared'), 'info'); // Optional toast
+}
+
+
+// --- Download Functions ---
+function handleSaveToExcel() {
+    if (collectedData.length === 0) {
+        showToast(translate('toastNoDataExport'), 'warning');
+        return;
+    }
+    showLoader(); // Show loader during Excel generation
+    setTimeout(() => { // Allow UI to update
+        try {
+            const exportData = getExportData(); // Use helper function
+            if (exportData.length === 0) { // Double check after potential filtering in getExportData
+                 showToast(translate('toastNoDataExport'), 'warning');
+                 hideLoader();
+                 return;
+            }
+            const wb = XLSX.utils.book_new();
+            // Convert data back to sheet format, ensuring headers match translated keys
+            const wsData = exportData.map(row => Object.values(row)); // Get values in order
+            const headers = Object.keys(exportData[0]); // Get headers
+            const ws = XLSX.utils.aoa_to_sheet([headers, ...wsData]); // Use array of arrays
+
+            // Define approx column widths (adjust as needed) based on header count
+             const columnWidths = [
+                 { wch: 15 }, { wch: 25 }, { wch: 15 }, { wch: 10 }, { wch: 15 },
+                 { wch: 12 }, { wch: 12 }, { wch: 20 }, { wch: 10 },
+                 { wch: 20 }, { wch: 15 }
+             ];
+             if(headers.length === columnWidths.length) {
+                ws['!cols'] = columnWidths;
+             } else {
+                 console.warn(`Header count (${headers.length}) doesn't match width definition count (${columnWidths.length}). Skipping width setting.`);
+             }
+
+
+            XLSX.utils.book_append_sheet(wb, ws, "CustomerData");
+            const filename = `CustomerData_${new Date().toISOString().slice(0, 10)}.xlsx`;
+            XLSX.writeFile(wb, filename); // Trigger download
+
+            // SUCCESS: Clear local storage AND images AFTER successful download trigger
+            clearLocalStorageAndCustomerData(); // Clears customer data array and LS
+            uploadedImages = [];               // Clear image array
+            updateImageViewerState();          // Update the image viewer UI state
+
+            showToast(translate('toastExcelSuccess'), 'success', 5000);
+
+        } catch (error) {
+            console.error("Error saving to Excel:", error);
+            showToast(translate('toastExcelErr'), 'error');
+        } finally {
+             hideLoader(); // Hide loader regardless of success/failure
+        }
+    }, 50); // Small delay for loader rendering
+}
+
+function handleSaveToCSV() { if (collectedData.length === 0) { showToast(translate('toastNoDataExport'), 'warning'); return; } showLoader(); setTimeout(() => { try { const data = getExportData(); if (data.length === 0) { showToast(translate('toastNoDataExport'), 'warning'); hideLoader(); return; } const headers = Object.keys(data[0]); const csvRows = [ headers.join(','), ...data.map(row => headers.map(header => `"${(row[header] ?? '').toString().replace(/"/g, '""')}"`).join(',')) ]; const csvString = csvRows.join('\r\n'); triggerDownload(csvString, `CustomerData_${new Date().toISOString().slice(0, 10)}.csv`, 'text/csv;charset=utf-8;'); showToast(translate('toastCsvSuccess'), 'success'); } catch (e) { console.error("CSV export err:", e); showToast(translate('toastCsvErr'), 'error'); } finally { hideLoader(); } }, 50); }
+function handleSaveToPDF() { if (collectedData.length === 0) { showToast(translate('toastNoDataExport'), 'warning'); return; } showLoader(); setTimeout(() => { try { const { jsPDF } = window.jspdf; const doc = new jsPDF({ orientation: 'landscape' }); const data = getExportData(); if (data.length === 0) { showToast(translate('toastNoDataExport'), 'warning'); hideLoader(); return; } const headers = Object.keys(data[0]); const body = data.map(row => headers.map(header => row[header] ?? '')); // Use nullish coalescing for safety doc.autoTable({ head: [headers], body: body, startY: 10, theme: 'grid', headStyles: { fillColor: [0, 123, 255] }, styles: { fontSize: 8, cellPadding: 2, overflow: 'linebreak' }, columnStyles: { /* Adjust specific column widths if needed, e.g., 1: {cellWidth: 30} */ } }); doc.save(`CustomerData_${new Date().toISOString().slice(0, 10)}.pdf`); showToast(translate('toastPdfSuccess'), 'success'); } catch (e) { console.error("PDF export err:", e); showToast(translate('toastPdfErr'), 'error'); } finally { hideLoader(); } }, 50); }
+// Helper to get data in consistent format for downloads, using translated headers
+function getExportData() {
+    return collectedData.map(entry => {
+        const partner = partnerConfig[entry.entryType]?.find(p => p.id === entry.partnerId);
+        const pName = partner?.name || 'N/A';
+        const pAmount = partner?.subscriptionAmount ?? null; // Use null for missing amount
+        const genderDisplay = translate(`optGender${entry.gender || 'Unknown'}`) || entry.gender || '';
+
+        // Create an object with translated keys
+        let rowData = {};
+        rowData[translate('tblColBranch')] = entry.branchName || '';
+        rowData[translate('tblColCustomerName')] = entry.customerName || '';
+        rowData[translate('tblColCustID')] = entry.customerID || '';
+        rowData[translate('tblColGender')] = genderDisplay;
+        rowData[translate('tblColMobile')] = entry.mobileNumber || '';
+        rowData[translate('tblColEnrlDate')] = entry.enrolmentDate || '';
+        rowData[translate('tblColDOB')] = entry.dob || '';
+        rowData[translate('tblColSavAcc')] = entry.savingsAccountNumber || '';
+        rowData[translate('tblColCSBCode')] = entry.csbCode || '';
+        rowData[translate('tblColPartnerName')] = pName;
+        rowData[translate('tblColSubscrAmt')] = pAmount; // Keep amount as number/null
+
+        return rowData;
+    });
+}
+// Helper to trigger file download
+function triggerDownload(content, filename, contentType) { const blob = new Blob([content], { type: contentType }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url); }
+
+// --- Dashboard Functionality ---
+function generateDashboard() { showLoader(); setTimeout(() => { try { const totalEntries = collectedData.length; document.getElementById('statTotalEntries').textContent = totalEntries; const femaleCount = collectedData.filter(e => e.gender === 'Female').length; const femaleRatio = totalEntries > 0 ? ((femaleCount / totalEntries) * 100).toFixed(1) : 0; document.getElementById('statFemaleRatio').textContent = `${femaleRatio}%`; const blankEntriesCount = collectedData.filter(e => criticalFieldsForBlanks.some(k => !e[k])).length; document.getElementById('statBlankEntries').textContent = blankEntriesCount; // Destroy existing charts if they exist if (genderChartInstance) genderChartInstance.destroy(); if (branchChartInstance) branchChartInstance.destroy(); if (partnerChartInstance) partnerChartInstance.destroy(); // Generate chart data const genderCounts = collectedData.reduce((a, e) => { const k = `optGender${e.gender||'Unknown'}`; a[k] = (a[k]||0)+1; return a; }, {}); renderGenderChart(genderCounts); const branchCounts = collectedData.reduce((a, e) => { const b = e.branchName||'Unknown Branch'; a[b] = (a[b]||0)+1; return a; }, {}); const sortedB = Object.entries(branchCounts).sort(([,a],[,b])=>b-a).slice(0,5); renderBranchChart(Object.fromEntries(sortedB)); const partnerCounts = collectedData.reduce((a, e) => { const p = partnerConfig[e.entryType]?.find(p => p.id === e.partnerId); const n = p?.name || 'Not Assigned'; a[n] = (a[n]||0)+1; return a; }, {}); renderPartnerChart(partnerCounts); // Display modal currentChartSlide = 0; showSlide(currentChartSlide); dashboardModal.style.display = 'block'; // Make modal visible first dashboardModal.classList.add('fade-in-modal'); // Then trigger animation } catch (e) { console.error("Dashboard err:", e); showToast(translate('toastDashErr'), 'error'); } finally { hideLoader(); } }, 50); }
+function renderGenderChart(data) { const ctx = document.getElementById('genderChart')?.getContext('2d'); if (!ctx) return; const translatedLabels = Object.keys(data).map(k => translate(k)); const chartData = Object.values(data); const bgColors = ['rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)', 'rgba(255, 206, 86, 0.7)', 'rgba(153, 102, 255, 0.7)']; genderChartInstance = new Chart(ctx, { type: 'doughnut', data: { labels: translatedLabels, datasets: [{ data: chartData, backgroundColor: bgColors.slice(0, chartData.length), borderColor: 'rgba(255, 255, 255, 0.8)', borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } } } }); }
+function renderBranchChart(data) { const ctx = document.getElementById('branchChart')?.getContext('2d'); if (!ctx) return; branchChartInstance = new Chart(ctx, { type: 'bar', data: { labels: Object.keys(data), datasets: [{ label: translate('dashChartBranch'), data: Object.values(data), backgroundColor: 'rgba(75, 192, 192, 0.7)', borderColor: 'rgba(75, 192, 192, 1)', borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, ticks: { stepSize: 1, precision: 0 } } }, plugins: { legend: { display: false } } } }); }
+function renderPartnerChart(data) { const ctx = document.getElementById('partnerChart')?.getContext('2d'); if (!ctx) return; const chartData = Object.values(data); const bgColors = ['rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)', 'rgba(75, 192, 192, 0.7)', 'rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)', 'rgba(255, 206, 86, 0.7)', '#4BC0C0', '#FFCD56']; partnerChartInstance = new Chart(ctx, { type: 'pie', data: { labels: Object.keys(data), datasets: [{ data: chartData, backgroundColor: bgColors.slice(0, chartData.length), borderColor: 'rgba(255, 255, 255, 0.8)', borderWidth: 1 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 10 } } } } } }); }
+
+// --- Dashboard Carousel Logic ---
+function showSlide(index) { const slides = dashboardCarouselSlides.querySelectorAll('.chart-slide'); const total = slides.length; if (total === 0) return; if (index >= total) index = 0; if (index < 0) index = total - 1; currentChartSlide = index; const offset = -index * 100; dashboardCarouselSlides.style.transform = `translateX(${offset}%)`; }
+function nextSlide() { showSlide(currentChartSlide + 1); }
+function prevSlide() { showSlide(currentChartSlide - 1); }
+
+// --- Fullscreen ---
+function toggleFullscreen() { if (!document.fullscreenElement) { tableContainer.requestFullscreen().catch(err => { showToast(translate('toastFullscreenErr', { message: err.message }), 'error'); console.error(`Fullscreen err: ${err.message} (${err.name})`); }); } else { if (document.exitFullscreen) document.exitFullscreen(); } }
+function updateFullscreenButtonText() { const isFs = !!document.fullscreenElement; const span = fullscreenButton.querySelector('span'); const icon = fullscreenButton.querySelector('i'); if(isFs) { if (span) span.textContent = translate('btnExitFullscreen'); icon.classList.replace('fa-expand', 'fa-compress'); } else { if (span) span.textContent = translate('btnFullscreen'); icon.classList.replace('fa-compress', 'fa-expand'); } }
+document.addEventListener('fullscreenchange', updateFullscreenButtonText);
+
+// --- Admin Functionality ---
+function handleAdminButtonClick() { adminLoginForm.reset(); adminLoginModal.style.display = 'block'; // Make modal visible first adminLoginModal.classList.add('fade-in-modal'); // Then trigger animation document.getElementById('adminUsername').focus(); }
+function handleAdminLogin(event) { event.preventDefault(); const u = document.getElementById('adminUsername').value; const p = document.getElementById('adminPassword').value; if (u === ADMIN_USERNAME && p === ADMIN_PASSWORD) { adminLoginModal.style.display = 'none'; adminLoginModal.classList.remove('fade-in-modal'); populateAdminEditPanel(); adminEditModal.style.display = 'block'; // Make modal visible first adminEditModal.classList.add('fade-in-modal'); // Then trigger animation showToast(translate('toastLoginSuccess'), 'success'); } else { showToast(translate('toastLoginFail'), 'error'); adminLoginForm.reset(); document.getElementById('adminUsername').focus(); } }
+function populateAdminEditPanel() {
+    adminEditGrid.innerHTML = '';
+    // Iterate through partner types (tele_health, combo)
+    Object.keys(partnerConfig).forEach(type => {
+        partnerConfig[type].forEach(p => { // Iterate through partners within the type
+            const div = document.createElement('div'); div.className = 'admin-partner-group';
+            // Display type clearly
+            const typeLabel = type === 'tele_health' ? 'Tele Health 365' : (type === 'combo' ? 'Combo' : type);
+            // Unique IDs for inputs using type and partner ID
+            const nameInputId = `adminName-${type}-${p.id}`;
+            const amountInputId = `adminAmount-${type}-${p.id}`;
+            div.innerHTML = `<h4>${typeLabel} - ID: ${p.id}</h4>
+                <div class="admin-partner-field"><label for="${nameInputId}">${translate('lblAdminPartnerName')}</label><input type="text" id="${nameInputId}" data-partner-id="${p.id}" data-partner-type="${type}" value="${p.name}" required></div>
+                <div class="admin-partner-field"><label for="${amountInputId}">${translate('lblAdminSubAmount')}</label><input type="number" id="${amountInputId}" data-partner-id="${p.id}" data-partner-type="${type}" value="${p.subscriptionAmount}" required min="0" step="1"></div>`;
+            adminEditGrid.appendChild(div);
+        });
+    });
+}
+
+function handleAdminSaveChanges(event) {
+     event.preventDefault();
+     let changes = false;
+     let valid = true; // Start assuming valid
+     // Clear previous validation styles
+     adminEditGrid.querySelectorAll('input').forEach(input => input.style.borderColor = '');
+
+    // Find all partner inputs in the admin form
+    adminEditGrid.querySelectorAll('input[data-partner-id]').forEach(input => {
+        if (!valid) return; // Stop checking subsequent inputs if one already failed
+
+        const partnerId = input.dataset.partnerId;
+        const partnerType = input.dataset.partnerType;
+        const fieldType = input.id.includes('Name') ? 'name' : 'amount';
+
+        const partnerIndex = partnerConfig[partnerType]?.findIndex(p => p.id === partnerId);
+        if (partnerIndex === -1 || partnerIndex === undefined) {
+            console.error(`Partner not found for ID: ${partnerId} and Type: ${partnerType}`);
+            valid = false;
+            showToast(translate('toastGenericErr') + ` (Partner ${partnerId} missing)`, 'error');
+            return; // Exit this iteration
+        }
+        let partner = partnerConfig[partnerType][partnerIndex];
+
+        let newValue;
+        if (fieldType === 'name') {
+            newValue = input.value.trim();
+            if (!newValue) {
+                showToast(translate('toastAdminSaveValidation'), 'warning');
+                input.style.borderColor = 'var(--danger-color)';
+                if (valid) { // Only focus the first error encountered
+                    input.focus();
+                }
+                valid = false; // Mark as invalid
+                return; // Exit this iteration's callback
+            } else {
+                input.style.borderColor = ''; // Reset border on valid input
+            }
+            // Check for changes after validation
+            if (partner.name !== newValue) {
+                partner.name = newValue;
+                changes = true;
+            }
+        } else { // Amount field
+            newValue = parseInt(input.value, 10);
+            if (isNaN(newValue) || newValue < 0) {
+                showToast(translate('toastAdminSaveValidation'), 'warning');
+                input.style.borderColor = 'var(--danger-color)';
+                 if (valid) { // Only focus the first error encountered
+                     input.focus();
+                 }
+                 valid = false; // Mark as invalid
+                 return; // Exit this iteration's callback
+            } else {
+                 input.style.borderColor = ''; // Reset border on valid input
+            }
+            // Check for changes after validation
+            if (partner.subscriptionAmount !== newValue) {
+                partner.subscriptionAmount = newValue;
+                changes = true;
+            }
+        }
+    }); // End of forEach
+
+     if (!valid) return; // Don't proceed if any validation failed during the loop
+
+    // If loop completed and still valid, proceed
+    if (changes) {
+        savePartnerData();
+        populatePartnerDropdown(entryTypeSelect.value);
+        renderTable();
+        showToast(translate('toastAdminSaveSuccess'), 'success');
+    } else {
+        showToast(translate('toastAdminSaveNoChange'), 'info');
+    }
+    adminEditModal.style.display = 'none'; // Close modal on success or no change
+    adminEditModal.classList.remove('fade-in-modal');
+}
+
+
+
+// --- Utility Functions ---
+function enableAllMicButtons() { document.querySelectorAll('.mic-button').forEach(btn => { btn.disabled = false; btn.classList.remove('listening'); }); }
+function disableAllMicButtons() { document.querySelectorAll('.mic-button').forEach(btn => { btn.disabled = true; }); }
+
+// --- Event Listeners Setup ---
+function setupEventListeners() {
+    languageSwitcher.addEventListener('change', (e) => setLanguage(e.target.value));
+    themeToggleButton.addEventListener('click', toggleTheme);
+    toggleDataEntryModeButton.addEventListener('click', toggleDataEntryMode); // Add listener for new button
+    entryTypeSelect.addEventListener('change', (e) => { populatePartnerDropdown(e.target.value); applyRequiredAttributes(); }); // Update required on type change
+    document.querySelectorAll('.mic-button').forEach(b => b.addEventListener('click', handleMicButtonClick));
+    document.querySelectorAll('.clean-button').forEach(b => b.addEventListener('click', handleCleanButtonClick));
+    addEntryButton.addEventListener('click', handleAddOrUpdateEntry);
+    clearFormButton.addEventListener('click', clearForm);
+    saveExcelButton.addEventListener('click', handleSaveToExcel);
+    saveCsvButton.addEventListener('click', handleSaveToCSV);
+    savePdfButton.addEventListener('click', handleSaveToPDF);
+    dashboardButton.addEventListener('click', generateDashboard);
+    closeDashboardButton.addEventListener('click', () => { dashboardModal.style.display = 'none'; dashboardModal.classList.remove('fade-in-modal'); });
+    adminButton.addEventListener('click', handleAdminButtonClick);
+    closeAdminLoginButton.addEventListener('click', () => { adminLoginModal.style.display = 'none'; adminLoginModal.classList.remove('fade-in-modal'); });
+    adminLoginForm.addEventListener('submit', handleAdminLogin);
+    closeAdminEditButton.addEventListener('click', () => { adminEditModal.style.display = 'none'; adminEditModal.classList.remove('fade-in-modal'); });
+    adminEditForm.addEventListener('submit', handleAdminSaveChanges);
+    fullscreenButton.addEventListener('click', toggleFullscreen);
+    prevChartButton.addEventListener('click', prevSlide);
+    nextChartButton.addEventListener('click', nextSlide);
+    uploadImageButton.addEventListener('click', handleImageUploadTrigger); // Image upload trigger
+    imageUploadInput.addEventListener('change', handleImageFiles);          // Image file selection
+    toggleImageViewerButton.addEventListener('click', toggleImageViewer);   // Image viewer toggle
+    prevImageButton.addEventListener('click', showPrevImage);               // Image viewer nav
+    nextImageButton.addEventListener('click', showNextImage);               // Image viewer nav
+
+    // Table Header Sorting Listener
+    document.querySelector('#dataTable thead').addEventListener('click', (event) => {
+        const header = event.target.closest('th[data-sort-key]');
+        if (header) {
+            sortData(header.dataset.sortKey);
+        }
+    });
+    // Table Row Actions (Delegation)
+    tableBody.addEventListener('click', (e) => { const btn = e.target.closest('button'); if (!btn) return; if (btn.classList.contains('edit-btn')) handleEditEntry(btn.dataset.id); else if (btn.classList.contains('delete-btn')) handleDeleteEntry(btn.dataset.id); });
+    // Modal Close on Outside Click
+    window.addEventListener('click', (e) => {
+        // Check if click is directly on the modal overlay, not its content
+        if (e.target == dashboardModal) { dashboardModal.style.display = 'none'; dashboardModal.classList.remove('fade-in-modal');}
+        if (e.target == adminLoginModal) { adminLoginModal.style.display = 'none'; adminLoginModal.classList.remove('fade-in-modal'); }
+        if (e.target == adminEditModal) { adminEditModal.style.display = 'none'; adminEditModal.classList.remove('fade-in-modal'); }
+     });
+
+     
+  
+// Add listener to reset required status on form reset
+     form.addEventListener('reset', () => {
+         // Need a slight delay because reset happens before event bubbles up fully
+         setTimeout(() => {
+            clearFormValidationStyles(); // Clear validation visual cues
+            applyRequiredAttributes(); // Re-apply required based on initial state
+            populatePartnerDropdown(entryTypeSelect.value); // Repopulate/disable partner select
+         }, 0);
+     }); // <<< Add this closing brace and parenthesis
+} 
