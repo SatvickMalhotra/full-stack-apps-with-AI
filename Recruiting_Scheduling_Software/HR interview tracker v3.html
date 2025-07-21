@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Tracker Pro 🚀</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s, color 0.3s; }
+        .completed { text-decoration: line-through; opacity: 0.7; }
+        .category-tag { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px; font-weight: 500; }
+        .border-due-today { border-left: 4px solid #FBBF24; } /* Amber 400 */
+        .border-overdue { border-left: 4px solid #F87171; } /* Red 400 */
+        .border-default { border-left: 4px solid transparent; }
+    </style>
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+
+    <!-- Modals -->
+    <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 hidden p-4">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-lg">
+            <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">✍️ Edit Interview</h2>
+            <form id="edit-task-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input type="hidden" id="edit-task-id">
+                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Candidate Name</label><input type="text" id="edit-name" required class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role</label><input type="text" id="edit-role" placeholder="e.g., Senior Developer" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div class="md:col-span-2"><label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Interview Stage</label><select id="edit-category" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></select></div>
+                <div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Resume Link</label><input type="url" id="edit-resume" placeholder="https://example.com/resume" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">LinkedIn URL</label><input type="url" id="edit-linkedin" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label><input type="email" id="edit-email" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label><input type="tel" id="edit-number" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date</label><input type="date" id="edit-date" required class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div><label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Time</label><input type="time" id="edit-time" required class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div class="col-span-1 md:col-span-2 flex justify-end space-x-4">
+                    <button type="button" onclick="closeEditModal()" class="bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 font-bold py-2 px-4 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500">Cancel</button>
+                    <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700">💾 Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="delete-confirm-modal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 hidden p-4">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-sm text-center">
+            <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">🤔 Are you sure?</h2>
+            <p class="text-gray-600 dark:text-gray-400 mb-6">This action cannot be undone.</p>
+            <div class="flex justify-center space-x-4">
+                <button id="cancel-delete-btn" class="bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 font-bold py-2 px-6 rounded-md hover:bg-gray-400 dark:hover:bg-gray-500">Cancel</button>
+                <button id="confirm-delete-btn" class="bg-red-600 text-white font-bold py-2 px-6 rounded-md hover:bg-red-700">🗑️ Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto max-w-5xl p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-8 relative">
+            <h1 class="text-4xl font-bold text-gray-900 dark:text-white">Interview Tracker Pro 🚀</h1>
+            <p class="text-gray-600 dark:text-gray-400 mt-2">Your advanced client-side interview management solution.</p>
+            <p id="current-time" class="text-lg text-indigo-600 dark:text-indigo-400 font-semibold mt-2"></p>
+            <button id="dark-mode-toggle" class="absolute top-0 right-0 p-2 rounded-full text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none">
+                <svg id="theme-icon-dark" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>
+                <svg id="theme-icon-light" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+            </button>
+        </header>
+
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md mb-8">
+            <form id="task-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white col-span-1 md:col-span-2">➕ Add a New Interview</h2>
+                <div class="md:col-span-2"><input type="text" id="name" placeholder="Candidate Name" required class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div class="md:col-span-2"><input type="text" id="role" placeholder="Role (e.g., Senior Developer)" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div class="md:col-span-2"><select id="category" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></select></div>
+                <div><input type="url" id="resume" placeholder="Resume Link" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div><input type="url" id="linkedin" placeholder="LinkedIn URL" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div><input type="email" id="email" placeholder="Email Address" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div><input type="tel" id="number" placeholder="Phone Number" class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div><input type="date" id="date" required class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div><input type="time" id="time" required class="w-full p-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div class="col-span-1 md:col-span-2 text-right"><button type="submit" class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-md hover:bg-indigo-700">Add Interview</button></div>
+            </form>
+        </div>
+
+        <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                <div class="md:col-span-1"><input type="search" id="search-bar" placeholder="🔍 Search..." class="w-full p-2 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md"></div>
+                <div id="status-filters" class="md:col-span-2 flex justify-center md:justify-end space-x-2">
+                    <button data-filter="all" class="bg-indigo-500 text-white py-2 px-4 rounded-md text-sm">All</button>
+                    <button data-filter="pending" class="bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md text-sm">Pending</button>
+                    <button data-filter="completed" class="bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md text-sm">Completed</button>
+                </div>
+            </div>
+            <div class="mt-4 flex flex-col sm:flex-row justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+                 <div id="task-stats" class="mb-2 sm:mb-0"></div>
+                 <div class="flex items-center space-x-2">
+                    <label for="sort-by" class="font-medium">Sort by:</label>
+                    <select id="sort-by" class="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md p-1.5 text-sm">
+                        <option value="date-asc">Due Date (Soonest)</option><option value="date-desc">Due Date (Latest)</option>
+                        <option value="name-asc">Name (A-Z)</option><option value="name-desc">Name (Z-A)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div id="task-list" class="space-y-4"></div>
+
+        <footer class="mt-8 bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md flex justify-center space-x-4">
+            <button id="export-excel-btn" class="bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-600">📄 Export to Excel</button>
+        </footer>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Element selectors
+        const taskForm = document.getElementById('task-form');
+        const taskList = document.getElementById('task-list');
+        const editModal = document.getElementById('edit-modal');
+        const editTaskForm = document.getElementById('edit-task-form');
+        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+        const sortBy = document.getElementById('sort-by');
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        const htmlEl = document.documentElement;
+        const searchBar = document.getElementById('search-bar');
+        const statusFilters = document.getElementById('status-filters');
+        const taskStats = document.getElementById('task-stats');
+        const categorySelect = document.getElementById('category');
+        const editCategorySelect = document.getElementById('edit-category');
+        const exportExcelBtn = document.getElementById('export-excel-btn');
+        const currentTimeEl = document.getElementById('current-time');
+
+        // State
+        let currentFilters = { search: '', status: 'all' };
+        let taskToDeleteId = null;
+        const categories = ["Follow-up", "Round 1", "Round 2", "Round 3", "HR Round", "Final Round", "Other"];
+
+        // --- Initialization ---
+        const init = () => {
+            populateCategoryDropdowns();
+            applyTheme();
+            requestNotificationPermission();
+            renderTasks();
+            setupEventListeners();
+            setInterval(updateCurrentTime, 1000); // Update clock every second
+            setInterval(updateAllCountdowns, 1000); // Update countdowns every second
+            setInterval(checkAllNotifications, 60000); // Check for notifications every minute
+        };
+
+        const populateCategoryDropdowns = () => {
+            categories.forEach(cat => {
+                categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+                editCategorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+            });
+        };
+
+        const setupEventListeners = () => {
+            darkModeToggle.addEventListener('click', toggleTheme);
+            taskForm.addEventListener('submit', addTask);
+            editTaskForm.addEventListener('submit', saveEditedTask);
+            sortBy.addEventListener('change', renderTasks);
+            searchBar.addEventListener('input', handleSearch);
+            statusFilters.addEventListener('click', handleStatusFilter);
+            document.getElementById('confirm-delete-btn').addEventListener('click', () => confirmDelete(taskToDeleteId));
+            document.getElementById('cancel-delete-btn').addEventListener('click', closeDeleteModal);
+            exportExcelBtn.addEventListener('click', exportToExcel);
+        };
+
+        // --- UI & Theme Management ---
+        const updateCurrentTime = () => {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            currentTimeEl.textContent = now.toLocaleString('en-IN', options);
+        };
+
+        const applyTheme = () => {
+            const isDarkMode = localStorage.getItem('theme') === 'dark';
+            htmlEl.classList.toggle('dark', isDarkMode);
+            document.getElementById('theme-icon-dark').classList.toggle('hidden', !isDarkMode);
+            document.getElementById('theme-icon-light').classList.toggle('hidden', isDarkMode);
+        };
+        const toggleTheme = () => {
+            const isDarkMode = !htmlEl.classList.contains('dark');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            applyTheme();
+        };
+
+        // --- Data & State Management ---
+        const getTasks = () => JSON.parse(localStorage.getItem('tasks')) || [];
+        const saveTasks = (tasks) => localStorage.setItem('tasks', JSON.stringify(tasks));
+        const handleSearch = (e) => { currentFilters.search = e.target.value.toLowerCase(); renderTasks(); };
+        const handleStatusFilter = (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                currentFilters.status = e.target.dataset.filter;
+                statusFilters.querySelectorAll('button').forEach(btn => {
+                    btn.classList.remove('bg-indigo-500', 'text-white');
+                    btn.classList.add('bg-gray-200', 'dark:bg-gray-600');
+                });
+                e.target.classList.add('bg-indigo-500', 'text-white');
+                e.target.classList.remove('bg-gray-200', 'dark:bg-gray-600');
+                renderTasks();
+            }
+        };
+
+        // --- Core Rendering ---
+        const renderTasks = () => {
+            let tasks = getTasks();
+            const filteredTasks = tasks.filter(task => {
+                const searchMatch = (task.name.toLowerCase().includes(currentFilters.search) || (task.email && task.email.toLowerCase().includes(currentFilters.search)) || (task.role && task.role.toLowerCase().includes(currentFilters.search)));
+                const statusMatch = currentFilters.status === 'all' || (currentFilters.status === 'completed' && task.completed) || (currentFilters.status === 'pending' && !task.completed);
+                return searchMatch && statusMatch;
+            });
+            const sortValue = sortBy.value;
+            filteredTasks.sort((a, b) => {
+                switch (sortValue) {
+                    case 'date-asc': return new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`);
+                    case 'date-desc': return new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`);
+                    case 'name-asc': return a.name.localeCompare(b.name);
+                    case 'name-desc': return b.name.localeCompare(a.name);
+                    default: return 0;
+                }
+            });
+            taskList.innerHTML = '';
+            if (filteredTasks.length === 0) {
+                taskList.innerHTML = `<p class="text-gray-500 dark:text-gray-400 text-center bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">🤷‍♀️ No interviews match your current filters.</p>`;
+            } else {
+                filteredTasks.forEach(task => taskList.appendChild(createTaskElement(task)));
+            }
+            updateTaskStats(tasks);
+        };
+
+        const createTaskElement = (task) => {
+            const taskElement = document.createElement('div');
+            const { borderClass, dateText } = getDateStatus(task.date, task.time);
+            const dueDate = new Date(`${task.date}T${task.time}`);
+            const formattedTime = new Date(`1970-01-01T${task.time}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            
+            taskElement.id = `task-${task.id}`;
+            taskElement.dataset.dueDate = dueDate.toISOString();
+            taskElement.className = `bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start transition-all duration-300 ${task.completed ? 'completed' : ''} ${borderClass}`;
+            
+            taskElement.innerHTML = `
+                <div class="flex-grow mb-4 md:mb-0 pr-4 w-full">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <input type="checkbox" onchange="toggleComplete('${task.id}')" ${task.completed ? 'checked' : ''} class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mr-4 flex-shrink-0">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900 dark:text-white">${task.name}</h3>
+                                <p class="text-md text-gray-500 dark:text-gray-400">${task.role || 'No role specified'}</p>
+                            </div>
+                        </div>
+                        <span class="category-tag bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-gray-200">${task.category}</span>
+                    </div>
+                    <div class="mt-2 pl-9 text-gray-600 dark:text-gray-400 space-y-2">
+                        <div class="flex flex-wrap gap-x-4 gap-y-1">
+                            ${task.email ? `<div>📧 <strong>Email:</strong> <a href="mailto:${task.email}" class="text-indigo-500 hover:underline">${task.email}</a></div>` : ''}
+                            ${task.number ? `<div>📞 <strong>Phone:</strong> ${task.number}</div>` : ''}
+                            ${task.linkedin ? `<div><a href="${task.linkedin}" target="_blank" class="text-indigo-500 hover:underline font-semibold">LinkedIn</a></div>` : ''}
+                            ${task.resume ? `<div><a href="${task.resume}" target="_blank" class="text-indigo-500 hover:underline font-semibold">📄 Resume</a></div>` : ''}
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+                            <strong class="text-lg">⏰ <span class="countdown-timer"></span></strong>
+                            <div class="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                                Scheduled for <span class="font-semibold text-gray-800 dark:text-gray-200">${formattedTime}</span>
+                                <span class="font-semibold ml-2 ${dateText.color}">${dateText.text}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-2 self-center md:self-auto flex-shrink-0">
+                    <button onclick="openEditModal('${task.id}')" class="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md hover:bg-yellow-600">✍️</button>
+                    <button onclick="openDeleteModal('${task.id}')" class="bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600">🗑️</button>
+                </div>
+            `;
+            return taskElement;
+        };
+
+        const getDateStatus = (date, time) => {
+            const now = new Date();
+            const dueDate = new Date(`${date}T${time}`);
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const dueDay = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate());
+
+            if (dueDate < now) return { borderClass: 'border-overdue', dateText: { text: '(Overdue)', color: 'text-red-500' } };
+            if (dueDay.getTime() === today.getTime()) return { borderClass: 'border-due-today', dateText: { text: '(Due Today)', color: 'text-amber-500' } };
+            return { borderClass: 'border-default', dateText: { text: '', color: '' } };
+        };
+
+        const updateTaskStats = (tasks) => {
+            const completedCount = tasks.filter(t => t.completed).length;
+            const pendingCount = tasks.length - completedCount;
+            taskStats.textContent = `📊 Stats: ${pendingCount} Pending / ${completedCount} Completed`;
+        };
+
+        // --- Countdown Timer ---
+        const updateAllCountdowns = () => {
+            document.querySelectorAll('.countdown-timer').forEach(timer => {
+                const taskElement = timer.closest('[data-due-date]');
+                if (taskElement) {
+                    const dueDate = new Date(taskElement.dataset.dueDate);
+                    const now = new Date();
+                    const diff = dueDate - now;
+
+                    if (diff > 0) {
+                        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        const s = Math.floor((diff % (1000 * 60)) / 1000);
+                        timer.textContent = `${d}d ${h}h ${m}m ${s}s remaining`;
+                    } else {
+                        timer.textContent = "Interview time has passed.";
+                    }
+                }
+            });
+        };
+
+        // --- Notifications ---
+        const requestNotificationPermission = () => {
+            if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification('Thanks! 🙏', { body: 'You will now receive interview reminders.' });
+                    }
+                });
+            }
+        };
+
+        const checkAllNotifications = () => {
+            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+            const tasks = getTasks();
+            const now = new Date().getTime();
+            const oneHour = 60 * 60 * 1000;
+            let sentNotifications = JSON.parse(localStorage.getItem('sentNotifications')) || [];
+
+            tasks.forEach(task => {
+                if (!task.completed && !sentNotifications.includes(task.id)) {
+                    const dueTime = new Date(`${task.date}T${task.time}`).getTime();
+                    const timeUntil = dueTime - now;
+                    if (timeUntil > 0 && timeUntil <= oneHour) {
+                        new Notification(`Reminder: Interview with ${task.name}`, {
+                            body: `Role: ${task.role}\nScheduled in about an hour.`,
+                            icon: 'https://placehold.co/48x48/7c3aed/ffffff?text=🔔'
+                        });
+                        sentNotifications.push(task.id);
+                    }
+                }
+            });
+            localStorage.setItem('sentNotifications', JSON.stringify(sentNotifications));
+        };
+
+        // --- Task CRUD ---
+        const addTask = (e) => {
+            e.preventDefault();
+            const task = {
+                id: Date.now().toString(), name: document.getElementById('name').value, role: document.getElementById('role').value,
+                category: document.getElementById('category').value, resume: document.getElementById('resume').value,
+                linkedin: document.getElementById('linkedin').value, email: document.getElementById('email').value,
+                number: document.getElementById('number').value, date: document.getElementById('date').value,
+                time: document.getElementById('time').value, completed: false
+            };
+            const tasks = getTasks();
+            tasks.push(task);
+            saveTasks(tasks);
+            renderTasks();
+            taskForm.reset();
+        };
+
+        window.toggleComplete = (id) => {
+            let tasks = getTasks();
+            const task = tasks.find(t => t.id === id);
+            if (task) { task.completed = !task.completed; saveTasks(tasks); renderTasks(); }
+        };
+
+        // --- Modal Logic ---
+        window.openEditModal = (id) => {
+            const task = getTasks().find(t => t.id === id);
+            if (task) {
+                document.getElementById('edit-task-id').value = task.id;
+                document.getElementById('edit-name').value = task.name;
+                document.getElementById('edit-role').value = task.role;
+                document.getElementById('edit-category').value = task.category;
+                document.getElementById('edit-resume').value = task.resume;
+                document.getElementById('edit-linkedin').value = task.linkedin;
+                document.getElementById('edit-email').value = task.email;
+                document.getElementById('edit-number').value = task.number;
+                document.getElementById('edit-date').value = task.date;
+                document.getElementById('edit-time').value = task.time;
+                editModal.classList.remove('hidden');
+            }
+        };
+        window.closeEditModal = () => editModal.classList.add('hidden');
+
+        const saveEditedTask = (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit-task-id').value;
+            let tasks = getTasks();
+            const taskIndex = tasks.findIndex(t => t.id === id);
+            if (taskIndex > -1) {
+                tasks[taskIndex] = { ...tasks[taskIndex],
+                    name: document.getElementById('edit-name').value, role: document.getElementById('edit-role').value,
+                    category: document.getElementById('edit-category').value, resume: document.getElementById('edit-resume').value,
+                    linkedin: document.getElementById('edit-linkedin').value, email: document.getElementById('edit-email').value,
+                    number: document.getElementById('edit-number').value, date: document.getElementById('edit-date').value,
+                    time: document.getElementById('edit-time').value,
+                };
+                saveTasks(tasks);
+                renderTasks();
+                closeEditModal();
+            }
+        };
+
+        window.openDeleteModal = (id) => { taskToDeleteId = id; deleteConfirmModal.classList.remove('hidden'); };
+        const closeDeleteModal = () => { taskToDeleteId = null; deleteConfirmModal.classList.add('hidden'); };
+        const confirmDelete = (id) => {
+            if (id) { saveTasks(getTasks().filter(task => task.id !== id)); renderTasks(); }
+            closeDeleteModal();
+        };
+
+        // --- Data I/O ---
+        const exportToExcel = () => {
+            const tasks = getTasks();
+            if (tasks.length === 0) {
+                alert("🤷‍♀️ No data to export. Add some interviews first!");
+                return;
+            }
+
+            const tasksToExport = tasks.map(task => ({
+                'Candidate Name': task.name,
+                'Role': task.role,
+                'Interview Stage': task.category,
+                'Date': task.date,
+                'Time': task.time,
+                'Email': task.email,
+                'Phone': task.number,
+                'Resume Link': task.resume,
+                'LinkedIn URL': task.linkedin,
+                'Status': task.completed ? 'Completed' : 'Pending'
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(tasksToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Interviews");
+
+            XLSX.writeFile(workbook, "Interview_Schedule.xlsx");
+        };
+
+        // --- Start the app ---
+        init();
+    });
+    </script>
+</body>
+</html>

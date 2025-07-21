@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-default">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interview Tracker Pro 🚀 (Advanced)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f3f4f6; --bg-secondary: #ffffff; --bg-tertiary: #e5e7eb;
+            --text-primary: #1f2937; --text-secondary: #4b5563; --text-accent: #4f46e5;
+            --border-color: #d1d5db;
+        }
+        html.dark {
+            --bg-primary: #111827; --bg-secondary: #1f2937; --bg-tertiary: #374151;
+            --text-primary: #f9fafb; --text-secondary: #d1d5db; --text-accent: #6366f1;
+            --border-color: #4b5563;
+        }
+        html.theme-ocean {
+            --bg-primary: #f0f9ff; --bg-secondary: #e0f2fe; --bg-tertiary: #bae6fd;
+            --text-primary: #0c4a6e; --text-secondary: #0369a1; --text-accent: #0ea5e9;
+            --border-color: #7dd3fc;
+        }
+        html.theme-forest {
+            --bg-primary: #f0fdf4; --bg-secondary: #dcfce7; --bg-tertiary: #bbf7d0;
+            --text-primary: #14532d; --text-secondary: #166534; --text-accent: #22c55e;
+            --border-color: #86efac;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-primary); color: var(--text-primary); transition: background-color 0.3s, color 0.3s; }
+        .bg-primary { background-color: var(--bg-primary); } .bg-secondary { background-color: var(--bg-secondary); } .bg-tertiary { background-color: var(--bg-tertiary); }
+        .text-primary { color: var(--text-primary); } .text-secondary { color: var(--text-secondary); } .text-accent { color: var(--text-accent); }
+        .border-color { border-color: var(--border-color); }
+        .completed { text-decoration: line-through; opacity: 0.7; }
+        .category-tag { font-size: 0.75rem; padding: 0.2rem 0.6rem; border-radius: 9999px; font-weight: 500; }
+        .border-due-today { border-left: 4px solid #FBBF24; }
+        .border-overdue { border-left: 4px solid #F87171; }
+        .border-default { border-left: 4px solid transparent; }
+        .star-rating span { cursor: pointer; font-size: 1.5rem; color: #d1d5db; }
+        .star-rating span.selected, .star-rating span:hover, .star-rating span:hover ~ span { color: #facc15; }
+        .kanban-column { min-height: 20rem; }
+        .kanban-card { cursor: grab; } .kanban-card:active { cursor: grabbing; }
+        .drag-over { border: 2px dashed var(--text-accent); }
+    </style>
+</head>
+<body class="bg-primary text-primary">
+
+    <!-- Modals -->
+    <div id="edit-modal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 hidden p-4">
+        <div class="bg-secondary p-6 rounded-lg shadow-xl w-full max-w-lg max-h-screen overflow-y-auto">
+            <h2 class="text-2xl font-semibold text-primary mb-4">✍️ Edit Interview</h2>
+            <form id="edit-task-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <input type="hidden" id="edit-task-id">
+                <div class="md:col-span-2"><label class="block text-sm font-medium text-secondary mb-1">Candidate Name</label><input type="text" id="edit-name" required class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div class="md:col-span-2"><label class="block text-sm font-medium text-secondary mb-1">Role</label><input type="text" id="edit-role" placeholder="e.g., Senior Developer" class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div class="md:col-span-2"><label class="block text-sm font-medium text-secondary mb-1">Interview Stage</label><select id="edit-category" class="w-full p-3 bg-tertiary border border-color rounded-md"></select></div>
+                <div><label class="block text-sm font-medium text-secondary mb-1">Resume Link</label><input type="url" id="edit-resume" placeholder="https://example.com/resume" class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div><label class="block text-sm font-medium text-secondary mb-1">LinkedIn URL</label><input type="url" id="edit-linkedin" class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div><label class="block text-sm font-medium text-secondary mb-1">Email</label><input type="email" id="edit-email" class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div><label class="block text-sm font-medium text-secondary mb-1">Phone Number</label><input type="tel" id="edit-number" class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div><label class="block text-sm font-medium text-secondary mb-1">Date</label><input type="date" id="edit-date" required class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div><label class="block text-sm font-medium text-secondary mb-1">Time</label><input type="time" id="edit-time" required class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div class="md:col-span-2"><label class="block text-sm font-medium text-secondary mb-1">Rating</label><div id="edit-rating" class="star-rating flex flex-row-reverse justify-end items-center"><span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span></div></div>
+                <div class="md:col-span-2"><label class="block text-sm font-medium text-secondary mb-1">Priority</label><select id="edit-priority" class="w-full p-3 bg-tertiary border border-color rounded-md"><option value="none">None</option><option value="good">Good (Red)</option><option value="better">Better (Yellow)</option><option value="best">Best (Blue)</option></select></div>
+                <div id="edit-conflict-warning" class="md:col-span-2 text-yellow-500 text-sm hidden">⚠️ This time overlaps with another interview.</div>
+                <div class="col-span-1 md:col-span-2 flex justify-end space-x-4">
+                    <button type="button" onclick="closeEditModal()" class="bg-tertiary text-primary font-bold py-2 px-4 rounded-md">Cancel</button>
+                    <button type="submit" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700">💾 Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="delete-confirm-modal" class="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 hidden p-4">
+        <div class="bg-secondary p-6 rounded-lg shadow-xl w-full max-w-sm text-center">
+            <h2 class="text-xl font-semibold text-primary mb-4">🤔 Are you sure?</h2>
+            <p class="text-secondary mb-6">This action cannot be undone.</p>
+            <div class="flex justify-center space-x-4">
+                <button id="cancel-delete-btn" class="bg-tertiary text-primary font-bold py-2 px-6 rounded-md">Cancel</button>
+                <button id="confirm-delete-btn" class="bg-red-600 text-white font-bold py-2 px-6 rounded-md hover:bg-red-700">🗑️ Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container mx-auto max-w-7xl p-4 sm:p-6 lg:p-8">
+        <header class="text-center mb-8 relative">
+            <h1 class="text-4xl font-bold text-primary">Interview Tracker Pro 🚀</h1>
+            <p class="text-secondary mt-2">Your advanced client-side interview management solution.</p>
+            <p id="current-time" class="text-lg text-accent font-semibold mt-2"></p>
+            <div class="absolute top-0 right-0 flex space-x-2">
+                <button id="theme-switcher" class="p-2 rounded-full text-secondary hover:bg-tertiary focus:outline-none">🎨</button>
+                <button id="view-switcher" class="p-2 rounded-full text-secondary hover:bg-tertiary focus:outline-none">📋</button>
+            </div>
+        </header>
+
+        <div class="bg-secondary p-6 rounded-lg shadow-md mb-8">
+            <form id="task-form" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <h2 class="text-2xl font-semibold text-primary col-span-1 md:col-span-2">➕ Add a New Interview</h2>
+                <div class="md:col-span-2"><input type="text" id="name" placeholder="Candidate Name" required class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div class="md:col-span-2"><input type="text" id="role" placeholder="Role (e.g., Senior Developer)" class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div class="md:col-span-2"><select id="category" class="w-full p-3 bg-tertiary border border-color rounded-md"></select></div>
+                <div><input type="url" id="resume" placeholder="Resume Link" class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div><input type="url" id="linkedin" placeholder="LinkedIn URL" class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div><input type="email" id="email" placeholder="Email Address" class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div><input type="tel" id="number" placeholder="Phone Number" class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div><input type="date" id="date" required class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div><input type="time" id="time" required class="w-full p-3 bg-tertiary border border-color rounded-md"></div>
+                <div class="md:col-span-2"><label class="block text-sm font-medium text-secondary mb-1">Rating</label><div id="add-rating" class="star-rating flex flex-row-reverse justify-end items-center"><span data-value="5">★</span><span data-value="4">★</span><span data-value="3">★</span><span data-value="2">★</span><span data-value="1">★</span></div> <input type="hidden" id="add-rating-value" value="0"></div>
+                <div class="md:col-span-2"><label class="block text-sm font-medium text-secondary mb-1">Priority</label><select id="priority" class="w-full p-3 bg-tertiary border border-color rounded-md"><option value="none">None</option><option value="good">Good (Red)</option><option value="better">Better (Yellow)</option><option value="best">Best (Blue)</option></select></div>
+                <div id="add-conflict-warning" class="md:col-span-2 text-yellow-500 text-sm hidden">⚠️ This time overlaps with another interview.</div>
+                <div class="col-span-1 md:col-span-2 text-right"><button type="submit" class="bg-indigo-600 text-white font-bold py-3 px-6 rounded-md hover:bg-indigo-700">Add Interview</button></div>
+            </form>
+        </div>
+
+        <div class="bg-secondary p-4 rounded-lg shadow-md mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                <div class="md:col-span-1"><input type="search" id="search-bar" placeholder="🔍 Search..." class="w-full p-2 bg-tertiary border border-color rounded-md"></div>
+                <div id="status-filters" class="md:col-span-2 flex justify-center md:justify-end space-x-2">
+                    <button data-filter="all" class="bg-indigo-500 text-white py-2 px-4 rounded-md text-sm">All</button>
+                    <button data-filter="pending" class="bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md text-sm">Pending</button>
+                    <button data-filter="completed" class="bg-gray-200 dark:bg-gray-600 py-2 px-4 rounded-md text-sm">Completed</button>
+                </div>
+            </div>
+            <div class="mt-4 flex flex-col sm:flex-row justify-between items-center text-sm text-secondary">
+                 <div id="task-stats" class="mb-2 sm:mb-0"></div>
+                 <div class="flex items-center space-x-2">
+                    <label for="sort-by" class="font-medium">Sort by:</label>
+                    <select id="sort-by" class="bg-secondary border border-color rounded-md p-1.5 text-sm">
+                        <option value="date-asc">Due Date (Soonest)</option><option value="date-desc">Due Date (Latest)</option>
+                        <option value="name-asc">Name (A-Z)</option><option value="name-desc">Name (Z-A)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div id="list-view-container">
+            <div id="task-list" class="space-y-4"></div>
+        </div>
+        <div id="kanban-view-container" class="hidden">
+            <div id="kanban-board" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+        </div>
+
+        <footer class="mt-8 bg-secondary p-4 rounded-lg shadow-md flex justify-center space-x-4">
+            <button id="export-excel-btn" class="bg-green-500 text-white font-bold py-2 px-4 rounded-md hover:bg-green-600">📄 Export to Excel</button>
+        </footer>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Element Selectors ---
+        const taskForm = document.getElementById('task-form');
+        const taskList = document.getElementById('task-list');
+        const editModal = document.getElementById('edit-modal');
+        const editTaskForm = document.getElementById('edit-task-form');
+        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+        const sortBy = document.getElementById('sort-by');
+        const htmlEl = document.documentElement;
+        const searchBar = document.getElementById('search-bar');
+        const statusFilters = document.getElementById('status-filters');
+        const taskStats = document.getElementById('task-stats');
+        const categorySelect = document.getElementById('category');
+        const editCategorySelect = document.getElementById('edit-category');
+        const exportExcelBtn = document.getElementById('export-excel-btn');
+        const currentTimeEl = document.getElementById('current-time');
+        const viewSwitcher = document.getElementById('view-switcher');
+        const themeSwitcher = document.getElementById('theme-switcher');
+        const listViewContainer = document.getElementById('list-view-container');
+        const kanbanViewContainer = document.getElementById('kanban-view-container');
+        const kanbanBoard = document.getElementById('kanban-board');
+
+        // --- State Management ---
+        let currentFilters = { search: '', status: 'all' };
+        let taskToDeleteId = null;
+        let currentView = 'list'; // 'list' or 'kanban'
+        const categories = ["Follow-up", "Round 1", "Round 2", "Round 3", "HR Round", "Final Round", "Offer", "Rejected", "Other"];
+        const themes = ['theme-default', 'dark', 'theme-ocean', 'theme-forest'];
+        let currentThemeIndex = 0;
+        let draggedItem = null;
+
+        // --- Initialization ---
+        const init = () => {
+            populateCategoryDropdowns();
+            loadInitialTheme();
+            requestNotificationPermission();
+            render();
+            setupEventListeners();
+            setInterval(updateCurrentTime, 1000);
+            setInterval(updateAllCountdowns, 1000);
+            setInterval(checkAllNotifications, 60000);
+        };
+
+        const setupEventListeners = () => {
+            taskForm.addEventListener('submit', addTask);
+            editTaskForm.addEventListener('submit', saveEditedTask);
+            sortBy.addEventListener('change', render);
+            searchBar.addEventListener('input', handleSearch);
+            statusFilters.addEventListener('click', handleStatusFilter);
+            document.getElementById('confirm-delete-btn').addEventListener('click', () => confirmDelete(taskToDeleteId));
+            document.getElementById('cancel-delete-btn').addEventListener('click', closeDeleteModal);
+            exportExcelBtn.addEventListener('click', exportToExcel);
+            viewSwitcher.addEventListener('click', switchView);
+            themeSwitcher.addEventListener('click', cycleThemes);
+            
+            setupStarRatings('add-rating', 'add-rating-value');
+            setupStarRatings('edit-rating');
+
+            ['date', 'time'].forEach(id => {
+                document.getElementById(id).addEventListener('change', () => checkConflict('add'));
+                document.getElementById(`edit-${id}`).addEventListener('change', () => checkConflict('edit'));
+            });
+
+            // Drag and Drop for Kanban
+            kanbanBoard.addEventListener('dragstart', e => {
+                if (e.target.classList.contains('kanban-card')) {
+                    draggedItem = e.target;
+                    setTimeout(() => e.target.classList.add('hidden'), 0);
+                }
+            });
+
+            kanbanBoard.addEventListener('dragend', e => {
+                if (draggedItem) {
+                    draggedItem.classList.remove('hidden');
+                    draggedItem = null;
+                }
+            });
+
+            kanbanBoard.addEventListener('dragover', e => {
+                e.preventDefault();
+                const column = e.target.closest('.kanban-column');
+                if (column) {
+                    const afterElement = getDragAfterElement(column, e.clientY);
+                    const draggable = document.querySelector('.dragging');
+                    if (afterElement == null) {
+                        column.querySelector('.kanban-cards-container').appendChild(draggedItem);
+                    } else {
+                        column.querySelector('.kanban-cards-container').insertBefore(draggedItem, afterElement);
+                    }
+                }
+            });
+            
+            kanbanBoard.addEventListener('drop', e => {
+                e.preventDefault();
+                const column = e.target.closest('.kanban-column');
+                if (column && draggedItem) {
+                    const newCategory = column.dataset.category;
+                    const taskId = draggedItem.dataset.id;
+                    updateTaskCategory(taskId, newCategory);
+                }
+            });
+        };
+        
+        const getDragAfterElement = (container, y) => {
+            const draggableElements = [...container.querySelectorAll('.kanban-card:not(.hidden)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        };
+
+        const updateTaskCategory = (taskId, newCategory) => {
+            let tasks = getTasks();
+            const taskIndex = tasks.findIndex(t => t.id === taskId);
+            if (taskIndex > -1) {
+                tasks[taskIndex].category = newCategory;
+                saveTasks(tasks);
+                render(); // Re-render to reflect changes and stats
+            }
+        };
+
+        // --- UI, Theme, View Management ---
+        const switchView = () => {
+            currentView = currentView === 'list' ? 'kanban' : 'list';
+            viewSwitcher.textContent = currentView === 'list' ? '📋' : '🗂️';
+            render();
+        };
+
+        const cycleThemes = () => {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const newTheme = themes[currentThemeIndex];
+            htmlEl.className = newTheme;
+            localStorage.setItem('theme', newTheme);
+        };
+
+        const loadInitialTheme = () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme && themes.includes(savedTheme)) {
+                htmlEl.className = savedTheme;
+                currentThemeIndex = themes.indexOf(savedTheme);
+            } else {
+                htmlEl.className = themes[0];
+            }
+        };
+
+        const populateCategoryDropdowns = () => {
+            categories.forEach(cat => {
+                categorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+                editCategorySelect.innerHTML += `<option value="${cat}">${cat}</option>`;
+            });
+        };
+        
+        const updateCurrentTime = () => {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            currentTimeEl.textContent = now.toLocaleString('en-IN', options);
+        };
+
+        // --- Data & State Management ---
+        const getTasks = () => JSON.parse(localStorage.getItem('tasks')) || [];
+        const saveTasks = (tasks) => localStorage.setItem('tasks', JSON.stringify(tasks));
+        const handleSearch = (e) => { currentFilters.search = e.target.value.toLowerCase(); render(); };
+        const handleStatusFilter = (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                currentFilters.status = e.target.dataset.filter;
+                statusFilters.querySelectorAll('button').forEach(btn => {
+                    btn.classList.remove('bg-indigo-500', 'text-white');
+                    btn.classList.add('bg-gray-200', 'dark:bg-gray-600');
+                });
+                e.target.classList.add('bg-indigo-500', 'text-white');
+                e.target.classList.remove('bg-gray-200', 'dark:bg-gray-600');
+                render();
+            }
+        };
+
+        // --- Core Rendering ---
+        const render = () => {
+            if (currentView === 'list') {
+                listViewContainer.classList.remove('hidden');
+                kanbanViewContainer.classList.add('hidden');
+                renderListView();
+            } else {
+                listViewContainer.classList.add('hidden');
+                kanbanViewContainer.classList.remove('hidden');
+                renderKanbanView();
+            }
+        };
+
+        const renderListView = () => {
+            let tasks = getTasks();
+            const filteredTasks = tasks.filter(task => {
+                const searchMatch = (task.name.toLowerCase().includes(currentFilters.search) || (task.email && task.email.toLowerCase().includes(currentFilters.search)) || (task.role && task.role.toLowerCase().includes(currentFilters.search)));
+                const statusMatch = currentFilters.status === 'all' || (currentFilters.status === 'completed' && task.completed) || (currentFilters.status === 'pending' && !task.completed);
+                return searchMatch && statusMatch;
+            });
+            const sortValue = sortBy.value;
+            filteredTasks.sort((a, b) => {
+                switch (sortValue) {
+                    case 'date-asc': return new Date(`${a.date}T${a.time}`) - new Date(`${b.date}T${b.time}`);
+                    case 'date-desc': return new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`);
+                    case 'name-asc': return a.name.localeCompare(b.name);
+                    case 'name-desc': return b.name.localeCompare(a.name);
+                    default: return 0;
+                }
+            });
+            taskList.innerHTML = '';
+            if (filteredTasks.length === 0) {
+                taskList.innerHTML = `<p class="text-secondary text-center bg-secondary p-6 rounded-lg shadow-sm">🤷‍♀️ No interviews match your current filters.</p>`;
+            } else {
+                filteredTasks.forEach(task => taskList.appendChild(createTaskElement(task)));
+            }
+            updateTaskStats(tasks);
+        };
+        
+        const renderKanbanView = () => {
+            kanbanBoard.innerHTML = '';
+            const tasks = getTasks();
+            categories.forEach(category => {
+                const column = document.createElement('div');
+                column.className = 'kanban-column bg-tertiary rounded-lg p-4';
+                column.dataset.category = category;
+                column.innerHTML = `<h3 class="font-bold text-lg text-primary mb-4">${category}</h3><div class="kanban-cards-container space-y-3"></div>`;
+                const tasksForColumn = tasks.filter(task => task.category === category);
+                tasksForColumn.forEach(task => {
+                    column.querySelector('.kanban-cards-container').appendChild(createKanbanCard(task));
+                });
+                kanbanBoard.appendChild(column);
+            });
+             updateTaskStats(tasks);
+        };
+
+        const createTaskElement = (task) => {
+            const taskElement = document.createElement('div');
+            const { borderClass, dateText } = getDateStatus(task.date, task.time);
+            const dueDate = new Date(`${task.date}T${task.time}`);
+            const formattedTime = new Date(`1970-01-01T${task.time}`).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            
+            taskElement.id = `task-${task.id}`;
+            taskElement.dataset.dueDate = dueDate.toISOString();
+            taskElement.className = `bg-secondary p-5 rounded-lg shadow-sm flex flex-col md:flex-row justify-between items-start transition-all duration-300 ${task.completed ? 'completed' : ''} ${borderClass}`;
+            
+            taskElement.innerHTML = `
+                <div class="flex-grow mb-4 md:mb-0 pr-4 w-full">
+                    <div class="flex items-start justify-between">
+                        <div class="flex items-start">
+                            <input type="checkbox" onchange="toggleComplete('${task.id}')" ${task.completed ? 'checked' : ''} class="h-5 w-5 rounded border-color text-accent focus:ring-accent mr-4 flex-shrink-0 mt-1">
+                            <div>
+                                <h3 class="text-xl font-bold text-primary">${task.name}</h3>
+                                <p class="text-md text-secondary">${task.role || 'No role specified'}</p>
+                                <div class="star-rating mt-1">${[...Array(5)].map((_, i) => `<span class="${i < task.rating ? 'selected' : ''}">★</span>`).join('')}</div>
+                            </div>
+                        </div>
+                        <span class="category-tag bg-tertiary text-primary">${task.category}</span>
+                    </div>
+                    <div class="mt-2 pl-9 text-secondary space-y-2">
+                        <div class="flex flex-wrap gap-x-4 gap-y-1">
+                            ${task.email ? `<div>📧 <strong>Email:</strong> <a href="mailto:${task.email}" class="text-accent hover:underline">${task.email}</a></div>` : ''}
+                            ${task.number ? `<div>📞 <strong>Phone:</strong> ${task.number}</div>` : ''}
+                            ${task.linkedin ? `<div><a href="${task.linkedin}" target="_blank" class="text-accent hover:underline font-semibold">LinkedIn</a></div>` : ''}
+                            ${task.resume ? `<div><a href="${task.resume}" target="_blank" class="text-accent hover:underline font-semibold">📄 Resume</a></div>` : ''}
+                        </div>
+                        <div class="mt-2 pt-2 border-t border-color">
+                            <strong class="text-lg">⏰ <span class="countdown-timer"></span></strong>
+                            <div class="text-sm text-secondary mt-1">
+                                Scheduled for <span class="font-semibold text-primary">${formattedTime}</span>
+                                <span class="font-semibold ml-2 ${dateText.color}">${dateText.text}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-2 self-center md:self-auto flex-shrink-0">
+                     ${getPriorityIndicator(task.priority)}
+                    <button onclick="openEditModal('${task.id}')" class="bg-yellow-500 text-white font-bold py-2 px-4 rounded-md hover:bg-yellow-600">✍️</button>
+                    <button onclick="openDeleteModal('${task.id}')" class="bg-red-500 text-white font-bold py-2 px-4 rounded-md hover:bg-red-600">🗑️</button>
+                </div>
+            `;
+            return taskElement;
+        };
+        
+        const createKanbanCard = (task) => {
+            const card = document.createElement('div');
+            card.className = 'kanban-card bg-secondary p-3 rounded-md shadow-sm';
+            card.dataset.id = task.id;
+            card.draggable = true;
+            const priorityIndicator = getPriorityIndicator(task.priority, 'kanban');
+            card.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <h4 class="font-bold text-primary">${task.name}</h4>
+                    ${priorityIndicator}
+                </div>
+                <p class="text-sm text-secondary">${task.role || 'No role'}</p>
+                <div class="star-rating text-xs mt-1">${[...Array(5)].map((_, i) => `<span class="text-sm ${i < task.rating ? 'selected' : ''}">★</span>`).join('')}</div>
+                <div class="text-xs text-secondary mt-2">⏰ ${new Date(task.date + 'T' + task.time).toLocaleDateString()}</div>
+                <button onclick="openEditModal('${task.id}')" class="mt-2 text-xs text-accent">View Details</button>
+            `;
+            return card;
+        };
+        
+        const getPriorityIndicator = (priority, type = 'list') => {
+            const size = type === 'list' ? 'h-6 w-6' : 'h-4 w-4';
+            switch (priority) {
+                case 'good': return `<div class="rounded-full bg-red-500 ${size}" title="Priority: Good"></div>`;
+                case 'better': return `<div class="rounded-full bg-yellow-500 ${size}" title="Priority: Better"></div>`;
+                case 'best': return `<div class="rounded-full bg-blue-500 ${size}" title="Priority: Best"></div>`;
+                default: return '';
+            }
+        };
+
+        const getDateStatus = (date, time) => {
+            const now = new Date();
+            const dueDate = new Date(`${date}T${time}`);
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const dueDay = new Date(dueDate.getFullYear(), dueDate.getMonth(), dueDate.getDate());
+
+            if (dueDate < now) return { borderClass: 'border-overdue', dateText: { text: '(Overdue)', color: 'text-red-500' } };
+            if (dueDay.getTime() === today.getTime()) return { borderClass: 'border-due-today', dateText: { text: '(Due Today)', color: 'text-amber-500' } };
+            return { borderClass: 'border-default', dateText: { text: '', color: '' } };
+        };
+
+        const updateTaskStats = (tasks) => {
+            const completedCount = tasks.filter(t => t.completed).length;
+            const pendingCount = tasks.length - completedCount;
+            taskStats.textContent = `📊 Stats: ${pendingCount} Pending / ${completedCount} Completed`;
+        };
+
+        // --- Features: Countdown, Notifications, Conflict Detection ---
+        const updateAllCountdowns = () => {
+            document.querySelectorAll('.countdown-timer').forEach(timer => {
+                const taskElement = timer.closest('[data-due-date]');
+                if (taskElement) {
+                    const dueDate = new Date(taskElement.dataset.dueDate);
+                    const now = new Date();
+                    const diff = dueDate - now;
+
+                    if (diff > 0) {
+                        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        const s = Math.floor((diff % (1000 * 60)) / 1000);
+                        timer.textContent = `${d}d ${h}h ${m}m ${s}s remaining`;
+                    } else {
+                        timer.textContent = "Interview time has passed.";
+                    }
+                }
+            });
+        };
+
+        const requestNotificationPermission = () => {
+            if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        new Notification('Thanks! 🙏', { body: 'You will now receive interview reminders.' });
+                    }
+                });
+            }
+        };
+
+        const checkAllNotifications = () => {
+            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+            const tasks = getTasks();
+            const now = new Date().getTime();
+            const oneHour = 60 * 60 * 1000;
+            let sentNotifications = JSON.parse(localStorage.getItem('sentNotifications')) || [];
+
+            tasks.forEach(task => {
+                if (!task.completed && !sentNotifications.includes(task.id)) {
+                    const dueTime = new Date(`${task.date}T${task.time}`).getTime();
+                    const timeUntil = dueTime - now;
+                    if (timeUntil > 0 && timeUntil <= oneHour) {
+                        new Notification(`Reminder: Interview with ${task.name}`, {
+                            body: `Role: ${task.role}\nScheduled in about an hour.`,
+                            icon: 'https://placehold.co/48x48/7c3aed/ffffff?text=🔔'
+                        });
+                        sentNotifications.push(task.id);
+                    }
+                }
+            });
+            localStorage.setItem('sentNotifications', JSON.stringify(sentNotifications));
+        };
+        
+        const checkConflict = (formPrefix) => {
+            const date = document.getElementById(`${formPrefix}-date`).value;
+            const time = document.getElementById(`${formPrefix}-time`).value;
+            const currentId = formPrefix === 'edit' ? document.getElementById('edit-task-id').value : null;
+            const warningEl = document.getElementById(`${formPrefix}-conflict-warning`);
+
+            if (!date || !time) {
+                warningEl.classList.add('hidden');
+                return;
+            }
+
+            const newDateTime = new Date(`${date}T${time}`).getTime();
+            const tasks = getTasks();
+            const conflict = tasks.some(task => {
+                if (task.id === currentId) return false; // Don't compare with self
+                const taskDateTime = new Date(`${task.date}T${task.time}`).getTime();
+                // Check if times are the same
+                return newDateTime === taskDateTime;
+            });
+
+            warningEl.classList.toggle('hidden', !conflict);
+        };
+
+        // --- Task CRUD ---
+        const addTask = (e) => {
+            e.preventDefault();
+            const task = {
+                id: Date.now().toString(), name: document.getElementById('name').value, role: document.getElementById('role').value,
+                category: document.getElementById('category').value, resume: document.getElementById('resume').value,
+                linkedin: document.getElementById('linkedin').value, email: document.getElementById('email').value,
+                number: document.getElementById('number').value, date: document.getElementById('date').value,
+                time: document.getElementById('time').value, completed: false,
+                rating: parseInt(document.getElementById('add-rating-value').value) || 0,
+                priority: document.getElementById('priority').value
+            };
+            const tasks = getTasks();
+            tasks.push(task);
+            saveTasks(tasks);
+            render();
+            taskForm.reset();
+            document.getElementById('add-rating-value').value = '0';
+            setupStarRatings('add-rating', 'add-rating-value'); // Reset stars
+        };
+
+        window.toggleComplete = (id) => {
+            let tasks = getTasks();
+            const task = tasks.find(t => t.id === id);
+            if (task) { task.completed = !task.completed; saveTasks(tasks); render(); }
+        };
+
+        // --- Modal & Rating Logic ---
+        const setupStarRatings = (containerId, valueInputId = null) => {
+            const container = document.getElementById(containerId);
+            const stars = container.querySelectorAll('span');
+            
+            const setRating = (value) => {
+                stars.forEach(star => {
+                    star.classList.toggle('selected', star.dataset.value <= value);
+                });
+                if (valueInputId) {
+                    document.getElementById(valueInputId).value = value;
+                } else {
+                    // For edit form, store it on the container
+                    container.dataset.ratingValue = value;
+                }
+            };
+            
+            stars.forEach(star => {
+                star.addEventListener('click', () => setRating(star.dataset.value));
+                star.addEventListener('mouseover', () => {
+                    stars.forEach(s => s.classList.remove('selected'));
+                    for (let i = 0; i < star.dataset.value; i++) {
+                        stars[4-i].classList.add('selected');
+                    }
+                });
+            });
+
+            container.addEventListener('mouseout', () => {
+                let currentValue = 0;
+                if (valueInputId) {
+                    currentValue = document.getElementById(valueInputId).value;
+                } else {
+                    currentValue = container.dataset.ratingValue || 0;
+                }
+                setRating(currentValue);
+            });
+
+            // Initial state
+            setRating(valueInputId ? document.getElementById(valueInputId).value : container.dataset.ratingValue || 0);
+        };
+
+        window.openEditModal = (id) => {
+            const task = getTasks().find(t => t.id === id);
+            if (task) {
+                document.getElementById('edit-task-id').value = task.id;
+                document.getElementById('edit-name').value = task.name;
+                document.getElementById('edit-role').value = task.role;
+                document.getElementById('edit-category').value = task.category;
+                document.getElementById('edit-resume').value = task.resume;
+                document.getElementById('edit-linkedin').value = task.linkedin;
+                document.getElementById('edit-email').value = task.email;
+                document.getElementById('edit-number').value = task.number;
+                document.getElementById('edit-date').value = task.date;
+                document.getElementById('edit-time').value = task.time;
+                document.getElementById('edit-priority').value = task.priority || 'none';
+                
+                // Set rating
+                const ratingContainer = document.getElementById('edit-rating');
+                ratingContainer.dataset.ratingValue = task.rating || 0;
+                const stars = ratingContainer.querySelectorAll('span');
+                stars.forEach(star => {
+                    star.classList.toggle('selected', star.dataset.value <= (task.rating || 0));
+                });
+                
+                editModal.classList.remove('hidden');
+            }
+        };
+        window.closeEditModal = () => editModal.classList.add('hidden');
+
+        const saveEditedTask = (e) => {
+            e.preventDefault();
+            const id = document.getElementById('edit-task-id').value;
+            let tasks = getTasks();
+            const taskIndex = tasks.findIndex(t => t.id === id);
+            if (taskIndex > -1) {
+                tasks[taskIndex] = { ...tasks[taskIndex],
+                    name: document.getElementById('edit-name').value, role: document.getElementById('edit-role').value,
+                    category: document.getElementById('edit-category').value, resume: document.getElementById('edit-resume').value,
+                    linkedin: document.getElementById('edit-linkedin').value, email: document.getElementById('edit-email').value,
+                    number: document.getElementById('edit-number').value, date: document.getElementById('edit-date').value,
+                    time: document.getElementById('edit-time').value,
+                    rating: parseInt(document.getElementById('edit-rating').dataset.ratingValue) || 0,
+                    priority: document.getElementById('edit-priority').value
+                };
+                saveTasks(tasks);
+                render();
+                closeEditModal();
+            }
+        };
+
+        window.openDeleteModal = (id) => { taskToDeleteId = id; deleteConfirmModal.classList.remove('hidden'); };
+        const closeDeleteModal = () => { taskToDeleteId = null; deleteConfirmModal.classList.add('hidden'); };
+        const confirmDelete = (id) => {
+            if (id) { saveTasks(getTasks().filter(task => task.id !== id)); render(); }
+            closeDeleteModal();
+        };
+
+        // --- Data I/O ---
+        const exportToExcel = () => {
+            const tasks = getTasks();
+            if (tasks.length === 0) {
+                alert("🤷‍♀️ No data to export. Add some interviews first!");
+                return;
+            }
+
+            const tasksToExport = tasks.map(task => ({
+                'Candidate Name': task.name, 'Role': task.role, 'Interview Stage': task.category,
+                'Date': task.date, 'Time': task.time, 'Email': task.email, 'Phone': task.number,
+                'Resume Link': task.resume, 'LinkedIn URL': task.linkedin, 'Rating (1-5)': task.rating,
+                'Priority': task.priority, 'Status': task.completed ? 'Completed' : 'Pending'
+            }));
+
+            const worksheet = XLSX.utils.json_to_sheet(tasksToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Interviews");
+            XLSX.writeFile(workbook, "Interview_Schedule.xlsx");
+        };
+
+        // --- Start the app ---
+        init();
+    });
+    </script>
+</body>
+</html>
