@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>M-Swasth Doc Registration Form</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <style>
+    #particles-js { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; background: linear-gradient(135deg, #2193b0, #6dd5ed); }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Poppins', sans-serif; min-height: 100vh; padding: 20px; overflow-x: hidden; }
+    .container { max-width: 800px; margin: 50px auto; background: rgba(255, 255, 255, 0.95); border-radius: 15px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); animation: float 3s ease-in-out infinite; position: relative; z-index: 1; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; animation: fadeInDown 1s; }
+    .header h2 { color: #2c3e50; font-weight: 600; font-size: 2em; margin: 0; }
+    .logo { height: 50px; cursor: pointer; transition: transform 0.3s; animation: bounce 2s infinite; }
+    .logo:hover { transform: rotate(-5deg) scale(1.05); }
+    .form-section { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+    .form-section:last-of-type { border-bottom: none; }
+    .form-section h3 { color: #2c3e50; font-size: 1.4em; margin-bottom: 20px; position: relative; padding-left: 20px; font-weight: 600; }
+    .form-section h3:before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 8px; height: 8px; background: #2196f3; border-radius: 50%; }
+    input, select, textarea { border: 1px solid #ccc; border-radius: 8px; padding: 12px; font-size: 1em; width: 100%; margin-bottom: 15px; }
+    input:focus, select:focus, textarea:focus { border-color: #2196f3; box-shadow: 0 0 0 2px rgba(33,150,243,0.2); outline: none; }
+    label { color: #34495e; font-weight: 500; margin-bottom: 5px; display: block; font-size: 0.95em; }
+    .submit-btn { background: linear-gradient(135deg, #1e88e5, #42a5f5); color: white; padding: 14px 28px; border: none; border-radius: 25px; font-size: 1.1em; font-weight: 600; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 4px 12px rgba(33,149,243,0.25); display: block; width: fit-content; margin: 20px auto 0 auto; }
+    .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 18px rgba(33,149,243,0.35); }
+    .loading { display: none; color: #e74c3c; font-weight: 600; text-align: center; margin-top: 15px; animation: pulse 1.5s infinite; }
+    input[type="file"] { border: 1px dashed #ccc; padding: 10px; background: #f8f9fa; border-radius: 8px; margin: 5px 0 15px 0; display: block; font-size: 0.9em; color: #555; }
+    input[type="file"]::file-selector-button { background: #6c757d; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; margin-right: 10px; }
+    input[type="file"]::file-selector-button:hover { background-color: #5a6268; }
+    @media (max-width: 768px) { .container { margin: 20px; padding: 20px; animation: none; } .header { flex-direction: column; text-align: center; } .header h2 { font-size: 1.6em; margin-bottom: 10px; } .logo { height: 45px; margin: 0 auto; } .form-section h3 { font-size: 1.2em; } input, select, textarea { padding: 10px; } .submit-btn { width: 100%; font-size: 1em; padding: 12px; } }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes pulse { 0% { opacity: 0.7; } 50% { opacity: 1; } 100% { opacity: 0.7; } }
+    @keyframes fadeInDown { 0% { opacity: 0; transform: translateY(-15px); } 100% { opacity: 1; transform: translateY(0); } }
+    label.required::after { content: " *"; color: red; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="container">
+    <div class="header">
+      <h2>Doc Registration Form</h2>
+      <a href="https://play.google.com/store/apps/details?id=in.m_insure.patient_app" target="_blank">
+        <img src="https://play-lh.googleusercontent.com/kPo5X-98SBrclvOSGuMpsgfXZxqGI5kMOZ7qEwYaaf0j0_ymmlk2efzkQ5Qdd1EMRS4" alt="M-Swasth Logo" class="logo"/>
+      </a>
+    </div>
+
+    <form id="userForm" onsubmit="handleSubmit(event)">
+      
+      <!-- Basic Details -->
+      <div class="form-section">
+        <h3>Basic Details</h3>
+        <label for="empCode" class="required">Employee Code</label>
+        <input type="text" id="empCode" name="empCode" required>
+
+        <label for="empName" class="required">Doctor Name</label>
+        <input type="text" id="empName" name="empName" required>
+
+        <label for="firstName" class="required">First Name</label>
+        <input type="text" id="firstName" name="firstName" required>
+
+        <label for="middleName">Middle Name</label>
+        <input type="text" id="middleName" name="middleName">
+
+        <label for="lastName" class="required">Last Name</label>
+        <input type="text" id="lastName" name="lastName" required>
+
+        <label for="fatherName" class="required">Father's Name</label>
+        <input type="text" id="fatherName" name="fatherName" required>
+
+        <label for="gender" class="required">Gender</label>
+        <select id="gender" name="gender" required>
+          <option value="" disabled selected>Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+
+        <label for="dob" class="required">Date of Birth</label>
+        <input type="date" id="dob" name="dob" required>
+
+        <label for="doj" class="required">Date of Joining</label>
+        <input type="date" id="doj" name="doj" required>
+        
+        <!-- NEW FIELDS IN BASIC DETAILS -->
+        <label for="adharNo" class="required">Aadhar Number</label>
+        <input type="text" id="adharNo" name="adharNo" pattern="[0-9]{12}" title="Please enter a 12-digit Aadhar number" required>
+
+        <label for="panNo" class="required">PAN Number</label>
+        <input type="text" id="panNo" name="panNo" required>
+
+        <label for="languagesKnown" class="required">Languages Known</label>
+        <input type="text" id="languagesKnown" name="languagesKnown" placeholder="e.g., English, Hindi, Tamil" required>
+      </div>
+
+      <!-- Contact Details -->
+      <div class="form-section">
+        <h3>Contact Details</h3>
+        <label for="email" class="required">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="mobile" class="required">Mobile No</label>
+        <input type="tel" id="mobile" name="mobile" pattern="[0-9]{10}" title="Please enter a 10-digit mobile number" required>
+      </div>
+
+      <!-- NEW SECTION: Employment Details (Optional) -->
+      <div class="form-section">
+        <h3>Employment Details (Optional)</h3>
+        <label for="empIdNumber">ID Number</label>
+        <input type="text" id="empIdNumber" name="empIdNumber">
+        
+        <label for="empDepartment">Department</label>
+        <input type="text" id="empDepartment" name="empDepartment" placeholder="e.g., Clinical Department">
+        
+        <label for="empDesignation">Designation</label>
+        <input type="text" id="empDesignation" name="empDesignation" placeholder="e.g., Consulting Doctor">
+        
+        <label for="shiftTimings">Shift Timings</label>
+        <input type="text" id="shiftTimings" name="shiftTimings" placeholder="e.g., 9 AM - 5 PM">
+        
+        <label for="jobType">Type of Job</label>
+        <select id="jobType" name="jobType">
+            <option value="" selected>Select Job Type</option>
+            <option value="Part Time">Part Time</option>
+            <option value="Full Time">Full Time</option>
+        </select>
+        
+        <label for="prevWorkExperience">Previous Work Experience</label>
+        <input type="text" id="prevWorkExperience" name="prevWorkExperience" placeholder="e.g., 5 years">
+      </div>
+
+      <!-- Bank Details -->
+      <div class="form-section">
+        <h3>Bank Details</h3>
+        <label for="bankName" class="required">Bank Name</label>
+        <input type="text" id="bankName" name="bankName" required>
+        <label for="bankAcctNo" class="required">Bank Account Number</label>
+        <input type="text" id="bankAcctNo" name="bankAcctNo" required>
+        <label for="ifscCode" class="required">IFSC Code</label>
+        <input type="text" id="ifscCode" name="ifscCode" required>
+      </div>
+
+      <!-- Address Details -->
+      <div class="form-section">
+        <h3>Address Details</h3>
+        <label for="presentAddress" class="required">Present Address</label>
+        <textarea id="presentAddress" name="presentAddress" rows="3" required></textarea>
+        <label for="presentCity" class="required">Present City</label>
+        <input type="text" id="presentCity" name="presentCity" required>
+        <label for="presentPin" class="required">Present Pin Code</label>
+        <input type="text" id="presentPin" name="presentPin" pattern="[0-9]{6}" title="Please enter a 6-digit PIN code" required>
+        <label for="permanentAddress" class="required">Permanent Address</label>
+        <textarea id="permanentAddress" name="permanentAddress" rows="3" required></textarea>
+        <label for="permanentCity" class="required">Permanent City</label>
+        <input type="text" id="permanentCity" name="permanentCity" required>
+        <label for="permanentPin" class="required">Permanent Pin Code</label>
+        <input type="text" id="permanentPin" name="permanentPin" pattern="[0-9]{6}" title="Please enter a 6-digit PIN code" required>
+      </div>
+      
+      <!-- Personal Details -->
+      <div class="form-section">
+        <h3>Personal Details</h3>
+        <label for="maritalStatus" class="required">Marital Status</label>
+        <select id="maritalStatus" name="maritalStatus" required>
+           <option value="" disabled selected>Select Status</option>
+          <option value="Married">Married</option>
+          <option value="Unmarried">Unmarried</option>
+           <option value="Other">Other</option>
+        </select>
+
+        <label for="bloodGroup" class="required">Blood Group</label>
+        <input type="text" id="bloodGroup" name="bloodGroup" required>
+
+        <label for="totalWorkExperience" class="required">Total Work Experience</label>
+        <input type="text" id="totalWorkExperience" name="totalWorkExperience" placeholder="e.g., 2 years" required>
+
+        <label for="nationality" class="required">Nationality</label>
+        <input type="text" id="nationality" name="nationality" required>
+
+        <!-- MODIFIED: Physical Status is now a dropdown with conditional upload -->
+        <label for="physicalStatus" class="required">Physical Status</label>
+        <select id="physicalStatus" name="physicalStatus" required onchange="toggleDisabilityCert()">
+            <option value="" disabled selected>Select Status</option>
+            <option value="Not Applicable">Not Applicable</option>
+            <option value="Person with Disability (PwD)">Person with Disability (PwD)</option>
+        </select>
+        <div id="disabilityCertUploadDiv" style="display: none; margin-top: 15px;">
+            <label for="disabilityCert" class="required">Disability Certificate (PDF or Image)</label>
+            <input type="file" id="disabilityCert" name="disabilityCert" accept=".pdf,image/*">
+        </div>
+      </div>
+
+      <!-- NEW SECTION: Qualification & Certification -->
+      <div class="form-section">
+        <h3>Qualification & Certification</h3>
+        <label for="qualification" class="required">Qualification</label>
+        <input type="text" id="qualification" name="qualification" required>
+
+        <label for="medRegCertNo" class="required">Permanent Medical Registration Certificate Number</label>
+        <input type="text" id="medRegCertNo" name="medRegCertNo" required>
+
+        <label for="medCouncilBoard" class="required">Medical Council Board Name</label>
+        <input type="text" id="medCouncilBoard" name="medCouncilBoard" required>
+
+        <h4>Upload Certificates</h4>
+        <label for="qualCert" class="required">Qualification Certificate</label>
+        <input type="file" id="qualCert" name="qualCert" accept=".pdf,image/*" required>
+
+        <label for="regCert" class="required">Medical Registration Certificate</label>
+        <input type="file" id="regCert" name="regCert" accept=".pdf,image/*" required>
+
+        <label for="sigCopy" class="required">Signature Copy</label>
+        <input type="file" id="sigCopy" name="sigCopy" accept="image/*" required>
+      </div>
+
+      <!-- General Uploads -->
+      <div class="form-section">
+        <h3>General Uploads</h3>
+        <label for="adhar" class="required">Aadhaar Card (PDF or Image)</label>
+        <input type="file" id="adhar" name="adhar" accept=".pdf,image/*" required>
+        <label for="pan" class="required">PAN Card (PDF or Image)</label>
+        <input type="file" id="pan" name="pan" accept=".pdf,image/*" required>
+        <label for="picture" class="required">Recent Picture (Image)</label>
+        <input type="file" id="picture" name="picture" accept="image/*" required>
+        <label for="passbook" class="required">Passbook / Cancelled Cheque (PDF or Image)</label>
+        <input type="file" id="passbook" name="passbook" accept=".pdf,image/*" required>
+        <label for="otherDocs">Other Documents (Optional)</label>
+        <input type="file" id="otherDocs" name="otherDocs" accept=".pdf,image/*" multiple>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Submit Registration</button>
+      <p class="loading" id="loadingText">Uploading your data... Please wait.</p>
+    </form>
+  </div>
+
+  <script>
+    particlesJS('particles-js', { particles: { number: { value: 60 }, color: { value: "#ffffff" }, shape: { type: "circle" }, opacity: { value: 0.5, random: true }, size: { value: 3, random: true }, line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 }, move: { enable: true, speed: 2 } }, interactivity: { events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" } } }, retina_detect: true });
+
+    // NEW: Function to handle conditional file upload for PwD
+    function toggleDisabilityCert() {
+      const statusSelect = document.getElementById('physicalStatus');
+      const certDiv = document.getElementById('disabilityCertUploadDiv');
+      const certInput = document.getElementById('disabilityCert');
+      if (statusSelect.value === 'Person with Disability (PwD)') {
+        certDiv.style.display = 'block';
+        certInput.required = true;
+      } else {
+        certDiv.style.display = 'none';
+        certInput.required = false;
+        certInput.value = '';
+      }
+    }
+
+    async function handleSubmit(event) {
+      event.preventDefault();
+      document.getElementById("loadingText").style.display = "block";
+      document.getElementById("submitBtn").disabled = true;
+
+      const readFileAsBase64 = (file) => {
+        return new Promise((resolve, reject) => {
+          if (!file) {
+              resolve({ name: null, base64: null });
+              return;
+          }
+          const reader = new FileReader();
+          reader.onload = () => resolve({ name: file.name, base64: reader.result.split(',')[1] });
+          reader.onerror = (error) => reject(error);
+          reader.readAsDataURL(file);
+        });
+      };
+      
+      try {
+        const form = document.getElementById("userForm");
+        
+        // --- MODIFIED: Gather all data from the form, including new fields ---
+        // Basic Details
+        const empCode = form.empCode.value, empName = form.empName.value, firstName = form.firstName.value, middleName = form.middleName.value, lastName = form.lastName.value, fatherName = form.fatherName.value, gender = form.gender.value, dob = form.dob.value, doj = form.doj.value;
+        const adharNo = form.adharNo.value, panNo = form.panNo.value, languagesKnown = form.languagesKnown.value;
+        // Contact & Bank
+        const email = form.email.value, mobile = form.mobile.value;
+        const bankName = form.bankName.value, bankAcctNo = form.bankAcctNo.value, ifscCode = form.ifscCode.value;
+        // Address
+        const presentAddress = form.presentAddress.value, presentCity = form.presentCity.value, presentPin = form.presentPin.value, permanentAddress = form.permanentAddress.value, permanentCity = form.permanentCity.value, permanentPin = form.permanentPin.value;
+        // Personal
+        const maritalStatus = form.maritalStatus.value, bloodGroup = form.bloodGroup.value, totalWorkExperience = form.totalWorkExperience.value, nationality = form.nationality.value, physicalStatus = form.physicalStatus.value;
+        // Employment
+        const empIdNumber = form.empIdNumber.value, empDepartment = form.empDepartment.value, empDesignation = form.empDesignation.value, shiftTimings = form.shiftTimings.value, jobType = form.jobType.value, prevWorkExperience = form.prevWorkExperience.value;
+        // Qualification
+        const qualification = form.qualification.value, medRegCertNo = form.medRegCertNo.value, medCouncilBoard = form.medCouncilBoard.value;
+
+        // --- MODIFIED: Process all files concurrently, including new ones ---
+        const filePromises = [
+          readFileAsBase64(form.adhar.files[0]),
+          readFileAsBase64(form.pan.files[0]),
+          readFileAsBase64(form.picture.files[0]),
+          readFileAsBase64(form.passbook.files[0]),
+          readFileAsBase64(form.qualCert.files[0]),
+          readFileAsBase64(form.regCert.files[0]),
+          readFileAsBase64(form.sigCopy.files[0]),
+          readFileAsBase64(form.disabilityCert.files[0])
+        ];
+        const otherFilesPromises = Array.from(form.otherDocs.files).map(file => readFileAsBase64(file));
+        
+        const [adhar, pan, picture, passbook, qualCert, regCert, sigCopy, disabilityCert] = await Promise.all(filePromises);
+        const otherDocs = await Promise.all(otherFilesPromises);
+
+        const otherDocsBase64 = otherDocs.map(f => f.base64);
+        const otherDocsNames = otherDocs.map(f => f.name);
+
+        // --- MODIFIED: Call server-side function with the new, complete parameter list ---
+        google.script.run
+          .withSuccessHandler(response => {
+            alert(response);
+            if (response.toLowerCase().includes("success")) form.reset();
+            document.getElementById("loadingText").style.display = "none";
+            document.getElementById("submitBtn").disabled = false;
+          })
+          .withFailureHandler(error => {
+            console.error("Apps Script call failed: ", error);
+            alert("Error submitting form: " + error.message);
+            document.getElementById("loadingText").style.display = "none";
+            document.getElementById("submitBtn").disabled = false;
+          })
+          .processForm(
+            empCode, empName, firstName, middleName, lastName, fatherName, gender, dob, doj,
+            adharNo, panNo, languagesKnown,
+            email, mobile, "", "", "", "", "", // Empty strings for removed fields: department, designation, role, etc.
+            bankName, bankAcctNo, ifscCode,
+            presentAddress, presentCity, presentPin, permanentAddress, permanentCity, permanentPin,
+            maritalStatus, bloodGroup, totalWorkExperience, nationality, physicalStatus,
+            empIdNumber, empDepartment, empDesignation, shiftTimings, jobType, prevWorkExperience,
+            qualification, medRegCertNo, medCouncilBoard,
+            // File data
+            adhar.base64, adhar.name, pan.base64, pan.name, picture.base64, picture.name, passbook.base64, passbook.name,
+            qualCert.base64, qualCert.name,
+            regCert.base64, regCert.name,
+            sigCopy.base64, sigCopy.name,
+            disabilityCert.base64, disabilityCert.name,
+            otherDocsBase64, otherDocsNames
+          );
+      } catch (error) {
+        console.error("Error processing files: ", error);
+        alert("Error processing files. Please ensure all required files are selected and valid.");
+        document.getElementById("loadingText").style.display = "none";
+        document.getElementById("submitBtn").disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
