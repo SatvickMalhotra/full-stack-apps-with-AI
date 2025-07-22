@@ -1,0 +1,31 @@
+Create a complete Google Apps Script project for a "M-Swasth Doctor Registration Form". The project must contain two files: code.gs for the backend and index.html for the frontend.
+Frontend (index.html) Requirements:
+Styling: The form should be visually appealing and responsive. Use the 'Poppins' Google Font. The page background should be a blue linear-gradient (#2193b0 to #6dd5ed) with an animated, floating particle effect using particles.js. The main form container should be white, centered, with rounded corners and a subtle box-shadow, and have a gentle floating animation. Required fields must be marked with a red asterisk.
+Form Structure: The form must be divided into the following sections with the exact fields listed:
+Basic Details (Required): Employee Code, Doctor Name, First Name, Middle Name (optional), Last Name, Father's Name, Gender (dropdown), Date of Birth, Date of Joining, Aadhar Number (12-digit pattern), PAN Number, Languages Known.
+Contact Details (Required): Email, Mobile No (10-digit pattern).
+Employment Details (Optional): ID Number, Department, Designation, Shift Timings, Type of Job (dropdown: Part Time/Full Time), Previous Work Experience.
+Bank Details (Required): Bank Name, Bank Account Number, IFSC Code.
+Address Details (Required): Present Address (textarea), Present City, Present Pin Code, Permanent Address (textarea), Permanent City, Permanent Pin Code.
+Personal Details (Required): Marital Status (dropdown), Blood Group, Total Work Experience, Nationality.
+Physical Status (Required & Conditional): This must be a dropdown with two options: "Not Applicable" and "Person with Disability (PwD)". If "PwD" is selected, a new file upload input for a "Disability Certificate" must appear and become a required field. If the selection is changed back, it must disappear.
+Qualification & Certification (Required): Qualification (text), Permanent Medical Registration Certificate Number, Medical Council Board Name. This section must also contain three required file uploads: "Qualification Certificate", "Medical Registration Certificate", and "Signature Copy".
+General Uploads (Required): Aadhaar Card, PAN Card, Recent Picture, Passbook / Cancelled Cheque, and an optional "Other Documents" input that allows for multiple file selection.
+JavaScript Logic:
+Write a JavaScript handleSubmit function that triggers on form submission.
+This function must prevent the default submission, show a "loading..." message, and disable the submit button.
+It must read all uploaded files (including the conditional disability certificate and multiple "other" documents) and asynchronously convert them to Base64 strings.
+It must use google.script.run with .withSuccessHandler() and .withFailureHandler() to call the backend processForm function. On success, it should alert the user and reset the form.
+Backend (code.gs) Requirements:
+doGet(): A standard doGet() function to serve the Index.html file.
+processForm() function: This function must accept arguments for every single field and file from the index.html form, in the correct order.
+Google Sheets Integration:
+The function must open a specific Google Sheet by its ID.
+It must append a new row containing a timestamp and all the submitted text-based form data.
+If the target sheet name ("Registrations") doesn't exist, the script must create it and add a header row with titles for all the data columns.
+Google Drive Integration:
+The function must access a specific parent folder in Google Drive by its ID.
+It must create a new subfolder for each submission, named dynamically in the format [Doctor Name]_[Employee Code]_Docs.
+It must decode all the Base64 file strings received from the frontend and save each one as a file (e.g., adhar.pdf, signature.png) inside the newly created doctor-specific folder.
+Return Value: The function should return a success message string (e.g., "Doctor data and files saved successfully!") or an error message if an exception occurs.
+Ensure the code is clean, well-commented, and robust.
