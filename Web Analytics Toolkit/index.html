@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Excel/CSV Analysis Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Library for reading Excel/CSV files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- Library for creating charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>Dynamic Data Analysis Tool</h1>
+        <p>Upload an Excel (.xlsx, .xls) or .CSV file to get started.</p>
+    </header>
+
+    <main>
+        <div id="upload-container" class="card">
+            <h2>1. Upload Your Data</h2>
+            <input type="file" id="file-input" accept=".xlsx, .xls, .csv">
+            <div id="sample-data-container" class="hidden">
+                <h3>Data Preview</h3>
+                <table id="sample-data-table"></table>
+            </div>
+        </div>
+
+        <div id="column-selection-container" class="card hidden">
+            <h2>2. Select Columns for Analysis</h2>
+            <div id="column-checkboxes"></div>
+            <button id="run-analysis-btn">Run Analysis</button>
+        </div>
+        
+        <div id="analysis-output" class="hidden">
+            <div class="toolbar">
+                <h2>3. Analysis Results</h2>
+                <button id="export-btn" class="hidden">Export to Excel</button>
+            </div>
+            <div id="results-container"></div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Built with ❤️ for powerful, simple data insights.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
