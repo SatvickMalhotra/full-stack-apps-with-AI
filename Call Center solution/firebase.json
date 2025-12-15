@@ -3,20 +3,9 @@
     "rules": "firestore.rules"
   },
   "storage": {
-    "rules": "storage.rules"
-  },
-  "hosting": {
-    "public": "build",
+    "rules"
     "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**",
-      "src",
-      "firebase-admin",
-      ".firebaserc"
-    ],
-    "headers": [
-      {
+      "fir
         "source": "**/*.@(js|css)",
         "headers": [
           {
@@ -25,36 +14,27 @@
           }
         ]
       },
-      {
-        "source": "index.html",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache, no-store, must-revalidate"
+      lidate"
           }
         ]
       },
-      {
-        "source": "**/*.@(json|ico|png|jpg|svg)",
-        "headers": [
+      
           {
-            "key": "Cache-Control",
-            "value": "public, max-age=3600"
-          }
+            "key": "Cache-Conrol",
+            "va
         ]
       }
     ],
     "rewrites": [
       {
-        "source": "**",
-        "destination": "/index.html"
+        "soundex.html"
       }
     ]
   },
   "functions": [
     {
-      "source": "functions",
-      "codebase": "default",
+      "source": "funns",
+      "codebase": "dalt"
       "runtime": "nodejs20",
       "ignore": [
         "node_modules",
