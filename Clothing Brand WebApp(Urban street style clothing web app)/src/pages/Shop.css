@@ -1,0 +1,46 @@
+.shop-page {
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.shop-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+  padding: 4rem 2rem;
+  margin-bottom: 3rem;
+}
+
+.shop-header h1 {
+  font-size: 3rem;
+  margin: 0 0 1rem 0;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.shop-header p {
+  font-size: 1.2rem;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.no-products {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: #999;
+}
+
+.no-products p {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .shop-header h1 {
+    font-size: 2rem;
+  }
+
+  .shop-header p {
+    font-size: 1rem;
+  }
+}
