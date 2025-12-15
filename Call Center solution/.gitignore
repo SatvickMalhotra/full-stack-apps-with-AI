@@ -1,0 +1,210 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# ===========================================
+# DEPENDENCIES
+# ===========================================
+/node_modules
+/.pnp
+.pnp.js
+functions/node_modules
+firebase-admin/node_modules
+server/node_modules
+**/node_modules
+
+# ===========================================
+# TESTING & BUILD
+# ===========================================
+/coverage
+/build
+
+# ===========================================
+# ENVIRONMENT & SECRETS
+# ===========================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+/server/.env
+
+# ===========================================
+# FIREBASE SENSITIVE FILES
+# ===========================================
+# Service Account Keys (CRITICAL - Never commit these!)
+firebase-admin/serviceAccountKey.json
+firebase-admin/*serviceAccount*.json
+**/serviceAccountKey.json
+
+# Firebase deployment files
+.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+.firebase/
+
+# ===========================================
+# FIREBASE ADMIN SCRIPTS (Sensitive)
+# ===========================================
+# User creation scripts
+firebase-admin/createUsers.js
+firebase-admin/createTLsAndAgents.js
+firebase-admin/createBulkHealthAgents.js
+firebase-admin/createBulkHealthTLs.js
+firebase-admin/createDCAgents.js
+firebase-admin/createHealthAgentsCorrectly.js
+firebase-admin/createHealthManager.js
+firebase-admin/createHealthTeam.js
+firebase-admin/createManagers.js
+firebase-admin/createMarketingUser.js
+firebase-admin/createMissingUserDocs.js
+firebase-admin/createOfflineVisitsManager.js
+firebase-admin/createOfflineVisitsUsers.js
+firebase-admin/createDemoOfflineVisitsUser.js
+firebase-admin/createAdminUser.js
+firebase-admin/createGoogleUser.js
+firebase-admin/*Create*.js
+firebase-admin/*create*.js
+
+# Password/Email management scripts
+firebase-admin/bulkChangeEmails.js
+firebase-admin/bulkChangePasswords.js
+firebase-admin/bulkChangePasswordsFromCSV.js
+firebase-admin/changeEmail.js
+firebase-admin/changePassword.js
+firebase-admin/updateHealthPasswords.py
+
+# Fix/Migration scripts
+firebase-admin/fixTLAgentMapping.js
+firebase-admin/fixAgent*.js
+firebase-admin/fixHealth*.js
+firebase-admin/fixMissing*.js
+firebase-admin/fixTeam*.js
+firebase-admin/fixUser*.js
+firebase-admin/fix*.js
+firebase-admin/fix*.py
+firebase-admin/migrate*.js
+firebase-admin/restructure*.js
+
+# Delete scripts
+firebase-admin/delete*.js
+firebase-admin/deleteDemoOfflineUser.js
+
+# Upload scripts with partner data
+firebase-admin/uploadSamplePartners.js
+firebase-admin/uploadCorrectPartners.js
+firebase-admin/uploadPartners.js
+firebase-admin/UploadPartners.js.backup
+
+# Check/Diagnostic scripts
+firebase-admin/check*.js
+firebase-admin/diagnostic*.js
+firebase-admin/verify*.js
+firebase-admin/verify*.py
+firebase-admin/list*.js
+firebase-admin/find*.js
+
+# Assignment scripts
+firebase-admin/assign*.js
+firebase-admin/assign*.py
+firebase-admin/link*.js
+firebase-admin/move*.js
+firebase-admin/set*.js
+firebase-admin/add*.js
+
+# Backup/Data files
+firebase-admin/backup*.json
+firebase-admin/complete*.js
+firebase-admin/final*.js
+firebase-admin/deep*.js
+
+# Other admin scripts
+firebase-admin/testConnection.js
+firebase-admin/viewAgentDepartments.js
+firebase-admin/generateEmailChangeCSV.js
+firebase-admin/backupCurrentState.js
+firebase-admin/deployOfflineVisitsRules.js
+
+# ===========================================
+# SENSITIVE DATA FILES
+# ===========================================
+# CSV files with user data
+firebase-admin/*.csv
+firebase-admin/email_changes*.csv
+firebase-admin/password_changes*.csv
+firebase-admin/health_agents.csv
+firebase-admin/health_team_leads.csv
+bulk_users_template.csv
+
+# JSON data files
+firebase-admin/email_change_results*.json
+firebase-admin/password_change_results*.json
+firebase-admin/clinic_data.json
+firebase-admin/dc_agents_unique.json
+firebase-admin/backup_*.json
+
+# Credentials files
+firebase-admin/*CREDENTIALS*.txt
+firebase-admin/SUPER_MANAGER_CREDENTIALS.txt
+
+# Python scripts
+firebase-admin/*.py
+firebase-admin/convertXLSXtoCSV.py
+firebase-admin/parseDCClinicData.py
+firebase-admin/generateCSVFiles.py
+
+# ===========================================
+# DOCUMENTATION FILES (Auto-generated)
+# ===========================================
+*.md
+!README.md
+
+# ===========================================
+# TEMPORARY & MISC FILES
+# ===========================================
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+temp_*.txt
+nul
+*.txt.backup
+*.js.backup
+
+# ===========================================
+# CLAUDE CODE / AI ASSISTANT
+# ===========================================
+.claude/
+.claude/settings.local.json
+
+# ===========================================
+# SENSITIVE FRONTEND FILES
+# ===========================================
+src/components/UploadPartners.js
+upload-partners.js
+
+# ===========================================
+# FIRESTORE/STORAGE RULES (Sensitive - deploy separately)
+# ===========================================
+firestore.rules
+storage.rules
+firestore.indexes.json
+FIRESTORE_RULES.txt
+UPDATED_FIRESTORE_RULES.txt
+
+# ===========================================
+# ENVIRONMENT FILES
+# ===========================================
+.env.example
+.env*
+
+# ===========================================
+# FIREBASE CONFIG
+# ===========================================
+.firebaserc
+
+# ===========================================
+# SAMPLE DATA WITH CREDENTIALS (Security Risk)
+# ===========================================
+src/sampleData.js
+**/sampleData.js

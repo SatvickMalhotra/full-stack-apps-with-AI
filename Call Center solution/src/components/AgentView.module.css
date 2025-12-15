@@ -1,0 +1,712 @@
+/* Modern AgentView Styles with Dark Theme */
+
+.container {
+  padding: 24px;
+  /* Made background much darker with deeper grays and reduced radial gradient opacity */
+  background: radial-gradient(
+      circle at 20% 20%,
+      rgba(59, 130, 246, 0.04) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(16, 185, 129, 0.03) 0%,
+      transparent 50%
+    ),
+    linear-gradient(135deg, #374151 0%, #1f2937 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* Reduced border radius from 8px to 4px */
+  border-radius: 4px;
+  position: relative;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Made dot pattern more visible on dark background */
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 0
+  );
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Made AppBar darker with semi-transparent dark background */
+.modernAppBar {
+  background: rgba(31, 41, 55, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(75, 85, 99, 0.6) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+  margin-bottom: 24px !important;
+}
+
+.modernToolbar {
+  padding: 16px 32px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  min-height: 80px !important;
+}
+
+.appBarLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.dashboardIcon {
+  color: #3b82f6 !important;
+  font-size: 2rem !important;
+}
+
+.appBarTitle {
+  font-family: "Inter", "Roboto", sans-serif !important;
+  font-weight: 700 !important;
+  /* Changed text color to light for dark theme */
+  color: #f8fafc !important;
+  font-size: 1.5rem !important;
+  letter-spacing: -0.025em !important;
+  margin: 0 !important;
+}
+
+.appBarRight {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.headerStatusChip {
+  font-weight: 600 !important;
+  padding: 8px 16px !important;
+  font-size: 0.875rem !important;
+}
+
+.logoutButton {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #ef4444 !important;
+  border-radius: 12px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  padding: 12px !important;
+}
+
+.logoutButton:hover {
+  background: rgba(239, 68, 68, 0.15) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Responsive styles for modern AppBar */
+@media (max-width: 768px) {
+  .modernToolbar {
+    padding: 12px 16px !important;
+    min-height: 64px !important;
+  }
+
+  .appBarTitle {
+    font-size: 1.25rem !important;
+  }
+
+  .dashboardIcon {
+    font-size: 1.5rem !important;
+  }
+
+  .appBarLeft {
+    gap: 12px;
+  }
+
+  .appBarRight {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .appBarTitle {
+    display: none;
+  }
+
+  .headerStatusChip {
+    padding: 6px 12px !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+/* Enhanced header section with modern layout */
+.headerSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding: 24px;
+  /* Made header section darker with reduced border radius */
+  background: rgba(55, 65, 81, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 8px;
+  border: 1px solid rgba(75, 85, 99, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.agentAvatar {
+  width: 64px !important;
+  height: 64px !important;
+  /* More professional gradient colors */
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.25);
+}
+
+.welcomeTitle {
+  font-family: "Inter", "Roboto", sans-serif !important;
+  font-weight: 700 !important;
+  /* Changed text color to light for dark theme */
+  color: #f8fafc !important;
+  margin: 0 !important;
+  font-size: 2rem !important;
+  letter-spacing: -0.025em !important;
+}
+
+.welcomeSubtitle {
+  /* Changed subtitle color to lighter gray for dark theme */
+  color: #d1d5db !important;
+  margin: 4px 0 0 0 !important;
+  font-weight: 400 !important;
+}
+
+.mainGrid {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Modern card styling with refined glassmorphism effect */
+.controlCard {
+  border-radius: 8px !important;
+  /* Made control cards darker with reduced border radius */
+  background: rgba(55, 65, 81, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(75, 85, 99, 0.5) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  margin-bottom: 24px !important;
+}
+
+.controlCard:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+.controlContent {
+  padding: 32px !important;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.sectionHeader {
+  font-weight: 600 !important;
+  /* Changed section header color to light for dark theme */
+  color: #f8fafc !important;
+  font-size: 1.25rem !important;
+  margin: 0 !important;
+}
+
+.statusChip {
+  font-weight: 600 !important;
+}
+
+.statusBox {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.actionControls {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.statusSelect {
+  flex: 1;
+  min-width: 140px;
+}
+
+.startButton {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  padding: 12px 32px !important;
+  /* Reduced border radius from 12px to 6px */
+  border-radius: 6px !important;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  font-size: 1rem !important;
+}
+
+.startButton:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* Enhanced active call styling with pulse animation */
+.activeCallBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 32px;
+  /* Made active call box darker and reduced border radius */
+  background: linear-gradient(135deg, #451a1a 0%, #3f1f1f 100%);
+  border-radius: 8px;
+  border: 2px solid #f87171;
+  position: relative;
+  overflow: hidden;
+}
+
+.activeCallBox::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(248, 113, 113, 0.08),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+.pulseIcon {
+  position: relative;
+  padding: 16px;
+  background: #ef4444;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+.phoneIcon {
+  color: white !important;
+  font-size: 2rem !important;
+}
+
+.activeCallText {
+  font-weight: 600 !important;
+  color: #dc2626 !important;
+  margin: 0 !important;
+}
+
+.callSubtext {
+  color: #7f1d1d !important;
+  margin: 0 !important;
+}
+
+.endButton {
+  text-transform: none !important;
+  font-weight: 600 !important;
+  padding: 12px 32px !important;
+  /* Reduced border radius from 12px to 6px */
+  border-radius: 6px !important;
+  background: #ef4444 !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.endButton:hover {
+  background: #dc2626 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 30px rgba(239, 68, 68, 0.4) !important;
+}
+
+.formContainer {
+  margin-top: 24px;
+  padding: 24px;
+  /* Made form container darker and reduced border radius */
+  background: rgba(31, 41, 55, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 8px;
+  border: 1px solid rgba(75, 85, 99, 0.6);
+}
+
+/* Enhanced stats card with professional gradient */
+.statsCard {
+  border-radius: 8px !important;
+  /* More professional stats card gradient */
+  background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%) !important;
+  color: white !important;
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.25) !important;
+}
+
+.statsHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.statsIcon {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statNumber {
+  font-weight: 700 !important;
+  color: white !important;
+  margin: 0 !important;
+}
+
+.statLabel {
+  color: rgba(255, 255, 255, 0.8) !important;
+  margin: 4px 0 0 0 !important;
+}
+
+/* Enhanced log section styling */
+.logSection {
+  height: 100%;
+}
+
+.logHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding: 0 4px;
+}
+
+.logTitle {
+  font-weight: 700 !important;
+  /* Changed log title color to light for dark theme */
+  color: #f8fafc !important;
+  margin: 0 !important;
+}
+
+.logSubtitle {
+  /* Changed log subtitle color to lighter gray for dark theme */
+  color: #d1d5db !important;
+  margin: 4px 0 0 0 !important;
+}
+
+.timeIcon {
+  /* Changed time icon color to lighter gray for dark theme */
+  color: #d1d5db !important;
+  margin-top: 4px;
+}
+
+.logPaper {
+  border-radius: 8px !important;
+  /* Made log paper darker and reduced border radius */
+  background: rgba(55, 65, 81, 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(75, 85, 99, 0.6) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/* Enhanced call history card styling with modern design */
+.logItem {
+  padding: 0 !important;
+  margin-bottom: 16px !important;
+}
+
+.logItemContent {
+  width: 100%;
+  padding: 24px;
+  /* Made log item content darker and reduced border radius */
+  background: linear-gradient(
+    135deg,
+    rgba(31, 41, 55, 0.95) 0%,
+    rgba(17, 24, 39, 0.95) 100%
+  );
+  backdrop-filter: blur(20px);
+  border-radius: 8px;
+  border: 1px solid rgba(75, 85, 99, 0.6);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.logItemContent::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  border-radius: 0 2px 2px 0;
+}
+
+.logItemContent:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.logItemHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.logItemLeft {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.phoneIconWrapper {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  /* Reduced border radius from 12px to 6px */
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.25);
+}
+
+.logPhoneIcon {
+  color: white !important;
+  font-size: 1.25rem !important;
+}
+
+.logPrimary {
+  font-weight: 700 !important;
+  /* Changed log primary text color to light for dark theme */
+  color: #f8fafc !important;
+  font-size: 1.125rem !important;
+  margin: 0 !important;
+  letter-spacing: -0.025em !important;
+}
+
+.logTime {
+  /* Changed log time color to lighter gray for dark theme */
+  color: #d1d5db !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  margin: 4px 0 0 0 !important;
+}
+
+.modernStatusChip {
+  font-weight: 600 !important;
+  padding: 8px 16px !important;
+  /* Reduced border radius from 8px to 4px */
+  border-radius: 4px !important;
+  font-size: 0.75rem !important;
+  margin-left: 10px;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.logDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 64px;
+}
+
+.logDetailItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logDetailLabel {
+  font-weight: 600 !important;
+  /* Changed log detail label color to lighter gray for dark theme */
+  color: #9ca3af !important;
+  font-size: 0.875rem !important;
+  margin: 0 !important;
+  min-width: 80px;
+}
+
+.logDetailValue {
+  /* Changed log detail value color to light for dark theme */
+  color: #f8fafc !important;
+  font-size: 0.875rem !important;
+  margin: 0 !important;
+  flex: 1;
+}
+
+.durationIcon {
+  color: #10b981 !important;
+  font-size: 1rem !important;
+}
+
+.logDurationValue {
+  color: #10b981 !important;
+  font-weight: 600 !important;
+  font-size: 0.875rem !important;
+  margin: 0 !important;
+}
+
+.logDivider {
+  margin: 8px 0 !important;
+  background-color: rgba(226, 232, 240, 0.6) !important;
+}
+
+/* Empty state styling */
+.emptyLogItem {
+  padding: 48px 24px !important;
+  justify-content: center !important;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+}
+
+.emptyIcon {
+  color: #94a3b8 !important;
+  font-size: 3rem !important;
+  opacity: 0.6;
+}
+
+.emptyText {
+  font-weight: 600 !important;
+  /* Changed empty text color to lighter gray for dark theme */
+  color: #d1d5db !important;
+  font-size: 1.125rem !important;
+  margin: 0 !important;
+}
+
+.emptySubtext {
+  /* Changed empty subtext color to lighter gray for dark theme */
+  color: #9ca3af !important;
+  margin: 0 !important;
+}
+
+/* Responsive enhancements for call history cards */
+@media (max-width: 768px) {
+  .logItemHeader {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .logDetails {
+    padding-left: 0;
+    margin-top: 16px;
+  }
+
+  .logDetailItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .logDetailLabel {
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .logItemContent {
+    padding: 16px;
+  }
+
+  .phoneIconWrapper {
+    width: 40px;
+    height: 40px;
+  }
+
+  .logPhoneIcon {
+    font-size: 1rem !important;
+  }
+
+  .logPrimary {
+    font-size: 1rem !important;
+  }
+}
+
+/* Responsive styles for modern AppBar */
+@media (max-width: 1200px) {
+  .mainGrid {
+    max-width: 100%;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 960px) {
+  .container {
+    padding: 16px;
+  }
+
+  .headerSection {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .actionControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .startButton,
+  .endButton {
+    width: 100%;
+  }
+
+  .logHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .controlContent {
+    padding: 24px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .welcomeTitle {
+    font-size: 1.5rem !important;
+  }
+
+  .logItemHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

@@ -1,0 +1,92 @@
+/* Modern Light Theme - Teal Gradient Background */
+.background {
+  background: linear-gradient(135deg, #f5f7fa 0%, #e8f4f3 50%, #f5f7fa 100%);
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle animated gradient overlay */
+.background::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(38, 166, 154, 0.08) 0%,
+    transparent 70%
+  );
+  animation: pulse 15s infinite;
+  z-index: 0;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1) rotate(180deg);
+    opacity: 1;
+  }
+}
+
+/* Modern Card Design */
+.loginPaper {
+  padding: 3rem 2.5rem;
+  width: 100%;
+  max-width: 480px;
+  border-radius: 24px;
+  background-color: #ffffff;
+  box-shadow: 0 20px 60px rgba(38, 166, 154, 0.15),
+    0 0 1px rgba(38, 166, 154, 0.1);
+  border: 1px solid rgba(38, 166, 154, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.loginPaper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 80px rgba(38, 166, 154, 0.2),
+    0 0 1px rgba(38, 166, 154, 0.15);
+}
+
+/* Form Styling */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .loginPaper {
+    padding: 2rem 1.5rem;
+    max-width: 100%;
+    margin: 1rem;
+    border-radius: 20px;
+  }
+
+  .form {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .loginPaper {
+    padding: 1.5rem 1.25rem;
+  }
+}

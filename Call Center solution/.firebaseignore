@@ -1,0 +1,66 @@
+# Firebase Ignore - Prevents files from being deployed
+
+# Environment files (CRITICAL - Never deploy these!)
+.env
+.env.*
+*.env
+
+# Source code (only deploy built files)
+src/
+public/
+
+# Firebase Admin scripts (contain sensitive data)
+firebase-admin/
+server/
+
+# Node modules
+node_modules/
+
+# Git files
+.git/
+.gitignore
+
+# Documentation
+*.md
+README.md
+DEPLOYMENT_GUIDE.md
+DEPLOY_NOW.md
+
+# Log files
+*.log
+firebase-debug.log
+firebase-debug.*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+*.test.js
+*.spec.js
+__tests__/
+
+# Config files
+.firebaserc
+firebase.json
+package.json
+package-lock.json
+.eslintrc*
+.prettierrc*
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+.upload-partners.js

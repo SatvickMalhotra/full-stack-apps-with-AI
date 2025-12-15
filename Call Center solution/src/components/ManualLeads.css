@@ -1,0 +1,311 @@
+/* Modern Light Theme for Manual Leads */
+
+/* Root container */
+.manual-leads-container {
+  background: #f5f7fa;
+  min-height: 100vh;
+  padding: 0;
+  color: #1e293b;
+  font-family: "Inter", Arial, sans-serif;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Manual leads section */
+.manual-leads-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(38, 166, 154, 0.2);
+  transition: box-shadow 0.2s ease;
+}
+.manual-leads-section:hover {
+  box-shadow: 0 8px 32px rgba(38, 166, 154, 0.15);
+}
+
+/* Section title */
+.title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 16px;
+  color: #26a69a;
+}
+
+/* Add Lead form */
+.add-lead-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.add-lead-form input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 1px solid rgba(38, 166, 154, 0.3);
+  border-radius: 12px;
+  background: #ffffff;
+  color: #1e293b;
+  font-weight: 500;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+.add-lead-form input::placeholder {
+  color: #546e7a;
+  opacity: 0.7;
+}
+.add-lead-form input:focus {
+  border-color: #26a69a;
+  outline: none;
+  box-shadow: 0 0 8px rgba(38, 166, 154, 0.2);
+}
+.add-lead-form button {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #26a69a 0%, #1e8a7f 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.add-lead-form button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(38, 166, 154, 0.3);
+}
+.add-lead-form button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Call list grid */
+.call-list {
+  display: grid;
+  gap: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Call card */
+.lead-call-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(38, 166, 154, 0.2);
+  transition: border 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: visible;
+}
+.lead-call-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #26a69a 0%, #66bb6a 50%, #ff7043 100%);
+}
+.lead-call-card:hover {
+  border: 1px solid #26a69a;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(38, 166, 154, 0.15);
+}
+
+/* Lead info */
+.lead-info small {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #546e7a;
+  margin-bottom: 5px;
+  letter-spacing: 0.05em;
+}
+.lead-info a {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #26a69a;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.lead-info a:hover {
+  color: #1e8a7f;
+}
+
+/* Exophone select wrapper */
+.exophone-select-wrapper {
+  position: relative;
+  flex: 1;
+}
+
+.exophone-select-wrapper label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #546e7a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.exophone-select-display {
+  padding: 10px 12px;
+  border: 1px solid rgba(38, 166, 154, 0.3);
+  border-radius: 12px;
+  background: #ffffff;
+  color: #1e293b;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+.exophone-select-display:hover {
+  border-color: #26a69a;
+}
+.exophone-select-display:focus {
+  border-color: #26a69a;
+  outline: none;
+  box-shadow: 0 0 8px rgba(38, 166, 154, 0.2);
+}
+
+.exophone-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 4px;
+  background: #ffffff;
+  border: 1px solid rgba(38, 166, 154, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.exophone-search {
+  padding: 10px 12px;
+  border: none;
+  border-bottom: 1px solid rgba(38, 166, 154, 0.2);
+  width: 100%;
+  color: #1e293b;
+  font-weight: 500;
+}
+.exophone-search:focus {
+  outline: none;
+  border-bottom-color: #26a69a;
+}
+
+.exophone-option {
+  padding: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  color: #1e293b;
+}
+.exophone-option:hover {
+  background: rgba(38, 166, 154, 0.1);
+}
+.exophone-option.selected {
+  background: rgba(38, 166, 154, 0.2);
+  font-weight: 600;
+}
+
+.exophone-option-number {
+  font-weight: 600;
+  color: #26a69a;
+}
+
+.exophone-option-type {
+  font-size: 0.85rem;
+  color: #546e7a;
+  margin-top: 4px;
+}
+
+/* Call button */
+.call-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #26a69a 0%, #1e8a7f 100%);
+  color: #fff;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  align-self: flex-end;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(38, 166, 154, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.call-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(38, 166, 154, 0.4);
+}
+.call-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+  background: #546e7a;
+}
+
+/* Active call state */
+.active-call-banner {
+  background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
+  color: #fff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(102, 187, 106, 0.3);
+  animation: pulse-border 2s infinite;
+}
+
+.active-call-banner p {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.end-call-btn {
+  margin-top: 12px;
+  padding: 10px 24px;
+  background: #fff;
+  color: #66bb6a;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+.end-call-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive layout */
+@media (min-width: 768px) {
+  .lead-call-card {
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
+  }
+  .call-btn {
+    align-self: center;
+  }
+}
+
+/* Animations */
+@keyframes pulse-border {
+  0%, 100% {
+    box-shadow: 0 4px 20px rgba(102, 187, 106, 0.3);
+  }
+  50% {
+    box-shadow: 0 8px 32px rgba(102, 187, 106, 0.5);
+  }
+}
