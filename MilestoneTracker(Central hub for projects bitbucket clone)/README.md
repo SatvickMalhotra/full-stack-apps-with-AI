@@ -1,212 +1,48 @@
-# MilestoneTracker
+<div align="center">
+  <img width="100%" alt="banner"
+       src="https://capsule-render.vercel.app/api?type=waving&color=0:0F172A,40:1E293B,100:0EA5E9&height=200&section=header&text=MilestoneTracker&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=40&desc=Project%20hub%20%E2%80%94%20phases%2C%20milestones%2C%20collaboration&descSize=16&descAlignY=68&descAlign=50" />
+</div>
 
-A central hub for project management inspired by Bitbucket/Jira. Track projects, phases, milestones, and team collaboration all in one place with a beautiful, modern interface.
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Instrument+Serif&italic=true&size=26&duration=2800&pause=700&color=7DD3FC&center=true&vCenter=true&width=720&height=50&lines=Bitbucket%2FJira-style+project+hub;Phase+timeline+%C2%B7+comments+%C2%B7+notes;Manager+vs+Member+access+%F0%9F%93%8A" />
+</div>
 
-## Overview
+<div align="center">
+  <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
+  <img src="https://img.shields.io/badge/Dark%2FLight-mode-7DD3FC?style=for-the-badge&labelColor=0F172A" />
+</div>
 
-MilestoneTracker is designed for teams that need a simple yet powerful way to track project progress without the complexity of enterprise tools. It features a phase-based timeline, team collaboration through comments and notes, and role-based access control.
+<br />
 
-### Key Highlights
+A central hub for project management inspired by **Bitbucket / Jira** — track projects, phases, milestones, and team collaboration in one beautiful interface, minus the enterprise complexity.
 
-- **Phase-Based Timeline** - Visual project phases with status tracking
-- **Team Collaboration** - Comments and notes per phase
-- **Role-Based Access** - Managers vs Team Members permissions
-- **Dark/Light Mode** - Beautiful themed interface
-- **Real-time Updates** - Instant UI updates on changes
+## ✨ Features
 
-## Features
+- 📊 **Dashboard** — ongoing + future projects, status donut chart, quick-create (Managers)
+- 🗓 **Phase timeline** — clickable phases with Pending / Ongoing / Completed states
+- 💬 **Per-phase chat + notes** — plus global project notes
+- 🔗 **Quick links + team contacts** per project
+- 🔐 **Role-based access** — Manager vs Team Member permissions
+- 🌗 **Dark / Light mode**
 
-### Dashboard
-- Welcome message with user context
-- Ongoing projects section
-- Future projects section
-- Project status chart (pie/donut visualization)
-- Quick project creation (Managers only)
+## 🚀 Run it locally
 
-### Project Details
-- Project header with metadata
-- Visual timeline with clickable phases
-- Phase status indicators (Pending, Ongoing, Completed)
-- Phase-specific chat/comments
-- Phase-specific notes
-- Global project notes
-- Quick links section
-- Team contacts
-
-### Role-Based Access Control
-| Feature | Manager | Team Member |
-|---------|---------|-------------|
-| Create Projects | Yes | No |
-| Edit Project | Yes | No |
-| Add Links | Yes | No |
-| Add Comments | Yes | Yes |
-| Add Notes | Yes | Yes |
-| View Projects | Yes | Yes |
-
-### Themes
-- Light mode (default)
-- Dark mode
-- Smooth transitions between themes
-
-## Tech Stack
-
-| Category | Technology |
-|----------|------------|
-| Frontend | React 19, TypeScript |
-| Build Tool | Vite 7 |
-| Styling | Tailwind CSS 3 |
-| Charts | Recharts |
-| Animations | Framer Motion |
-| Icons | Lucide React |
-| Date Handling | date-fns |
-
-## Project Structure
-
-```
-├── src/
-│   ├── components/
-│   │   ├── common/
-│   │   │   └── DeleteConfirmationModal.tsx
-│   │   ├── dashboard/
-│   │   │   ├── Dashboard.tsx        # Main dashboard view
-│   │   │   ├── ProjectCard.tsx      # Project card component
-│   │   │   ├── StatsChart.tsx       # Status pie chart
-│   │   │   └── CreateProjectModal.tsx
-│   │   ├── layout/
-│   │   │   ├── Layout.tsx           # App layout wrapper
-│   │   │   └── Sidebar.tsx          # Navigation sidebar
-│   │   └── project/
-│   │       ├── ProjectDetail.tsx    # Project detail view
-│   │       ├── ProjectHeader.tsx    # Project info header
-│   │       ├── Timeline.tsx         # Phase timeline
-│   │       ├── ChatSection.tsx      # Phase comments
-│   │       ├── Notepad.tsx          # Notes component
-│   │       ├── LinkSection.tsx      # Quick links
-│   │       └── ContactSection.tsx   # Team contacts
-│   ├── context/
-│   │   ├── DataContext.tsx          # Project data state
-│   │   └── ThemeContext.tsx         # Theme state
-│   ├── types/
-│   │   └── index.ts                 # TypeScript interfaces
-│   ├── App.tsx                      # Main app component
-│   └── main.tsx                     # Entry point
-├── public/                          # Static assets
-└── package.json
-```
-
-## Data Models
-
-### Project
-```typescript
-interface Project {
-  id: string;
-  name: string;
-  description: string;
-  reportingManager: string;
-  startDate: string;
-  expectedEndDate: string;
-  status: 'ongoing' | 'completed' | 'future' | 'on-hold';
-  phases: Phase[];
-  globalNotes: Note[];
-  links: Link[];
-  contacts: Contact[];
-}
-```
-
-### Phase
-```typescript
-interface Phase {
-  id: string;
-  name: string;
-  startDate: string;
-  endDate: string;
-  status: 'pending' | 'ongoing' | 'completed';
-  description: string;
-  comments: Comment[];
-  notes: Note[];
-}
-```
-
-## Getting Started
-
-### Prerequisites
-- Node.js 18+
-- npm or yarn
-
-### Installation
-
-1. Clone the repository
 ```bash
-git clone https://github.com/SatvickMalhotra/full-stack-apps-with-AI.git
 cd "MilestoneTracker(Central hub for projects bitbucket clone)"
-```
-
-2. Install dependencies
-```bash
 npm install
+npm run dev          # http://localhost:5173
+
+# production
+npm run build && npm run preview
 ```
 
-3. Start development server
-```bash
-npm run dev
-```
+<br />
 
-4. Open browser at `http://localhost:5173`
+<div align="center">
+  <a href="https://github.com/SatvickMalhotra/full-stack-apps-with-AI"><img src="https://img.shields.io/badge/%E2%86%90_All_Vibe--Coded_Apps-0EA5E9?style=for-the-badge&labelColor=0F172A" /></a>
+  <a href="https://github.com/SatvickMalhotra"><img src="https://img.shields.io/badge/%F0%9F%91%A4_Satvick_Malhotra-181717?style=for-the-badge&labelColor=0F172A" /></a>
+</div>
 
-### Build for Production
-```bash
-npm run build
-```
-
-### Preview Production Build
-```bash
-npm run preview
-```
-
-## Usage
-
-### As a Manager
-1. Login as Manager role
-2. Create new projects from dashboard
-3. Add phases to projects
-4. Manage links and contacts
-5. Track progress across all projects
-
-### As a Team Member
-1. View assigned projects
-2. Add comments to phases
-3. Add notes (phase-specific and global)
-4. Track project timeline
-
-## Customization
-
-### Adding New Project Status
-Update the `status` type in `src/types/index.ts`:
-```typescript
-status: 'ongoing' | 'completed' | 'future' | 'on-hold' | 'your-status';
-```
-
-### Changing Theme Colors
-Edit CSS variables in your global styles or Tailwind config.
-
-### Adding New Roles
-Extend the `User` interface and update RBAC checks in components.
-
-## Future Enhancements
-
-- [ ] Backend integration (Firebase/Supabase)
-- [ ] User authentication
-- [ ] File attachments per phase
-- [ ] Email notifications
-- [ ] Gantt chart view
-- [ ] Project templates
-- [ ] Time tracking
-- [ ] Export reports (PDF/Excel)
-
-## License
-
-Private - Internal Use Only
-
-## Author
-
-Built with AI assistance for M-SWASTH project management needs.
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0EA5E9,50:1E293B,100:0F172A&height=120&section=footer&animation=fadeIn" />

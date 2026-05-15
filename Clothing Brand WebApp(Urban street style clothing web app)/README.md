@@ -1,173 +1,54 @@
-# Clothing Brand WebApp
+<div align="center">
+  <img width="100%" alt="banner"
+       src="https://capsule-render.vercel.app/api?type=waving&color=0:0F172A,40:1E293B,100:0EA5E9&height=200&section=header&text=Clothing%20Brand%20WebApp&fontSize=48&fontColor=ffffff&animation=fadeIn&fontAlignY=40&desc=Urban%20streetwear%20e-commerce%20%E2%80%94%20React%2019%20%2B%20Vite&descSize=16&descAlignY=68&descAlign=50" />
+</div>
 
-A modern, responsive e-commerce web application for urban/street style clothing brands. Built with React 19 and Vite, featuring product browsing, shopping cart, customer reviews, and a sleek user experience.
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Instrument+Serif&italic=true&size=26&duration=2800&pause=700&color=7DD3FC&center=true&vCenter=true&width=720&height=50&lines=Browse+%C2%B7+cart+%C2%B7+review+%C2%B7+checkout;Mobile-first+streetwear+storefront;Built+for+a+real+clothing-brand+client+%F0%9F%91%95" />
+</div>
 
-## Overview
+<div align="center">
+  <img src="https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white" />
+  <img src="https://img.shields.io/badge/E--commerce-3FCF8E?style=for-the-badge&labelColor=0F172A" />
+</div>
 
-This web app was designed for a clothing brand client to showcase their urban streetwear collection. It provides a complete e-commerce experience with product catalog, shopping cart, and customer reviews - all wrapped in a modern, mobile-first design.
+<br />
 
-### Key Highlights
+A modern, responsive **e-commerce web app** for an urban / streetwear clothing brand — product browsing, cart, customer reviews, and a sleek mobile-first UX.
 
-- **Modern Stack** - React 19 + Vite for blazing fast performance
-- **Mobile First** - Fully responsive design for all devices
-- **Complete E-commerce** - Browse, cart, checkout flow ready
-- **Customer Reviews** - Built-in review system with ratings
-- **Easy to Customize** - Simple product data structure for easy updates
+## ✨ Features
 
-## Features
+- 🏠 **Homepage** — hero banner + featured collection
+- 🧥 **Catalog** — category filtering, 12+ curated products (Polos, Hoodies, Sweaters, Jackets)
+- 📄 **Product pages** — size selection (XS–XXL) + reviews
+- 🛒 **Cart** — sliding sidebar, quantity adjust, checkout-ready
+- ⭐ **Reviews** — built-in ratings per product
+- 📱 **Mobile-first** — fully responsive, smooth animations
 
-### Shopping Experience
-- **Homepage** with hero banner and featured collection
-- **Product Catalog** with category filtering
-- **Product Detail Pages** with size selection and reviews
-- **Shopping Cart** with sliding sidebar, quantity adjustment
+## 🧱 Tech Stack
 
-### Product Management
-- 12+ curated products (Polos, Hoodies, Sweaters, Jackets)
-- Multiple size options (XS to XXL)
-- Customer ratings and reviews per product
-- Featured products showcase
+React 19 · Vite · React Router · simple JSON product data (easy to customize)
 
-### User Interface
-- Clean, modern design inspired by contemporary fashion brands
-- Smooth animations and transitions
-- Intuitive navigation with React Router
-- Responsive grid layouts
+## 🚀 Run it locally
 
-## Tech Stack
-
-| Category | Technology |
-|----------|------------|
-| Frontend | React 19 |
-| Build Tool | Vite 7 |
-| Routing | React Router DOM 7 |
-| State Management | Context API |
-| Styling | CSS3 (Flexbox, Grid) |
-
-## Project Structure
-
-```
-├── src/
-│   ├── components/         # Reusable UI components
-│   │   ├── Navbar.jsx      # Navigation bar with cart icon
-│   │   ├── Cart.jsx        # Sliding cart sidebar
-│   │   └── ProductCard.jsx # Product display card
-│   ├── pages/              # Page components
-│   │   ├── Home.jsx        # Landing page with hero
-│   │   ├── Shop.jsx        # Category filtered shop
-│   │   ├── ProductDetail.jsx # Single product view
-│   │   ├── Reviews.jsx     # Customer reviews page
-│   │   └── About.jsx       # Brand story page
-│   ├── context/            # React Context
-│   │   └── CartContext.jsx # Shopping cart state
-│   ├── data/               # Product data
-│   │   └── products.js     # Product catalog
-│   ├── App.jsx             # Main app with routing
-│   └── main.jsx            # Entry point
-├── public/                 # Static assets
-├── index.html              # HTML template
-└── package.json
-```
-
-## Pages
-
-| Page | Route | Description |
-|------|-------|-------------|
-| Home | `/` | Hero banner, featured & all products |
-| Shop | `/shop/:category` | Filtered product views |
-| Product | `/product/:id` | Product details, sizes, add to cart |
-| Reviews | `/reviews` | Customer testimonials |
-| About | `/about` | Brand story and values |
-
-## Getting Started
-
-### Prerequisites
-- Node.js 18+
-- npm or yarn
-
-### Installation
-
-1. Clone the repository
 ```bash
-git clone https://github.com/SatvickMalhotra/full-stack-apps-with-AI.git
 cd "Clothing Brand WebApp(Urban street style clothing web app)"
-```
-
-2. Install dependencies
-```bash
 npm install
+npm run dev          # http://localhost:5173
+
+# production
+npm run build && npm run preview
 ```
 
-3. Start development server
-```bash
-npm run dev
-```
+Edit the product list in `src/` data files to swap in your own collection — no backend required.
 
-4. Open browser at `http://localhost:5173`
+<br />
 
-### Build for Production
-```bash
-npm run build
-```
+<div align="center">
+  <a href="https://github.com/SatvickMalhotra/full-stack-apps-with-AI"><img src="https://img.shields.io/badge/%E2%86%90_All_Vibe--Coded_Apps-0EA5E9?style=for-the-badge&labelColor=0F172A" /></a>
+  <a href="https://github.com/SatvickMalhotra"><img src="https://img.shields.io/badge/%F0%9F%91%A4_Satvick_Malhotra-181717?style=for-the-badge&labelColor=0F172A" /></a>
+</div>
 
-## Shopping Cart Features
-
-- Add products with selected sizes
-- Adjust quantities (+/-)
-- Remove items from cart
-- View total price in INR
-- Slide-in sidebar interface
-- Cart count badge on navbar
-
-## Product Data Structure
-
-Products are stored in `src/data/products.js`:
-
-```javascript
-{
-  id: 1,
-  name: "Vintage Navy Polo",
-  price: 2499,              // INR
-  category: "unisex",
-  image: "image-url",
-  sizes: ["S", "M", "L", "XL"],
-  description: "Product description",
-  material: "100% Cotton",
-  featured: true,
-  rating: 4.3,
-  reviewCount: 127,
-  reviews: [...]
-}
-```
-
-## Customization
-
-### Adding Products
-Add new products to `src/data/products.js` following the structure above.
-
-### Changing Colors
-Edit CSS files to modify the color scheme:
-- Primary accent colors in component CSS
-- Gradients and hover effects
-
-### Adding Categories
-Update the Shop component and product data to include new categories.
-
-## Future Enhancements
-
-- [ ] User authentication
-- [ ] Payment integration (Razorpay/Stripe)
-- [ ] Wishlist functionality
-- [ ] Product search & filters
-- [ ] Order history
-- [ ] Admin panel
-- [ ] Inventory tracking
-- [ ] Email notifications
-
-## License
-
-Private - Built for client project
-
-## Author
-
-Built with AI assistance for a clothing brand client.
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0EA5E9,50:1E293B,100:0F172A&height=120&section=footer&animation=fadeIn" />

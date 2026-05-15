@@ -1,60 +1,60 @@
-# Medication Database System 💊📦
+<div align="center">
+  <img width="100%" alt="banner"
+       src="https://capsule-render.vercel.app/api?type=waving&color=0:0F172A,40:1E293B,100:0EA5E9&height=200&section=header&text=MediTrack%20System&fontSize=52&fontColor=ffffff&animation=fadeIn&fontAlignY=40&desc=Medication%20inventory%20%E2%80%94%20clinics%2C%20vendors%2C%20pharmacists&descSize=16&descAlignY=68&descAlign=50" />
+</div>
 
-## Project Overview 💊📦
-This project is designed to manage a comprehensive medication database system. It allows various users to interact with the inventory, place orders, and maintain records effectively.
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Instrument+Serif&italic=true&size=26&duration=2800&pause=700&color=7DD3FC&center=true&vCenter=true&width=720&height=50&lines=Track+every+medicine%2C+every+clinic;Vendors+order+%C2%B7+pharmacists+manage;Role-based+access%2C+bulk+export+%F0%9F%92%8A" />
+</div>
 
-# vendor files
-- Vendor files are used to design vendor page where vendor can place a order for the clinic here and approve the meds that needs to be dispatched here 
-- Vendor files can be approved by the admin also 
+<div align="center">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" />
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" />
+</div>
 
-# modify files
-- Modify are designed for the page which is used by the pharmasist to do medicine invenotry in the database here 
-- Name of the page is medicine protal images have been shared here 
+<br />
 
-# INV_Manage files 
-- this file is created for parneters to bulk download the data for any partners here or any other clinics here
+A comprehensive **medication-database & inventory system**. Different roles interact with the inventory, place orders, and maintain accurate records.
 
-# Index Page
-- this is main login page here which is designed to allow the users or partner to access there page based on the ids they will be send to the respected pages
+## ✨ Features by file
 
-## Features
-- **Clinic Inventory**: Users can check the current inventory of medications available at the clinic.
-- **Admin Functionality**: Admin users can edit and update the inventory as needed.
-- **Vendor Orders**: Vendors can place orders for medications directly through the system.
-- **Pharmacist Management**: Pharmacists can maintain and oversee the inventory to ensure accuracy.
-- **Data Tracking**: All users can keep track of medication data efficiently.
+| File | Who | What |
+|---|---|---|
+| `index.html` | Everyone | Login → routes users/partners to their page by ID |
+| `Modify.html` | Pharmacist | Medicine inventory management ("Medicine Portal") |
+| Vendor files | Vendor | Place clinic orders + approve meds for dispatch (admin can approve too) |
+| `invmanage.html` | Partners | Bulk-download data for any partner / clinic |
 
-## Technologies Used
-- **HTML**: For structuring the web pages(Glitch and Github for Frontend).
-- **CSS**: For styling the application and enhancing user experience.
-- **JavaScript**: For client-side scripting and interactivity.
-- **Python**: For backend functionality and database management(google Firebase and Google Cloud).
+## 🧱 Tech Stack
 
-## Installation
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/SatvickMalhotra/full-stack-apps-2025-.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd full-stack-apps-2025-/MediTrack\ System
-   ```
-3. Set up the backend environment (if applicable) and install required packages:
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. Open the main HTML file in your web browser to start using the application.
+HTML · CSS · JavaScript · Firebase (inventory data) — zero build step
 
-## Usage
-- Open the main HTML file to access the medication database system.
-- Users can navigate through different functionalities based on their roles (admin, vendor, pharmacist).
-- Admins can manage inventory, vendors can place orders, and pharmacists can maintain records.
+## 🚀 Run it locally
 
-## Contributing
-If you would like to contribute to this project, please fork the repository and submit a pull request.
+```bash
+cd "MediTrack System"
 
-## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+# Add Firebase config, then open the login page:
+start index.html        # Windows
+open index.html         # macOS
+```
 
-## Contact
-For any inquiries, please reach out to [satvickmalhotraofficial@gmail.com](mailto:satvickmalhotraofficial@gmail.com).
+> Use VS Code **Live Server** so Firebase auth + reads work cleanly over http.
+
+## 🖼 Screenshots
+
+<div align="center">
+  <img src="./Preview_Images/3129c1707d0f4061a32bdc03fd52e571.jpg" width="46%" />
+  <img src="./Preview_Images/486ddd7533bf4836a40632130348cf29.jpg" width="46%" />
+</div>
+
+<br />
+
+<div align="center">
+  <a href="https://github.com/SatvickMalhotra/full-stack-apps-with-AI"><img src="https://img.shields.io/badge/%E2%86%90_All_Vibe--Coded_Apps-0EA5E9?style=for-the-badge&labelColor=0F172A" /></a>
+  <a href="https://github.com/SatvickMalhotra"><img src="https://img.shields.io/badge/%F0%9F%91%A4_Satvick_Malhotra-181717?style=for-the-badge&labelColor=0F172A" /></a>
+</div>
+
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0EA5E9,50:1E293B,100:0F172A&height=120&section=footer&animation=fadeIn" />

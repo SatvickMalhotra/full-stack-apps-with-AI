@@ -1,131 +1,73 @@
-# Call Center Solution
+<div align="center">
+  <img width="100%" alt="banner"
+       src="https://capsule-render.vercel.app/api?type=waving&color=0:0F172A,40:1E293B,100:0EA5E9&height=200&section=header&text=Call%20Center%20Solution&fontSize=50&fontColor=ffffff&animation=fadeIn&fontAlignY=40&desc=End-to-end%20call%20ops%20%E2%80%94%20calls%2C%20incentives%2C%20field%20tracking&descSize=16&descAlignY=68&descAlign=50" />
+</div>
 
-An end-to-end call center management system for sales teams to track calls, performance, incentives, and field activities.
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Instrument+Serif&italic=true&size=26&duration=2800&pause=700&color=7DD3FC&center=true&vCenter=true&width=720&height=50&lines=Track+every+call%2C+every+agent;Incentives+%C2%B7+attendance+%C2%B7+field+trips;Agent+%E2%86%92+TL+%E2%86%92+Manager+%E2%86%92+Admin+roles" />
+</div>
 
-## Overview
+<div align="center">
+  <img src="https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" />
+  <img src="https://img.shields.io/badge/Exotel-FF6C37?style=for-the-badge&labelColor=0F172A" />
+  <img src="https://img.shields.io/badge/Material_UI-007FFF?style=for-the-badge&logo=mui&logoColor=white" />
+</div>
 
-This application is designed for companies with multiple sales teams (Insurance, Health Managers, Sales) who use calling as their primary mode of customer engagement. The system provides comprehensive tracking of:
+<br />
 
-- **Call Performance** - Track all inbound/outbound calls, call logs, and call analytics
-- **Agent Activity** - Monitor agent status, daily tasks, and productivity
-- **Incentives & Bonuses** - Track and calculate sales incentives
-- **Field Movement** - Track sales representatives' travel and work locations
-- **Attendance** - Punch in/out system with location tracking
+An end-to-end **call-center management system** for sales teams to track calls, performance, incentives, and field activity.
 
-## Features
+## 📌 Overview
 
-### For Agents
-- Call logging and history
-- Daily task management
-- Punch in/out with location
-- Trip tracking for field visits
-- Offline visit recording
+Built for companies with multiple sales teams (Insurance, Health Managers, Sales) who live on the phone. It tracks:
 
-### For Team Leaders
-- Team performance dashboard
-- Agent monitoring and analytics
-- Call assignment management
-- Real-time team status
+- ☎️ **Call performance** — inbound/outbound logs + analytics
+- 👤 **Agent activity** — status, daily tasks, productivity
+- 💰 **Incentives & bonuses** — auto-calculated
+- 📍 **Field movement** — travel + work-location tracking
+- 🕒 **Attendance** — geo-tagged punch in/out
 
-### For Managers
-- Department-wide analytics
-- Multi-team oversight
-- Performance reports
-- Incentive tracking
+## ✨ Features by role
 
-### For Admins
-- User management
-- Team & department configuration
-- System-wide analytics
-- ExoPhone management
+| Role | Gets |
+|---|---|
+| **Agent** | Call logging, daily tasks, punch in/out, trip tracking, offline visit recording |
+| **Team Leader** | Team dashboard, agent monitoring, call assignment, live team status |
+| **Manager** | Department analytics, multi-team oversight, reports, incentive tracking |
+| **Admin** | User management, team/department config, system analytics, ExoPhone management |
 
-## Tech Stack
+## 🧱 Tech Stack
 
-- **Frontend:** React 19, Material UI, Recharts
-- **Backend:** Node.js, Express.js
-- **Database:** Firebase Firestore
-- **Authentication:** Firebase Auth
-- **Calling Integration:** Exotel
-- **Hosting:** Firebase Hosting
+**Frontend** React 19 · Material UI · Recharts &nbsp;|&nbsp; **Backend** Node.js · Express &nbsp;|&nbsp; **DB/Auth** Firebase Firestore + Auth &nbsp;|&nbsp; **Calling** Exotel &nbsp;|&nbsp; **Hosting** Firebase
 
-## Project Structure
+## 🚀 Run it locally
 
-```
-├── public/              # Static assets
-├── src/
-│   ├── components/      # React components
-│   │   ├── Admin*.js    # Admin dashboards & management
-│   │   ├── Agent*.js    # Agent views
-│   │   ├── TL*.js       # Team Leader dashboards
-│   │   ├── Manager*.js  # Manager dashboards
-│   │   ├── Health*.js   # Health team dashboards
-│   │   ├── Insurance*.js# Insurance team dashboards
-│   │   ├── DC*.js       # DC (Distributor/Clinic) views
-│   │   ├── Call*.js     # Call management components
-│   │   ├── Offline*.js  # Offline visit tracking
-│   │   ├── Trip*.js     # Trip/travel tracking
-│   │   └── PunchInOut*  # Attendance components
-│   ├── config/          # Configuration files
-│   ├── hooks/           # Custom React hooks
-│   ├── theme/           # MUI theme customization
-│   └── utils/           # Utility functions
-├── server/              # Backend server code
-├── functions/           # Firebase Cloud Functions
-├── firebase-admin/      # Firebase Admin SDK utilities
-└── firebase.json        # Firebase configuration
-```
-
-## Getting Started
-
-### Prerequisites
-- Node.js 18+
-- Firebase CLI
-- Exotel account (for calling features)
-
-### Installation
-
-1. Clone the repository
 ```bash
-git clone https://github.com/SatvickMalhotra/full-stack-apps-with-AI.git
 cd "Call Center solution"
-```
 
-2. Install dependencies
-```bash
+# 1. Install web + functions deps
 npm install
-```
+cd functions && npm install && cd ..
 
-3. Configure Firebase
-   - Create a Firebase project
-   - Update `src/firebaseConfig.js` with your credentials
+# 2. Add your Firebase + Exotel credentials
+#    (firebase.json + functions config)
 
-4. Start development server
-```bash
-npm start
-```
+# 3. Run locally with Firebase emulators
+firebase emulators:start
 
-### Build for Production
-```bash
-npm run build
-```
-
-### Deploy to Firebase
-```bash
+# 4. Deploy
 firebase deploy
 ```
 
-## User Roles
+**Prerequisites:** Node 18+ · Firebase CLI (`npm i -g firebase-tools`) · Exotel account for live calling.
 
-| Role | Access Level |
-|------|-------------|
-| Admin | Full system access, user management |
-| Department Manager | Department-wide analytics and management |
-| Team Leader | Team performance and agent management |
-| Health Manager | Health team specific dashboard |
-| Insurance Manager | Insurance team specific dashboard |
-| Agent | Personal dashboard, call logging, attendance |
-| DC | Clinic/distributor specific views |
+<br />
 
-## License
+<div align="center">
+  <a href="https://github.com/SatvickMalhotra/full-stack-apps-with-AI"><img src="https://img.shields.io/badge/%E2%86%90_All_Vibe--Coded_Apps-0EA5E9?style=for-the-badge&labelColor=0F172A" /></a>
+  <a href="https://github.com/SatvickMalhotra"><img src="https://img.shields.io/badge/%F0%9F%91%A4_Satvick_Malhotra-181717?style=for-the-badge&labelColor=0F172A" /></a>
+</div>
 
-Private - Internal Use Only
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0EA5E9,50:1E293B,100:0F172A&height=120&section=footer&animation=fadeIn" />

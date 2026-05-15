@@ -1,83 +1,49 @@
-# Insightify ✨ Data Web Analytics Toolkit
+<div align="center">
+  <img width="100%" alt="banner"
+       src="https://capsule-render.vercel.app/api?type=waving&color=0:0F172A,40:1E293B,100:0EA5E9&height=200&section=header&text=Insightify&fontSize=58&fontColor=ffffff&animation=fadeIn&fontAlignY=40&desc=Drag%2C%20drop%2C%20analyze%20%E2%80%94%20Excel%2FCSV%20in%20the%20browser&descSize=16&descAlignY=68&descAlign=50" />
+</div>
 
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Instrument+Serif&italic=true&size=26&duration=2800&pause=700&color=7DD3FC&center=true&vCenter=true&width=720&height=50&lines=Drop+a+file+%E2%86%92+instant+insights;Stats+%C2%B7+percentiles+%C2%B7+correlation;100%25+client-side%2C+nothing+uploaded+%E2%9C%A8" />
+</div>
 
-A fast, client-side, browser-based tool to instantly analyze your Excel and CSV files. No uploads to a server, no sign-ups—just drag, drop, and get immediate data insights.
+<div align="center">
+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" />
+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
+  <img src="https://img.shields.io/badge/SheetJS-217346?style=for-the-badge&logo=microsoftexcel&logoColor=white" />
+  <img src="https://img.shields.io/badge/License-MIT-0EA5E9?style=for-the-badge&labelColor=0F172A" />
+</div>
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+<br />
 
----
+A fast, **client-side data-analytics toolkit** — drag in an Excel/CSV file and get instant insights. No uploads, no sign-ups, your data never leaves your machine.
 
-###  डेमो
+## ✨ Features
 
+- 📁 **File support** — `.xlsx`, `.xls`, `.csv`
+- 🔒 **Privacy-first** — all processing in-browser, zero server
+- 📊 **Column stats** — type detection, total/unique/missing, sum/avg/min/max
+- 📈 **Percentiles** — 1st, 25th, 50th, 75th, 99th for numeric columns
+- 🔗 **Correlation matrix** — up to 5 numeric columns
+- 🎨 **Interactive charts** — frequency distribution + percentile spread
+- ⬇️ **Export** — clean stats report back to Excel
 
-**(Pro Tip: Replace the line above with a real screenshot or GIF of your application in action!)**
+## 🚀 Run it
 
----
+```bash
+cd "Web Analytics Toolkit"
 
-## 🚀 Key Features
+start index.html        # Windows
+open index.html         # macOS
+```
 
-*   **📁 File Support:** Works seamlessly with `.xlsx`, `.xls`, and `.csv` files.
-*   **🔒 Privacy-Focused:** All processing is done directly in your browser. Your data never leaves your computer.
-*   **📊 Comprehensive Statistics:** For each selected column, get instant metrics:
-    *   Data Type Detection (Numeric or Text)
-    *   Total, Unique, and Missing Value Counts
-    *   Sum, Average, Min, and Max values
-*   **📈 Percentile Analysis:** Automatically calculates key percentiles (1st, 25th, 50th, 75th, 99th) for numeric columns.
-*   **🔗 Correlation Matrix:** Select up to 5 numeric columns to understand how they relate to each other.
-*   **🎨 Interactive Charts:**
-    *   **Frequency Distribution Chart:** Visualize the most common entries in any column.
-    *   **Percentile Chart:** See the spread of your numerical data.
-*   **⬇️ Export to Excel:** Download a clean report of all the generated statistics and the correlation matrix into a new Excel file.
-*   **👩‍💻 User-Friendly Interface:**
-    *   Clean data preview on upload.
-    *   Collapsible sections to keep your workspace tidy.
+Pure HTML/JS — open and drop a file. Nothing to install.
 
----
+<br />
 
-## 🛠️ Technology Stack
+<div align="center">
+  <a href="https://github.com/SatvickMalhotra/full-stack-apps-with-AI"><img src="https://img.shields.io/badge/%E2%86%90_All_Vibe--Coded_Apps-0EA5E9?style=for-the-badge&labelColor=0F172A" /></a>
+  <a href="https://github.com/SatvickMalhotra"><img src="https://img.shields.io/badge/%F0%9F%91%A4_Satvick_Malhotra-181717?style=for-the-badge&labelColor=0F172A" /></a>
+</div>
 
-This project is built with vanilla web technologies, keeping it lightweight and fast.
-
-*   **HTML5:** For the structure of the application.
-*   **CSS3:** For modern and responsive styling.
-*   **JavaScript (ES6+):** For all the logic and interactivity.
-*   **[SheetJS (xlsx.js)](https://github.com/SheetJS/sheetjs):** A powerful library for reading and parsing Excel and CSV files in the browser.
-*   **[Chart.js](https://www.chartjs.org/):** An elegant and simple library for creating beautiful, interactive charts.
-
----
-
-## ⚙️ Getting Started
-
-No complex setup required! Since this is a purely client-side application, you can run it by following these simple steps.
-
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/[your-username]/[your-repo-name].git
-    ```
-
-2.  **Navigate to the project directory:**
-    ```bash
-    cd [your-repo-name]
-    ```
-
-3.  **Open the `index.html` file in your browser:**
-    *   Simply double-click the `index.html` file, or right-click and choose "Open with" your favorite browser.
-
-And you're all set! You can now upload a file and start analyzing.
-
----
-
-## 🔮 Future Improvements
-
-This tool has a solid foundation, but there's always room to grow. Future ideas include:
-
-*   [ ] **More Chart Types:** Adding Scatter Plots (for correlations), Line Charts (for time-series), and Pie Charts.
-*   [ ] **Data Cleaning Tools:** Features to find/replace values, trim whitespace, or handle missing data.
-*   [ ] **Advanced Filtering:** Allow users to filter rows based on conditions before running the analysis.
-*   [ ] **Deploy as a Web App:** Host it on GitHub Pages or Netlify for easy public access.
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0EA5E9,50:1E293B,100:0F172A&height=120&section=footer&animation=fadeIn" />

@@ -1,94 +1,52 @@
-# M-Swasth Doctor Registration Form - Google Apps Script
+<div align="center">
+  <img width="100%" alt="banner"
+       src="https://capsule-render.vercel.app/api?type=waving&color=0:0F172A,40:1E293B,100:0EA5E9&height=200&section=header&text=Doctor%20Onboarding&fontSize=50&fontColor=ffffff&animation=fadeIn&fontAlignY=40&desc=Self-hosted%20registration%20%E2%86%92%20Sheets%20%2B%20Drive&descSize=16&descAlignY=68&descAlign=50" />
+</div>
 
-This project is a comprehensive, self-hosted web application for registering new doctors. Built entirely on Google Apps Script, it provides a user-friendly web form that captures detailed information and documents, then automatically organizes them into a Google Sheet and a structured Google Drive folder.
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Instrument+Serif&italic=true&size=26&duration=2800&pause=700&color=7DD3FC&center=true&vCenter=true&width=720&height=50&lines=Register+doctors+in+one+slick+form;Auto-files+docs+into+Drive+folders;Particle+background%2C+zero+backend+%F0%9F%A9%BA" />
+</div>
 
-## Key Features
+<div align="center">
+  <img src="https://img.shields.io/badge/Google_Apps_Script-4285F4?style=for-the-badge&logo=google&logoColor=white" />
+  <img src="https://img.shields.io/badge/Google_Sheets-34A853?style=for-the-badge&logo=googlesheets&logoColor=white" />
+  <img src="https://img.shields.io/badge/Google_Drive-4285F4?style=for-the-badge&logo=googledrive&logoColor=white" />
+  <img src="https://img.shields.io/badge/particles.js-000000?style=for-the-badge&labelColor=0F172A" />
+</div>
 
--   **Dynamic Web Form:** A modern, responsive HTML form styled with CSS for a clean user experience, including a dynamic particle background.
--   **Comprehensive Data Collection:** Gathers information across multiple categories:
-    -   Basic & Personal Details (Name, DOB, Aadhar, PAN, etc.)
-    -   Contact & Address Information
-    -   Bank Details for payroll
-    -   Employment Details (ID, Department, Job Type - all optional)
-    -   Medical Qualifications & Certifications
--   **Conditional Logic:** The "Physical Status" field is a dropdown. Selecting "Person with Disability (PwD)" dynamically reveals a mandatory file upload field for the disability certificate.
--   **Secure File Uploads:** Supports uploading multiple required documents, including:
-    -   Aadhaar Card, PAN Card, Photo, Bank Passbook
-    -   Qualification Certificate
-    -   Medical Registration Certificate
-    -   Signature Copy
-    -   Optional "Other Documents" (allows multiple files)
--   **Automated Data Storage:** All submitted form data is instantly appended as a new row to a designated Google Sheet. The script automatically creates the sheet and headers if they don't exist.
--   **Automated Document Management:** For each submission, a new folder is created in a parent Google Drive folder. The folder is uniquely named (`Doctor Name_Employee Code_Docs`), and all uploaded documents are saved inside it.
--   **Real-time User Feedback:** Provides "loading" indicators during submission and displays success or error messages as alerts.
+<br />
 
-## Technology Stack
+A comprehensive, **self-hosted doctor-registration web app** built entirely on Google Apps Script — a polished form that captures detailed info + documents, then auto-organizes everything into a Google Sheet and a structured Drive folder per doctor.
 
--   **Backend:** Google Apps Script (`SpreadsheetApp`, `DriveApp`)
--   **Frontend:**
-    -   HTML5
-    -   CSS3 (Flexbox, animations, gradients)
-    -   JavaScript (ES6 `async/await`, `FileReader` API for file handling)
--   **Libraries:** `particles.js` for the animated background.
+## ✨ Features
 
-## Setup and Deployment
+- 🎨 **Dynamic form** — responsive, animated particle background
+- 📋 **Captures** basic/personal, contact/address, bank, employment, medical qualifications
+- 🔀 **Conditional logic** — PwD selection reveals a mandatory certificate upload
+- 📎 **Secure uploads** — Aadhaar, PAN, photo, passbook, certificates
+- 🗂 **Auto storage** — new Sheet row + a uniquely-named Drive folder (`Doctor Name_Code_Docs`) per submission
+- ⏳ **Real-time feedback** — loading states + success/error alerts
 
-Follow these steps to deploy your own instance of this registration form.
+## 🧱 Tech Stack
 
-1.  **Create a Google Sheet:**
-    -   Create a new, blank Google Sheet.
-    -   Copy its **ID** from the URL. The ID is the long string of characters between `/d/` and `/edit`.
-    -   Example: `https://docs.google.com/spreadsheets/d/THIS_IS_THE_ID/edit`
+Google Apps Script (`SpreadsheetApp`, `DriveApp`) · HTML5 · CSS3 · JS (`async/await`, `FileReader`) · particles.js
 
-2.  **Create a Google Drive Folder:**
-    -   Create a new folder in Google Drive where you want all doctor documents to be stored.
-    -   Copy its **ID** from the URL. The ID is the string of characters after `folders/`.
-    -   Example: `https://drive.google.com/drive/folders/THIS_IS_THE_ID`
+## 🚀 Deploy it
 
-3.  **Create an Apps Script Project:**
-    -   Go to [script.google.com](https://script.google.com) and create a new project.
+```text
+1. script.google.com → New project
+2. Paste Code.js  +  add Index.html as an HTML file
+3. Set parent Drive folder ID + target Sheet ID in Code.js
+4. Deploy → New deployment → "Web app"
+5. Execute as: Me  ·  Access: Anyone (or your org)
+6. Share the /exec URL — that's the live registration form
+```
 
-4.  **Add the Code:**
-    -   Rename the default `Code.gs` file. Paste the entire contents of the `code.gs` file from this repository into it.
-    -   Create a new HTML file (`File > New > HTML file`) and name it `Index` (case-sensitive). Paste the entire contents of the `index.html` file into it.
+<br />
 
-5.  **Update the IDs in `code.gs`:**
-    -   In the `code.gs` file, find the following lines and replace the placeholder IDs with the actual IDs you copied in steps 1 and 2.
+<div align="center">
+  <a href="https://github.com/SatvickMalhotra/full-stack-apps-with-AI"><img src="https://img.shields.io/badge/%E2%86%90_All_Vibe--Coded_Apps-0EA5E9?style=for-the-badge&labelColor=0F172A" /></a>
+  <a href="https://github.com/SatvickMalhotra"><img src="https://img.shields.io/badge/%F0%9F%91%A4_Satvick_Malhotra-181717?style=for-the-badge&labelColor=0F172A" /></a>
+</div>
 
-      ```javascript
-      // Line 25
-      var spreadsheet = SpreadsheetApp.openById("YOUR_SPREADSHEET_ID_HERE");
-
-      // Line 51
-      var parentFolder = DriveApp.getFolderById("YOUR_DRIVE_FOLDER_ID_HERE");
-      ```
-
-6.  **Deploy the Web App:**
-    -   Click **Deploy > New deployment**.
-    -   Click the gear icon next to "Select type" and choose **Web app**.
-    -   In the "Configuration" settings:
-        -   **Description:** `Doctor Registration Form`
-        -   **Execute as:** `Me`
-        -   **Who has access:** `Anyone` (This makes the form public. Choose `Anyone with Google Account` if you want to restrict it to signed-in users).
-    -   Click **Deploy**.
-
-7.  **Authorize Permissions:**
-    -   Google will ask you to authorize the script's access to your Google Sheets and Drive.
-    -   Click **Authorize access**.
-    -   Choose your Google account.
-    -   You may see a "Google hasn't verified this app" screen. Click **Advanced**, then click **Go to [Your Project Name] (unsafe)**.
-    -   Click **Allow** on the final screen.
-
-8.  **Get Your URL:**
-    -   After a successful deployment, a URL will be provided. This is the link to your live registration form.
-
-## Code Flow
-
-1.  **Frontend (`Index.html`):** A user fills out the form and clicks "Submit".
-2.  **JavaScript (`handleSubmit`):** The `handleSubmit` function is triggered. It prevents the default submission, shows a loading indicator, reads all files as Base64 strings, and gathers all form field values.
-3.  **Bridge (`google.script.run`):** The collected data is sent securely to the backend `processForm` function.
-4.  **Backend (`code.gs`):** The `processForm` function receives the data.
-    -   It appends the textual data to the specified Google Sheet.
-    -   It creates a new folder in Google Drive.
-    -   It decodes the Base64 strings back into files and saves them in the new Drive folder.
-5.  **Response:** The backend returns a success or error message, which is displayed as an alert to the user on the frontend.
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0EA5E9,50:1E293B,100:0F172A&height=120&section=footer&animation=fadeIn" />

@@ -1,237 +1,108 @@
-# Analytics360
+<div align="center">
+  <img width="100%" alt="banner"
+       src="https://capsule-render.vercel.app/api?type=waving&color=0:0F172A,40:1E293B,100:0EA5E9&height=200&section=header&text=Analytics360&fontSize=58&fontColor=ffffff&animation=fadeIn&fontAlignY=40&desc=Million-row%20BI%20dashboard%20%E2%80%94%20zero%20BI-tool%20cost&descSize=17&descAlignY=68&descAlign=50" />
+</div>
 
-A high-performance business intelligence dashboard for tracking company performance metrics at scale. Built to handle millions of rows of data while delivering instant insights through beautiful visualizations.
+<div align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Instrument+Serif&italic=true&size=26&duration=2800&pause=700&color=7DD3FC&center=true&vCenter=true&width=720&height=50&lines=Millions+of+rows+%E2%86%92+instant+insight;Python+pre-processes+%C2%B7+React+flies;5+themes%2C+1+lightning-fast+dashboard+%E2%9A%A1" />
+</div>
 
-## Overview
+<div align="center">
+  <img src="https://img.shields.io/badge/React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Vite_7-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+  <img src="https://img.shields.io/badge/Tailwind_4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black" />
+  <img src="https://img.shields.io/badge/ECharts-AA344D?style=for-the-badge&logo=apacheecharts&logoColor=white" />
+</div>
 
-Analytics360 is designed for organizations that need to analyze large volumes of operational data without expensive BI tools. The system uses a smart architecture where Python scripts pre-process millions of records into optimized JSON files, which are then consumed by a lightning-fast React dashboard.
+<br />
 
-### Key Benefits
+A high-performance business-intelligence dashboard for tracking company performance metrics **at scale** — built to handle millions of rows while delivering instant insight through beautiful visualizations.
 
-- **Cost Efficient** - No expensive BI tool subscriptions required
-- **Handles Scale** - Process millions of rows without performance issues
-- **Real-time Filtering** - Instant filter responses on large datasets
-- **Beautiful UI** - Modern, animated interface with multiple themes
-- **Self-Hosted** - Full control over your data and infrastructure
+## 📌 Overview
 
-## Features
+Analytics360 is for organizations that need to analyze large volumes of operational data **without expensive BI tools**. Python scripts pre-process millions of records into optimized data, consumed by a lightning-fast React dashboard.
 
-### Dashboard Analytics
-- **KPI Cards** - Total Clinics, Active Policies, Total Policies, Consultations, States, Channels
-- **Interactive Charts** - Bar charts and Pie charts with drill-down capabilities
-- **Data Tables** - Sortable, searchable tables with virtual scrolling for performance
+- 💸 **Cost efficient** — no BI-tool subscriptions
+- 📈 **Handles scale** — millions of rows, no lag
+- ⚡ **Real-time filtering** — instant on huge datasets
+- 🎨 **5 themes** — Normal · Retro · Batman · Flowers · Medical
+- 🔒 **Self-hosted** — full control over data + infra
 
-### Advanced Filtering
-- Multi-select filters for State, Channel, Branch, Pin Code
-- Extra filters: Clinic Type, Region, TL Name, Nurse Name, DC Name, Status
-- Real-time filter results with instant updates
+## ✨ Features
 
-### Master Portal (Admin)
-- Password-protected admin section
-- Branch Mapping management with expandable rows
-- Map Locator data management
-- Inline editing with auto-save to Firebase
+**Dashboard** — KPI cards (Clinics, Policies, Consultations, States, Channels) · interactive Bar/Pie charts with drill-down · sortable, virtual-scrolled data tables.
 
-### Themes
-Choose from 5 beautiful themes:
-- Normal (Default)
-- Retro
-- Batman (Dark)
-- Flowers
-- Medical
+**Advanced filtering** — multi-select State/Channel/Branch/Pin + Clinic Type, Region, TL/Nurse/DC name, Status, with instant results.
 
-## Tech Stack
+**Master Portal (admin)** — password-protected · branch-mapping management · map-locator data · inline editing with Firebase auto-save.
+
+## 🧱 Tech Stack
 
 | Category | Technology |
-|----------|------------|
-| Frontend | React 19, TypeScript |
-| Build Tool | Vite 7 |
+|---|---|
+| Frontend | React 19 · TypeScript |
+| Build | Vite 7 |
 | Styling | Tailwind CSS 4 |
-| State Management | Zustand |
+| State | Zustand |
 | Charts | ECharts |
 | Tables | TanStack Table + Virtual |
-| Animations | Framer Motion |
+| Animation | Framer Motion |
 | Database | Firebase Firestore |
-| Data Processing | Python (for large dataset analysis) |
+| Data processing | Python / Node |
 
-## Architecture
-
-```
-                    ┌─────────────────┐
-                    │  Raw Data       │
-                    │  (Millions of   │
-                    │   rows)         │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │  Python Scripts │
-                    │  (analyze-data) │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │  Firebase       │
-                    │  Firestore      │
-                    │  (Optimized)    │
-                    └────────┬────────┘
-                             │
-                             ▼
-                    ┌─────────────────┐
-                    │  React Dashboard│
-                    │  (Analytics360) │
-                    └─────────────────┘
-```
-
-## Project Structure
+## 🏗 Architecture
 
 ```
-├── src/
-│   ├── components/
-│   │   ├── charts/         # ECharts visualizations
-│   │   │   ├── BarChart.tsx
-│   │   │   ├── PieChart.tsx
-│   │   │   └── ChartWrapper.tsx
-│   │   ├── filters/        # Filter panel components
-│   │   │   └── FilterPanel.tsx
-│   │   ├── kpi/            # KPI card components
-│   │   │   ├── KpiCard.tsx
-│   │   │   └── KpiGrid.tsx
-│   │   ├── layout/         # Layout components
-│   │   │   ├── Header.tsx
-│   │   │   ├── LoadingScreen.tsx
-│   │   │   └── ThemeSwitcher.tsx
-│   │   ├── master/         # Admin portal
-│   │   │   └── MasterPortal.tsx
-│   │   ├── modals/         # Modal components
-│   │   │   └── KpiDetailModal.tsx
-│   │   └── table/          # Data table
-│   │       └── DataTable.tsx
-│   ├── stores/             # Zustand state stores
-│   │   ├── dataStore.ts    # Data & filter state
-│   │   └── themeStore.ts   # Theme state
-│   ├── themes/             # Theme configurations
-│   ├── types/              # TypeScript types
-│   ├── config/             # Firebase config
-│   └── App.tsx             # Main application
-├── public/                 # Static assets
-├── analyze-data.cjs        # Node.js data analysis script
-└── package.json
+Raw data (millions of rows)
+        │
+        ▼
+Python / Node pre-processing  (analyze-data.cjs)
+        │
+        ▼
+Firebase Firestore  (optimized)
+        │
+        ▼
+React dashboard  (Analytics360)
 ```
 
-## Data Models
+## 🚀 Run it locally
 
-### Branch Mapping
-```typescript
-interface BranchMapping {
-  clinicCode: string;
-  channelName: string;
-  branchName: string;
-  pinCode: string;
-  state: string;
-  activeBase: number;    // Active policies count
-  totalBase: number;     // Total policies count
-  consultation: number;  // Consultation count
-}
-```
-
-### Map Locator
-```typescript
-interface MapLocator {
-  clinicCode: string;
-  clinicAddress: string;
-  clinicType: string;
-  state: string;
-  region: string;
-  partnerName: string;
-  tlName: string;
-  nurseName: string;
-  dcName: string;
-  status: string;
-  latitude: number;
-  longitude: number;
-}
-```
-
-## Getting Started
-
-### Prerequisites
-- Node.js 18+
-- Firebase account
-- Python 3.x (for data processing scripts)
-
-### Installation
-
-1. Clone the repository
 ```bash
-git clone https://github.com/SatvickMalhotra/full-stack-apps-with-AI.git
+# 1. Enter the folder
 cd "Analytics360 (Dashboard on company performance)"
-```
 
-2. Install dependencies
-```bash
+# 2. Install dependencies
 npm install
-```
 
-3. Configure Firebase
-   - Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
-   - Enable Firestore Database
-   - Update `src/config/firebase.ts` with your credentials
+# 3. Configure Firebase
+#    Create a project at console.firebase.google.com,
+#    enable Firestore, then update src/config/firebase.ts
 
-4. Start development server
-```bash
+# 4. Start the dev server
 npm run dev
-```
 
-### Build for Production
-```bash
-npm run build
-```
+# Build for production
+npm run build && npm run preview
 
-### Preview Production Build
-```bash
-npm run preview
-```
-
-## Data Processing
-
-For large datasets, use the analysis scripts:
-
-```bash
-# Analyze data and populate Firestore
+# (Optional) populate / audit Firestore from raw data
 node analyze-data.cjs
 ```
 
-This script:
-- Connects to Firebase Admin SDK
-- Fetches and analyzes branchMapping collection
-- Generates insights on data quality
-- Helps identify missing or inconsistent data
+**Prerequisites:** Node 18+ · Firebase account · Python 3.x (for the data scripts)
 
-## Performance Optimizations
+## ⚡ Performance tricks
 
-1. **Virtual Scrolling** - TanStack Virtual renders only visible rows
-2. **Memoized Computations** - Heavy calculations cached with useMemo
-3. **Optimistic Updates** - UI updates immediately, syncs in background
-4. **Lazy Loading** - Components load on demand
-5. **Pre-computed Aggregates** - KPIs calculated once, not on every render
+Virtual scrolling (TanStack) · memoized heavy computations · optimistic UI updates · lazy-loaded components · pre-computed KPI aggregates.
 
-## Screenshots
+<br />
 
-### Dashboard View
-- KPI cards with animated counters
-- Interactive charts with tooltips
-- Collapsible filter sidebar
+<div align="center">
+  <a href="https://github.com/SatvickMalhotra/full-stack-apps-with-AI"><img src="https://img.shields.io/badge/%E2%86%90_All_Vibe--Coded_Apps-0EA5E9?style=for-the-badge&labelColor=0F172A" /></a>
+  <a href="https://github.com/SatvickMalhotra"><img src="https://img.shields.io/badge/%F0%9F%91%A4_Satvick_Malhotra-181717?style=for-the-badge&labelColor=0F172A" /></a>
+</div>
 
-### Master Portal
-- Grouped clinic view with expandable entries
-- Inline editing with auto-save
-- Map locator management
+<sub align="center"><div align="center"><em>Built with AI assistance for M-SWASTH healthcare operations · Private / internal use</em></div></sub>
 
-## License
-
-Private - Internal Use Only
-
-## Author
-
-Built with AI assistance for M-SWASTH healthcare operations.
+<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:0EA5E9,50:1E293B,100:0F172A&height=120&section=footer&animation=fadeIn" />
